@@ -1,0 +1,1059 @@
+/* ============================================================
+   STEM Math Lomdah — style.css
+   Canvas: 1920 × 1080 px (scaled to viewport)
+   Direction: RTL Hebrew
+   Fonts: Assistant (Hebrew), Open Sans (numbers)
+   ============================================================ */
+
+/* ─── Reset & Base ─────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #111;
+  font-family: 'Assistant', sans-serif;
+  direction: rtl;
+}
+
+/* ─── App Container — Fixed 1920×1080 Canvas ───────────── */
+#app {
+  position: absolute;
+  width: 1920px;
+  height: 1080px;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+  overflow: hidden;
+}
+
+/* ─── Screens ───────────────────────────────────────────── */
+.screen {
+  display: none;
+  position: absolute;
+  inset: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+}
+
+.screen.active {
+  display: block;
+}
+
+/* Full-coverage background image */
+.screen-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Dark overlay for question screens */
+.dark-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ─── Screen 0: Fullscreen video (Frame 1 msg1) ─────────── */
+.screen-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/*
+  VEO watermark crop:
+  Figma uses scaleMode FILL which zooms the video slightly,
+  pushing the bottom VEO watermark out of frame.
+  We replicate this with a 1.08x scale anchored to top-center:
+  - 8% of 1080px = ~86px clipped from the bottom
+  - ~77px clipped equally from each side (visually unnoticeable)
+  .screen already has overflow:hidden so the overflow is clipped.
+*/
+#noa-video,
+#alex-video {
+  transform: scale(1.08);
+  transform-origin: top center;
+}
+
+/* Frame 1 states — טלפון + הודעות (מופיע אחרי וידאו) */
+.frame1-state {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+}
+
+/* אנימציית כניסה להודעה בטלפון — נכנסת מלמעלה */
+@keyframes notif-in {
+  from { opacity: 0; transform: translateY(-18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.notif-slide {
+  animation: notif-in 0.35s ease forwards;
+}
+
+/* כשמחליפים הודעה — הודעה 2 נכנסת בצורה רכה */
+#notif-2:not(.hidden) {
+  animation: notif-in 0.35s ease forwards;
+}
+
+/* Play button — full-screen overlay (PlayBrn_Big 1920×1080 מפיגמה) */
+.play-btn-big {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+  padding: 0;
+  transition: opacity 0.15s ease;
+}
+
+.play-btn-big:hover { opacity: 0.92; }
+
+.play-btn-big img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* ─── Navigation Buttons ────────────────────────────────── */
+/*
+   RTL direction: "next" (forward) = LEFT side of screen
+                  "prev" (back)    = RIGHT side of screen
+   btn-nav.png points RIGHT (→); rotate 180° = LEFT (←)
+*/
+.nav-btn {
+  position: absolute;
+  bottom: 0;
+  width: 120px;
+  height: 122px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+  padding: 0;
+  transition: none; /* ללא מעברים — כמו פיגמה */
+}
+
+/*
+   btn-nav.png מצביע שמאלה (←).
+   NEXT = שמאל מסך = ← = ללא rotation.
+   PREV = ימין מסך = → = rotation 180°.
+   Hover = Size=Big מפיגמה: 130×132, מיידי ללא אנימציה/transition.
+*/
+
+/* NEXT button — LEFT side, points ← (forward in RTL), no rotation */
+@keyframes pulse-nav {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.1); }
+}
+
+.next-btn {
+  left: 0;
+  background: url('../img/btn-nav.png') center/contain no-repeat;
+  animation: pulse-nav 2s ease-in-out infinite;
+  transform-origin: left bottom;
+}
+
+/* Hover = State=Hover מפיגמה — תמונה אחרת, מיידי, בלי אנימציה */
+.next-btn:hover {
+  animation: none;
+  background-image: url('../img/btn-nav-hover.png');
+  transition: none;
+}
+
+.next-btn:active {
+  animation: none;
+  transition: none;
+}
+
+/* PREV button — RIGHT side, אותה תמונה עם flip אופקי (scaleX(-1)) */
+.prev-btn {
+  right: 0;
+  background: url('../img/btn-nav.png') center/contain no-repeat;
+  transform: scaleX(-1);
+}
+
+.prev-btn:hover {
+  background-image: url('../img/btn-nav-hover.png');
+  transform: scaleX(-1);
+  transition: none;
+}
+
+.prev-btn:active {
+  transform: scaleX(-1);
+  transition: none;
+}
+
+.next-btn-disabled {
+  opacity: 0.3;
+  cursor: default;
+  pointer-events: none;
+  animation: none;
+}
+
+/* ─── SCREEN 1 — Textbox1 (speech bubble top) ──────────── */
+.textbox1-wrap {
+  position: absolute;
+  left: 542px;
+  top: 0;
+  width: 1378px;
+  height: 209px;
+  z-index: 5;
+  overflow: hidden;
+}
+
+.textbox1-bg {
+  position: absolute;
+  height: 562.5%;
+  width: 139.33%;
+  left: -39.33%;
+  top: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.textbox1-content {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 163px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px 50px;
+  font-size: 28px;
+  font-weight: 600;
+  color: #000;
+  text-align: right;
+  line-height: 1.5;
+  gap: 2px;
+}
+
+/* Screen 2 textbox starts at same position */
+.textbox1-s2 {
+  left: 542px;
+}
+
+/* ─── SCREEN 1 — Phone wrap ─────────────────────────────── */
+.phone-wrap {
+  position: absolute;
+  left: 102px;
+  bottom: 0;
+  width: 636px;
+  height: 902px;
+  z-index: 5;
+  border-radius: 60px;
+  overflow: hidden;
+}
+
+.phone-cats-img {
+  position: absolute;
+  width: 301.89%;
+  height: 119.73%;
+  left: -14.15%;
+  top: -19.73%;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* תמונת הנוטיפיקציה מפיגמה — ממוקמת בדיוק על הטלפון */
+.phone-notif-img {
+  position: absolute;
+  top: 156px;
+  left: 60px;
+  width: 537px;
+  height: 179px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.notif-bold {
+  font-size: 25px;
+  font-weight: 700;
+  color: #000;
+  line-height: 1.4;
+}
+
+/* ─── SCREEN 1 — Alex video (full-screen, same as .screen-video) ─── */
+/* הוידאו של אלכס משתמש ב-.screen-video הכללי — אין מבנה טלפון */
+
+/* ─── Play buttons ──────────────────────────────────────── */
+
+/* בסיס משותף */
+.play-btn {
+  position: absolute;
+  width: 198px;
+  height: 202px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 20;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.play-btn:hover  { transform: scale(1.08); }
+.play-btn:active { transform: scale(0.96); }
+
+.play-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* מסך 1 — מיקום מדויק מפיגמה: left:316, top:585 (על מסך הטלפון ברקע) */
+#play-btn {
+  left: 316px;
+  top: 585px;
+}
+
+
+/* ─── Help Button (Screens 3 & 4) ──────────────────────── */
+/*
+  4 מצבים מפיגמה — Open Close Popup Btn:
+  Open  + Normal → btn-help-open-normal.png
+  Open  + Hover  → btn-help-open-hover.png
+  Close + Normal → btn-help-close-normal.png  (class: is-open)
+  Close + Hover  → btn-help-close-hover.png   (class: is-open + :hover)
+  ללא transition — מיידי כמו פיגמה.
+*/
+.help-btn {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  width: 150px;
+  height: 150px;
+  background: url('../img/btn-help-open-normal.png') center/contain no-repeat;
+  border: none;
+  cursor: pointer;
+  z-index: 20;
+  padding: 0;
+  transition: none;
+}
+
+.help-btn:hover {
+  background-image: url('../img/btn-help-open-hover.png');
+}
+
+.help-btn.is-open {
+  background-image: url('../img/btn-help-close-normal.png');
+}
+
+.help-btn.is-open:hover {
+  background-image: url('../img/btn-help-close-hover.png');
+}
+
+/* ─── Help Popup (Screens 3 & 4) ───────────────────────────
+   הפופ-אפ יושב מחוץ לכל .screen ישירות ב-#app.
+   top: 175px = מתחת לכפתור (top:20 + height:150 + 5px gap)
+   ─────────────────────────────────────────────────────── */
+.help-popup {
+  position: absolute;
+  left: 73px;
+  top: 100px;
+  width: 430px;
+  height: 253px;
+  background: #fef3bf;
+  border: 8px solid #1a1a12;
+  border-radius: 40px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;  /* stretch = p ממלאים רוחב מלא → text-align:right עובד */
+  padding: 24px 35px;
+  gap: 0;
+  direction: rtl;
+}
+
+.help-popup p {
+  font-family: 'Assistant', sans-serif;
+  font-weight: 600; /* SemiBold */
+  font-size: 36px;
+  color: #000;
+  text-align: right;
+  line-height: 1.45;
+  white-space: nowrap;
+}
+
+/* ─── Content Area (Screens 3 & 4) ─────────────────────── */
+.content-area {
+  position: absolute;
+  left: 136px;
+  top: 49px;
+  width: 1646px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  z-index: 5;
+}
+
+/* ─── Breadcrumb ────────────────────────────────────────── */
+.breadcrumb {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  justify-content: flex-end;   /* RIGHT-aligned: "1" at the far right */
+  align-items: center;
+  height: 49px;
+  flex-shrink: 0;
+  direction: ltr;
+}
+
+.crumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 41px;
+  height: 49px;
+  border-radius: 13px;
+  background: linear-gradient(90.29deg, rgb(7,80,171) 0.3%, rgb(53,113,181) 50%, rgb(73,126,188) 99.7%);
+  box-shadow: 1px 0 0.5px rgba(255,255,255,0.5);
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  font-size: 36px;
+  color: #fff;
+  letter-spacing: -3.6px;
+  opacity: 0.4;
+  user-select: none;
+}
+
+.crumb.current {
+  opacity: 1;
+}
+
+/* ─── Content Card (textbox2) ───────────────────────────── */
+.content-card {
+  position: relative;
+  width: 1646px;
+  height: 828px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.textbox2-bg {
+  position: absolute;
+  width: 116.65%;
+  height: 130.43%;
+  left: -8.26%;
+  top: -15.7%;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+/* ─── Left Panel (text / inputs) ───────────────────────── */
+.left-panel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  width: 878px;
+  height: 828px;
+  padding: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: hidden;
+  text-align: right;
+  direction: rtl;
+}
+
+.q-text {
+  font-size: 28px;
+  font-weight: 600;
+  color: #000;
+  line-height: 1.55;
+}
+
+.q-bold {
+  font-size: 28px;
+  font-weight: 700;
+  color: #000;
+  line-height: 1.55;
+}
+
+/* Q1B left panel adjustments */
+.left-panel-q4 {
+  gap: 20px;
+}
+
+/* ─── Timer rows (Screen 4) ─────────────────────────────── */
+.timers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  /*
+    direction:rtl (inherited from html) הופך flex-end → שמאל.
+    flex-start ב-RTL = ימין (מה שאנחנו רוצים).
+  */
+  align-items: flex-start;
+}
+
+.timer-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  /*
+    direction:rtl inherited → flex-start = ימין (כיוון קריאה RTL).
+    בסדר DOM: clock-icon ראשון → מימין, timer-fields שני → משמאלו.
+  */
+  justify-content: flex-start;
+}
+
+.clock-icon {
+  width: 40px;
+  height: 48px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.timer-fields {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+  /* flex-start ב-RTL = ימין (label ראשון → ימין, input, unit שמאלה) */
+  justify-content: flex-start;
+}
+
+.timer-label {
+  font-size: 26px;
+  font-weight: 600;
+  color: #000;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.lbl-normal {
+  font-weight: 400;
+}
+
+.timer-input {
+  width: 101px;
+  height: 52px;
+  background: #fefdfd;
+  border: 3px solid #2b369b;
+  border-radius: 8px;
+  font-family: 'Assistant', sans-serif;
+  font-weight: 700;
+  font-size: 28px;
+  color: #000;
+  text-align: center;
+  outline: none;
+  flex-shrink: 0;
+  direction: ltr;
+  transition: border-color 0.2s ease;
+}
+
+.timer-input:focus {
+  border-color: #1a237e;
+  box-shadow: 0 0 0 2px rgba(43,54,155,0.25);
+}
+
+/* Hide number input arrows */
+.timer-input::-webkit-inner-spin-button,
+.timer-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+.timer-input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.unit-label {
+  font-size: 26px;
+  font-weight: 400;
+  color: #000;
+  white-space: nowrap;
+}
+
+/* Input states after validation */
+.timer-input.correct {
+  border-color: #1a7f37;
+  background: #e6f4ea;
+}
+
+.timer-input.incorrect {
+  border-color: #c0392b;
+  background: #fdecea;
+}
+
+/* שדה נעול אחרי חשיפת תשובה — מונע עריכה, שומר על הצבע */
+.timer-input:disabled {
+  cursor: default;
+  opacity: 1;       /* שומר על הצבע הירוק/אדום במלואו */
+  -webkit-text-fill-color: inherit; /* Safari */
+}
+
+/* ─── Submit Button "צדקתי" ─────────────────────────────── */
+/* הכפתור יושב בתוך .submit-row (absolute על המסך) */
+.submit-btn {
+  width: 206px;
+  height: 136px;
+  background: url('../img/btn-submit-normal.png') center/contain no-repeat;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: none;
+}
+
+.submit-btn:hover  { background-image: url('../img/btn-submit-hover.png'); }
+.submit-btn:active { background-image: url('../img/btn-submit-normal.png'); opacity: 0.85; }
+.submit-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ─── Submit Row (screen-level, Figma: left:265, top:717) ── */
+/*
+  direction:ltr כדי שflex יזרום שמאל→ימין בלי RTL reversal.
+  סדר DOM: try-again-msg ראשון (שמאל), submit-btn שני (ימין).
+  הודעת try-again מוסתרת ב-hidden עד ניסיון ראשון שגוי.
+*/
+.submit-row {
+  position: absolute;
+  left: 265px;
+  top: 717px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 116px;
+  direction: ltr;
+  z-index: 15;
+}
+
+/* ─── Try-Again inline message (after 1st wrong attempt) ─── */
+.try-again-msg {
+  font-family: 'Assistant', sans-serif;
+  font-size: 28px;
+  line-height: 1.55;
+  text-align: right;
+  direction: rtl;
+}
+
+.try-again-err {
+  font-weight: 700;
+  color: #ca433d;
+  margin-bottom: 2px;
+}
+
+.try-again-msg p:not(.try-again-err) {
+  font-weight: 400;
+  color: #000;
+}
+
+/* ─── Right Panel (iframe) ──────────────────────────────── */
+.right-panel {
+  position: absolute;
+  z-index: 2;
+  left: 923px;
+  top: 25px;
+  width: 605px;
+  height: 754px;
+}
+
+/* Q1B uses the same dimensions as Q1A */
+.right-panel-q4 {
+  /* inherits left/top/width/height from .right-panel — no overrides */
+}
+
+.tool-iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #f0f0f0;
+  border-radius: 8px;
+  direction: rtl; /* סקרולבר בצד ימין בהתאם לכיוון הלומדה */
+}
+
+/* Zoom button — RIGHT side of iframe (RTL: right = outside container right edge) */
+.zoom-btn {
+  position: absolute;
+  top: 0;
+  right: -55px;   /* sits just to the right of the iframe */
+  width: 55px;
+  height: 66px;
+  background: rgba(0,0,0,0.75);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+}
+
+.zoom-btn:hover {
+  transform: scale(1.08);
+}
+
+.zoom-btn img {
+  width: 44px;
+  height: 48px;
+  object-fit: contain;
+}
+
+/* ─── Feedback Panels (Screen 3 — screen-level absolute) ────
+   Figma: left:980, top:144, width:789, height:795
+   רקע: תמונת מסך מלא (1920×1080) ממוקמת עם offsets שלILIAM
+   כך שרק חלק הפאנל נחתך ומוצג (overflow:hidden)
+   ──────────────────────────────────────────────────────── */
+.feedback-panel {
+  position: absolute;
+  left: 980px;
+  top: 144px;
+  width: 789px;
+  height: 795px;
+  overflow: hidden;
+  z-index: 20;
+  animation: feedbackIn 0.35s ease forwards;
+}
+
+@keyframes feedbackIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* תמונת הרקע — 1920×1080 ממוקמת כך שנראה רק אזור הפאנל */
+.feedback-bg-img {
+  position: absolute;
+  width:  243.35%;  /* 1920 / 789 */
+  height: 135.85%;  /* 1080 / 795 */
+  left:  -124.59%;  /* -983 / 789 */
+  top:    -17.61%;  /* -140 / 795 */
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+/* טקסט הפידבק — padding מפיגמה: pt:80 pr:73 pb:271 pl:50 */
+.feedback-text {
+  position: absolute;
+  inset: 0;
+  padding: 80px 73px 271px 50px;
+  text-align: right;
+  direction: rtl;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow: hidden;
+}
+
+.feedback-text p {
+  font-size: 28px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.5;
+  white-space: pre;
+}
+
+/* כותרת פידבק — bold לבן, הרקע נותן את הצבע הויזואלי */
+.feedback-title {
+  font-weight: 700 !important;
+  font-size: 28px !important;
+  margin-bottom: 4px;
+  color: #fff !important;
+}
+
+.correct-title,
+.incorrect-title {
+  color: #fff !important;
+}
+
+/* ─── Zoom Modal ────────────────────────────────────────── */
+.zoom-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0,0,0,0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.zoom-modal iframe {
+  width: 90vw;
+  height: 85vh;
+  border: none;
+  border-radius: 12px;
+  background: #fff;
+}
+
+/* כפתור סגירת Zoom — Role=Close, State=Normal מפיגמה */
+.zoom-close-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 150px;
+  height: 150px;
+  background: url('../img/btn-help-close-normal.png') center/contain no-repeat;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+  padding: 0;
+  transition: none;
+}
+
+.zoom-close-btn:hover {
+  background-image: url('../img/btn-help-close-hover.png');
+}
+
+/* ─── Screen 4 (Frame 5): Context Panel ─────────────────────
+   פאנל הקשר הסטטי בצד ימין — ברמת מסך, תמיד גלוי.
+   Figma: left:980, top:144, width:789, height:795
+   padding: pt:80 pr:73 pb:271 pl:50
+   ─────────────────────────────────────────────────────── */
+.s4-context-panel {
+  position: absolute;
+  left: 980px;
+  top: 144px;
+  width: 789px;
+  height: 795px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 80px 73px 271px 50px;
+  align-items: flex-end;
+  direction: rtl;
+  z-index: 6; /* מעל content-area (z:5) כדי שלא יוסתר ע"י textbox2-bg */
+}
+
+.s4-context-text {
+  font-size: 28px;
+  font-weight: 600;
+  color: #000;
+  text-align: right;
+  line-height: 1.5;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.s4-context-text p { margin: 0; }
+
+/* קופסה אפורה עם ויזואליזציית TV-Time */
+.s4-tv-box {
+  background: #cccccf;
+  border-radius: 45px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.25);
+  width: 589px;
+  height: 365px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 50px;
+  padding-right: 32px;
+  flex-shrink: 0;
+}
+
+.s4-tv-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #000;
+  text-align: right;
+  white-space: nowrap;
+  width: 100%;
+  margin: 0;
+}
+
+/* מיכל תמונת ה-TV-Time — overflow:hidden לחיתוך התמונה הגדולה */
+.s4-tv-visual {
+  position: relative;
+  left: 60px;
+  width: 490.653px;
+  height: 227.72px;
+  overflow: hidden;
+  flex-shrink: 0;
+  direction: rtl;
+}
+
+/* תמונת TV-Time — מיקום Figma: %offsets לחשיפת חלק נכון */
+.s4-tv-img {
+  position: absolute;
+  width:  398.9%;   /* 1957 / 490.653 */
+  height: 483.46%;  /* 1101 / 227.72  */
+  left:  -238.35%;  /* -1169 / 490.653 */
+  top:   -204.73%;  /* -466 / 227.72  */
+  pointer-events: none;
+  user-select: none;
+}
+
+/* תוויות טקסט על הפסים הצבעוניים */
+.s4-tv-label {
+  position: absolute;
+  top: 154px;
+  font-family: 'Assistant', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #000;
+  white-space: nowrap;
+}
+
+/* "40%" — קצה ימני ב-x≈392 בתוך מיכל 490.653px */
+.s4-tv-40   { right: 99px; }
+/* "השאר" — קצה ימני ב-x≈178 בתוך מיכל 490.653px */
+.s4-tv-rest { right: 313px; }
+
+/* ─── Screen 4 (Frame 5): Feedback box (inside left panel) ──
+   מופיע בתוך הפאנל השמאלי אחרי הגשת תשובה (לא overlay).
+   Figma: width:672, height:275, bg:#111, border-radius:45
+   ─────────────────────────────────────────────────────── */
+.s4-feedback-box {
+  width: 672px;
+  min-height: 275px;
+  background: #111;
+  border-radius: 45px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 28px 32px;
+  flex-shrink: 0;
+  animation: feedbackIn 0.35s ease forwards;
+  direction: rtl;
+}
+
+.s4-feedback-title {
+  font-family: 'Assistant', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  text-align: right;
+  line-height: 1.5;
+  width: 100%;
+  margin: 0;
+}
+
+.s4-feedback-body {
+  font-family: 'Assistant', sans-serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: #fff;
+  text-align: right;
+  line-height: 1.5;
+  width: 100%;
+  margin: 0;
+}
+
+/* ─── Frame 6 (Screen 5): WhatsApp chat — Ofri ──────────── */
+@keyframes floatIn {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Textbox at top — container window at (542,0), full-canvas image clipped inside */
+.f6-textbox1 {
+  position: absolute;
+  left: 542px; top: 0;
+  width: 1378px; height: 209px;
+  overflow: hidden;
+  z-index: 5;
+  pointer-events: none; user-select: none;
+}
+.f6-textbox1 img {
+  position: absolute;
+  width: 1920px; height: 1080px;
+  left: -542px; top: 0;
+}
+
+/* Header text — Figma 120:448: right:0, top:0 within header (= canvas right edge),
+   w:1378px, h:163px, px:50px, py:10px, font: Assistant SemiBold 28px */
+.f6-header-text {
+  position: absolute;
+  right: 0; top: 0;
+  width: 1378px; height: 163px;
+  display: flex;
+  align-items: center;
+  padding: 10px 50px;
+  z-index: 6;
+  pointer-events: none; user-select: none;
+}
+.f6-header-text div {
+  width: 100%;
+  direction: rtl;
+  text-align: right;
+}
+.f6-header-text p {
+  font-family: 'Assistant', sans-serif;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 1.4;
+  color: #000;
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* Ofri's phone — container window at (139,225), full-canvas image clipped inside */
+.f6-phone {
+  position: absolute;
+  left: 139px; top: 225px;
+  width: 601.528px; height: 855.277px;
+  overflow: hidden;
+  pointer-events: none; user-select: none;
+  z-index: 2;
+}
+.f6-phone img {
+  position: absolute;
+  width: 1920px; height: 1080px;
+  left: -139px; top: -225px;
+}
+
+/* WhatsApp message bubbles — each is a container div with overflow:hidden */
+.ofri-msg {
+  position: absolute;
+  overflow: hidden;
+  pointer-events: none; user-select: none;
+  z-index: 3;
+}
+.ofri-msg img {
+  position: absolute;
+  width: 1920px; height: 1080px;
+}
+
+/* Container positions (canvas coords) + per-message image offsets */
+.ofri-m1 { left: 373px; top: 415px; width: 308.35px;  height: 122.711px; }
+.ofri-m1 img { left: -373px; top: -415px; }
+
+.ofri-m2 { left: 198px; top: 538px; width: 483.311px; height: 110.419px; }
+.ofri-m2 img { left: -198px; top: -538px; }
+
+.ofri-m3 { left: 198px; top: 648px; width: 483.311px; height: 206.786px; }
+.ofri-m3 img { left: -198px; top: -648px; }
+
+.ofri-m4 { left: 198px; top: 855px; width: 483.311px; height: 112.215px; }
+.ofri-m4 img { left: -198px; top: -855px; }
+
+/* ─── Utility ───────────────────────────────────────────── */
+.hidden {
+  display: none !important;
+}

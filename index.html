@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>לומדה – ניהול זמן | STEM מתמטיקה</title>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Open+Sans:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ═══════════════════════════════════════════════
+       SCREEN 0 — Frame 1: שלושה מצבים
+       מצב א: וידאו מלא-מסך + textbox + Play overlay
+       מצב ב: וידאו הסתיים → טלפון + נוטיפיקציה 1 (ללא חץ)
+       מצב ג: ~3 שניות אח"כ → רקע חדש + טלפון + נוטיפיקציה 2 + חץ
+  ════════════════════════════════════════════════ -->
+  <section class="screen active" data-screen="0">
+
+    <!-- וידאו מלא-מסך ברקע (poster = הפריים הראשון) -->
+    <!-- poster הוסר — play-btn-big.png מכסה הכל לפני ההפעלה, אין צורך ב-thumbnail נפרד -->
+    <video id="noa-video" class="screen-video" src="video/noa_intro.mp4"
+           playsinline></video>
+
+    <!-- תיבת טקסט עליונה — גלויה בכל המצבים (פיגמה: left:542, top:0) -->
+    <div class="textbox1-wrap" id="textbox-s0">
+      <img class="textbox1-bg" src="img/textbox1-msg2.png" alt="">
+      <div class="textbox1-content">
+        <p>נועה לומדת בכיתה ח׳ בבית הספר.</p>
+        <p>בכל יום חול, אחרי שהיא חוזרת הביתה, יש לה בערך 5 שעות פנויות (שהן 300 דקות),</p>
+        <p>והיא מנצלת אותן בעיקר לפעילות אחת ספציפית…</p>
+      </div>
+    </div>
+
+    <!-- Play overlay מלא-מסך 1920×1080 (PlayBrn_Big מפיגמה) — נעלם בלחיצה -->
+    <button id="play-btn-s0" class="play-btn-big" aria-label="התחל לומדה">
+      <img src="img/play-btn-big.png" alt="הפעל">
+    </button>
+
+    <!-- טלפון + הודעות — מופיע אחרי סיום הוידאו -->
+    <div id="frame1-phone" class="frame1-state hidden">
+      <div class="phone-wrap">
+        <img class="phone-cats-img" src="img/phone-cats-msg2.png" alt="">
+
+        <!-- הודעה 1 — תמונה מפיגמה, מופיעה מיד עם הטלפון -->
+        <img id="notif-1"
+             class="phone-notif-img notif-slide"
+             src="img/notification-msg1.png"
+             alt="הדו&quot;ח השבועי זמין">
+
+        <!-- הודעה 2 — תמונה מפיגמה, מופיעה אחרי 3 שניות -->
+        <img id="notif-2"
+             class="phone-notif-img notif-slide hidden"
+             src="img/notification-msg2.png"
+             alt="4 שעות ו-21 דקות ביום">
+
+      </div>
+      <!-- חץ "הבא" — מופיע יחד עם הודעה 2 -->
+      <button id="next-s0" class="nav-btn next-btn hidden" onclick="goTo(1)" aria-label="המשך"></button>
+    </div>
+
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SCREEN 1 — Frame 2: Alex the influencer
+       וידאו מלא-מסך ברקע + textbox + Play btn (פיגמה: 316,585)
+  ════════════════════════════════════════════════ -->
+  <section class="screen" data-screen="1">
+
+    <!-- וידאו מלא-מסך ברקע (כמו מסך 0) -->
+    <video id="alex-video" class="screen-video" src="video/alex_video.mp4"
+           playsinline webkit-playsinline></video>
+
+    <!-- תיבת טקסט עליונה — left:542, top:0 (פיגמה) -->
+    <div class="textbox1-wrap textbox1-s2">
+      <img class="textbox1-bg" src="img/textbox1-frame2.png" alt="">
+      <div class="textbox1-content">
+        <p>רגע לפני שהיא סגרה את הטלפון, היא נתקלה בסרטון חדש של אלכס, יוצרת התוכן האהובה עליה.</p>
+        <p>אלכס היא תלמידת תיכון שמשתפת סרטונים מהחיים שלה.</p>
+        <p>לחצו על הסרטון כדי לצפות בו.</p>
+      </div>
+    </div>
+
+    <!-- כפתור Play — left:316, top:585, w:198, h:202 (פיגמה מדויק) -->
+    <button id="play-btn" class="play-btn" aria-label="הפעל סרטון">
+      <img src="img/btn-play.png" alt="הפעל">
+    </button>
+
+
+<button class="nav-btn prev-btn" onclick="goTo(0)" aria-label="חזרה"></button>
+    <!-- חץ "הבא" — מוסתר עד לסיום הוידאו של אלכס -->
+    <button id="next-s1" class="nav-btn next-btn hidden" onclick="goTo(2)" aria-label="המשך"></button>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SCREEN 2 — Frame 3: Question 1A
+       רקע + שאלה + iframe חיצוני + עזרה
+  ════════════════════════════════════════════════ -->
+  <section class="screen" data-screen="2">
+    <img class="screen-bg" src="img/bg-frame3.png" alt="">
+    <div class="dark-overlay"></div>
+
+    <!-- כפתור עזרה — מצבים מנוהלים ע"י CSS + class is-open -->
+    <button id="help-btn-s3" class="help-btn" data-popup="help-popup-s3" aria-label="עזרה / סגור"></button>
+
+    <!-- אזור תוכן ראשי -->
+    <div class="content-area">
+      <!-- Breadcrumb שאלות 1–10 -->
+      <nav class="breadcrumb" dir="ltr" aria-label="ניווט שאלות">
+        <span class="crumb" data-q="10">10</span>
+        <span class="crumb" data-q="9">9</span>
+        <span class="crumb" data-q="8">8</span>
+        <span class="crumb" data-q="7">7</span>
+        <span class="crumb" data-q="6">6</span>
+        <span class="crumb" data-q="5">5</span>
+        <span class="crumb" data-q="4">4</span>
+        <span class="crumb" data-q="3">3</span>
+        <span class="crumb" data-q="2">2</span>
+        <span class="crumb current" data-q="1">1</span>
+      </nav>
+
+      <!-- כרטיסיית תוכן -->
+      <div class="content-card">
+        <img class="textbox2-bg" src="img/textbox2.png" alt="">
+
+        <!-- פאנל שמאל: טקסט השאלה -->
+        <div class="left-panel">
+          <p class="q-text">1. א. נועה מחליטה לבנות לעצמה יישומון פשוט לניהול הזמן.<br>
+          פתחו את היישומון ועזרו לנועה לחשב את הזמנים שלה במצבים שונים.</p>
+          <br>
+          <p class="q-bold">התחילו בבדיקה של ימים שבהם יש לה פחות זמן פנוי,<br>
+          ונסו לפחות שני מצבים:<br>
+          כאשר יש לה 200 דקות וכאשר יש לה 260 דקות זמן פנוי.<br>
+          בדקו איך זה משפיע על התכנון שלה.</p>
+        </div>
+
+        <!-- פאנל ימין: iframe -->
+        <div class="right-panel">
+          <button class="zoom-btn" onclick="openZoom()" aria-label="הגדל יישומון">
+            <img src="img/btn-zoom.png" alt="הגדל">
+          </button>
+          <iframe
+            class="tool-iframe"
+            src="https://lomdot.education.gov.il/metodica/%D7%AA%D7%A9%D7%A4%D7%95/stem/%D7%9E%D7%AA%D7%9E%D7%98%D7%99%D7%A7%D7%94/simulations/time-management.html"
+            title="יישומון ניהול זמן"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+
+    <button class="nav-btn prev-btn" onclick="goTo(1)" aria-label="חזרה"></button>
+    <button class="nav-btn next-btn" onclick="goTo(3)" aria-label="הבא"></button>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SCREEN 3 — Frame 4: Question 1B
+       רקע + שדות קלט + iframe + פידבק
+  ════════════════════════════════════════════════ -->
+  <section class="screen" data-screen="3">
+    <img class="screen-bg" src="img/bg-frame4.png" alt="">
+    <div class="dark-overlay"></div>
+
+    <!-- כפתור עזרה -->
+    <button id="help-btn-s4" class="help-btn" data-popup="help-popup-s3" aria-label="עזרה"></button>
+
+    <!-- אזור תוכן ראשי -->
+    <div class="content-area">
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb" dir="ltr" aria-label="ניווט שאלות">
+        <span class="crumb" data-q="10">10</span>
+        <span class="crumb" data-q="9">9</span>
+        <span class="crumb" data-q="8">8</span>
+        <span class="crumb" data-q="7">7</span>
+        <span class="crumb" data-q="6">6</span>
+        <span class="crumb" data-q="5">5</span>
+        <span class="crumb" data-q="4">4</span>
+        <span class="crumb" data-q="3">3</span>
+        <span class="crumb" data-q="2">2</span>
+        <span class="crumb current" data-q="1">1</span>
+      </nav>
+
+      <!-- כרטיסיית תוכן -->
+      <div class="content-card">
+        <img class="textbox2-bg" src="img/textbox2.png" alt="">
+
+        <!-- פאנל שמאל: טקסט + שדות קלט -->
+        <div class="left-panel left-panel-q4">
+          <p class="q-text">1. ב. ברוב הימים, לנועה יש 300 דקות פנויות ביום, והיא רוצה
+          לנצל אותן היטב. כדי לדייק בזמנים, היא מכוונת לה טיימרים.</p>
+          <p class="q-bold">הקלידו את מספר הדקות המתאים בכל טיימר:</p>
+
+          <!-- שדות טיימר -->
+          <div class="timers-list">
+
+            <div class="timer-row">
+              <img class="clock-icon" src="img/clock-icon.png" alt="">
+              <div class="timer-fields">
+                <span class="timer-label"><strong>זמן חדר הכושר ברוטו</strong> <span class="lbl-normal">(20% מתוך 300)</span> =</span>
+                <input type="number" id="timer1" class="timer-input" min="0" max="999" placeholder="?">
+                <span class="unit-label">דקות</span>
+              </div>
+            </div>
+
+            <div class="timer-row">
+              <img class="clock-icon" src="img/clock-icon.png" alt="">
+              <div class="timer-fields">
+                <span class="timer-label"><strong>זמן האימון נטו</strong> <span class="lbl-normal">(בלי זמן ההגעה והחזרה)</span> =</span>
+                <input type="number" id="timer2" class="timer-input" min="0" max="999" placeholder="?">
+                <span class="unit-label">דקות</span>
+              </div>
+            </div>
+
+            <div class="timer-row">
+              <img class="clock-icon" src="img/clock-icon.png" alt="">
+              <div class="timer-fields">
+                <span class="timer-label"><strong>מקסימום זמן מסך</strong> <span class="lbl-normal">(35% מתוך 300)</span> =</span>
+                <input type="number" id="timer3" class="timer-input" min="0" max="999" placeholder="?">
+                <span class="unit-label">דקות</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- פאנל ימין: iframe -->
+        <div class="right-panel right-panel-q4">
+          <button class="zoom-btn" onclick="openZoom()" aria-label="הגדל יישומון">
+            <img src="img/btn-zoom.png" alt="הגדל">
+          </button>
+          <iframe
+            class="tool-iframe"
+            src="https://lomdot.education.gov.il/metodica/%D7%AA%D7%A9%D7%A4%D7%95/stem/%D7%9E%D7%AA%D7%9E%D7%98%D7%99%D7%A7%D7%94/simulations/time-management.html"
+            title="יישומון ניהול זמן"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ שורת "צדקתי" + הודעת ניסיון ראשון שגוי — מחוץ לכרטיסייה ══
+         סדר DOM: הודעה ראשונה (שמאל), כפתור שני (ימין)
+         direction:ltr על הcontainer כדי שflexbox לא יתהפך ברוב RTL -->
+    <div class="submit-row">
+      <button id="submit-btn" class="submit-btn hidden" onclick="checkAnswers()" aria-label="בדוק תשובות"></button>
+      <div id="try-again-msg" class="try-again-msg hidden">
+        <p class="try-again-err">זו אינה התשובה, נסו שוב.</p>
+        <p>תוכלו ללחוץ על כפתור העזרה</p>
+        <p>כדי לקבל רמז.</p>
+      </div>
+    </div>
+
+    <!-- ══ פידבקים ממוקמים ישירות על המסך (לא בתוך right-panel) ══ -->
+
+    <!-- פידבק: תשובה נכונה -->
+    <div id="feedback-correct" class="feedback-panel hidden">
+      <img class="feedback-bg-img" src="img/feedback-bg.png" alt="">
+      <div class="feedback-text">
+        <p class="feedback-title correct-title">צדקת!</p>
+        <p>זמן חדר הכושר ברוטו הוא 20% מתוך 300 דקות.</p>
+        <p>נמיר אותו למספר עשרוני ונחשב: 60 = 0.2 · 300</p>
+        <p>כלומר, זמן חדר הכושר ברוטו הוא 60 דקות.</p>
+        <br>
+        <p>נוריד ממנו 20 דקות של הגעה וחזרה:</p>
+        <p>40 = 20 &#8722; 60</p>
+        <p>כלומר, זמן האימון נטו הוא 40 דקות.</p>
+        <br>
+        <p>זמן המסך המקסימלי הוא 35% מתוך 300 דקות.</p>
+        <p>נמיר אותו למספר עשרוני ונחשב 105 = 0.35 · 300</p>
+        <p>כלומר, זמן המסך המקסימלי הוא 105 דקות.</p>
+      </div>
+    </div>
+
+    <!-- פידבק: תשובה שגויה -->
+    <div id="feedback-incorrect" class="feedback-panel hidden">
+      <img class="feedback-bg-img" src="img/feedback-bg-incorrect.png" alt="">
+      <div class="feedback-text">
+        <p class="feedback-title incorrect-title">זו טעות</p>
+        <p>זמן חדר הכושר ברוטו הוא 20% מתוך 300 דקות.</p>
+        <p>נמיר אותו למספר עשרוני ונחשב: 60 = 0.2 · 300</p>
+        <p>כלומר, זמן חדר הכושר ברוטו הוא 60 דקות.</p>
+        <br>
+        <p>נוריד ממנו 20 דקות של הגעה וחזרה:</p>
+        <p>40 = 20 &#8722; 60</p>
+        <p>כלומר, זמן האימון נטו הוא 40 דקות.</p>
+        <br>
+        <p>זמן המסך המקסימלי הוא 35% מתוך 300 דקות.</p>
+        <p>נמיר אותו למספר עשרוני ונחשב 105 = 0.35 · 300</p>
+        <p>כלומר, זמן המסך המקסימלי הוא 105 דקות.</p>
+      </div>
+    </div>
+
+    <button class="nav-btn prev-btn" onclick="goTo(2)" aria-label="חזרה"></button>
+    <!-- חץ "הבא" — מוסתר עד לסיום השאלה (תשובה נכונה או 2 ניסיונות) -->
+    <button id="next-s3" class="nav-btn next-btn hidden" onclick="goTo(4)" aria-label="המשך לשאלה הבאה"></button>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SCREEN 4 — Frame 5: Question 2
+       שאלה + פאנל הקשר סטטי בימין + פידבק בתוך הפאנל השמאלי
+       (אין iframe — פאנל ימין תמיד גלוי ברמת מסך)
+  ════════════════════════════════════════════════ -->
+  <section class="screen" data-screen="4">
+    <img class="screen-bg" src="img/bg-frame5.png" alt="">
+    <div class="dark-overlay"></div>
+
+    <!-- כפתור עזרה — מחובר ל-popup נפרד לשאלה 2 -->
+    <button id="help-btn-s5" class="help-btn" data-popup="help-popup-s4" aria-label="עזרה"></button>
+
+    <!-- אזור תוכן ראשי (פאנל שמאל בלבד — ימין ברמת מסך) -->
+    <div class="content-area">
+      <!-- Breadcrumb: שאלה 2 פעילה -->
+      <nav class="breadcrumb" dir="ltr" aria-label="ניווט שאלות">
+        <span class="crumb" data-q="10">10</span>
+        <span class="crumb" data-q="9">9</span>
+        <span class="crumb" data-q="8">8</span>
+        <span class="crumb" data-q="7">7</span>
+        <span class="crumb" data-q="6">6</span>
+        <span class="crumb" data-q="5">5</span>
+        <span class="crumb" data-q="4">4</span>
+        <span class="crumb" data-q="3">3</span>
+        <span class="crumb current" data-q="2">2</span>
+        <span class="crumb" data-q="1">1</span>
+      </nav>
+
+      <!-- כרטיסיית תוכן -->
+      <div class="content-card">
+        <img class="textbox2-bg" src="img/textbox2.png" alt="">
+
+        <!-- פאנל שמאל: שאלה + טיימר יחיד + פידבק (מוסתר עד תשובה) -->
+        <div class="left-panel left-panel-q4">
+          <div>
+            <p class="q-text">2. כמה דקות נמשך כל פרק בסדרה?</p>
+            <p class="q-bold">הקלידו את מספר הדקות המתאים בטיימר:</p>
+          </div>
+
+          <!-- שדה טיימר יחיד -->
+          <div class="timers-list">
+            <div class="timer-row">
+              <img class="clock-icon" src="img/clock-icon.png" alt="">
+              <div class="timer-fields">
+                <span class="timer-label">פרק בסדרה =</span>
+                <input type="number" id="timer-s4" class="timer-input" min="0" max="999" placeholder="?">
+                <span class="unit-label">דקות</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- פידבק: תשובה נכונה — מופיע בתוך הפאנל השמאלי -->
+          <div id="feedback-s4-correct" class="s4-feedback-box hidden">
+            <p class="s4-feedback-title">צדקת!</p>
+            <p class="s4-feedback-body">כשהשלם משתנה, גם ערכו של האחוז משתנה בהתאם.</p>
+            <p class="s4-feedback-body">נחשב 40% מתוך זמן המסך בלבד, שהוא 105 דקות.</p>
+            <p class="s4-feedback-body">נמיר 40% למספר עשרוני ונחשב: 42 = 0.4 · 105</p>
+            <p class="s4-feedback-body">כלומר, פרק בסדרה האהובה על נועה נמשך כ-42 דקות.</p>
+          </div>
+
+          <!-- פידבק: תשובה שגויה — מופיע אחרי ניסיון שני -->
+          <div id="feedback-s4-incorrect" class="s4-feedback-box hidden">
+            <p class="s4-feedback-title">זו טעות</p>
+            <p class="s4-feedback-body">כשהשלם משתנה, גם ערכו של האחוז משתנה בהתאם.</p>
+            <p class="s4-feedback-body">נחשב 40% מתוך זמן המסך בלבד, שהוא 105 דקות.</p>
+            <p class="s4-feedback-body">נמיר 40% למספר עשרוני ונחשב: 42 = 0.4 · 105</p>
+            <p class="s4-feedback-body">כלומר, פרק בסדרה האהובה על נועה נמשך כ-42 דקות.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ פאנל הקשר סטטי — ברמת מסך (left:980, top:144) ══
+         תמיד גלוי — מציג את מידע ה-40% וויזואליזציית הזמן -->
+    <div class="s4-context-panel">
+      <div class="s4-context-text">
+        <p>מתוך זמן המסך שיש לה, נועה רוצה להקדיש חלק לצפייה</p>
+        <p>בסדרה האהובה עליה, ואת השאר לגלישה חופשית באינטרנט.</p>
+        <p>כל פרק בסדרה אורך כ-40% מזמן המסך שלה.</p>
+      </div>
+      <div class="s4-tv-box">
+        <p class="s4-tv-title">105 דקות של זמן מסך:</p>
+        <div class="s4-tv-visual">
+          <img class="s4-tv-img" src="img/tv-time.png" alt="">
+          <span class="s4-tv-label s4-tv-40">40%</span>
+          <span class="s4-tv-label s4-tv-rest">השאר</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ שורת "צדקתי" + "נסו שוב" ══ -->
+    <div class="submit-row">
+      <button id="submit-btn-s4" class="submit-btn hidden" onclick="checkAnswersS4()" aria-label="בדוק תשובות"></button>
+      <div id="try-again-msg-s4" class="try-again-msg hidden">
+        <p class="try-again-err">זו אינה התשובה, נסו שוב.</p>
+        <p>תוכלו ללחוץ על כפתור העזרה</p>
+        <p>כדי לקבל רמז.</p>
+      </div>
+    </div>
+
+    <button class="nav-btn prev-btn" onclick="goTo(3)" aria-label="חזרה"></button>
+    <!-- חץ הבא — מוסתר עד לסיום השאלה -->
+    <button id="next-s4" class="nav-btn next-btn hidden" onclick="goTo(5)" aria-label="המשך"></button>
+  </section>
+
+  <!-- ═══ Popup עזרה — מחוץ לכל .screen כדי שלא יושפע מ-display:none ═══ -->
+
+  <!-- Popup שאלה 1 (מסכים 2 ו-3) -->
+  <div id="help-popup-s3" class="help-popup hidden" role="tooltip">
+    <p>כדי לחשב אחוז,</p>
+    <p>אפשר להפוך אותו</p>
+    <p>לשבר עשרוני ולכפול בשלם.</p>
+  </div>
+
+  <!-- Popup שאלה 2 (מסך 4) -->
+  <div id="help-popup-s4" class="help-popup hidden" role="tooltip">
+    <p>השלם החדש כאן הוא</p>
+    <p>105 (זמן המסך).</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       SCREEN 5 — Frame 6: WhatsApp chat (Ofri)
+       הודעות WhatsApp של אופרי — float-in אחת אחת
+  ════════════════════════════════════════════════ -->
+  <section class="screen" data-screen="5">
+    <img class="screen-bg" src="img/bg-frame6.png" alt="">
+
+    <!-- תיבת טקסט עליונה — full-canvas 1920×1080, overflow-clipped לאזור (542,0)–(1920,209) -->
+    <div class="f6-textbox1">
+      <img src="img/textbox1-frame6.png" alt="">
+    </div>
+
+    <!-- טקסט header — Figma node 120:448-449: right:0, top:0, h:163px, px:50px -->
+    <div class="f6-header-text">
+      <div>
+        <p>נועה התלהבה מהשיטה!</p>
+        <p>למרות שזה קצת חורג מזמן המסך שלה היום (לא נורא נועה, קורה לטובים ביותר!),</p>
+        <p>היא הייתה חייבת לשתף את חברה שלה, עופרי.</p>
+      </div>
+    </div>
+
+    <!-- טלפון של אופרי — full-canvas 1920×1080, overflow-clipped לאזור (139,225)–(741,1080) -->
+    <div class="f6-phone">
+      <img src="img/ofri-phone.png" alt="">
+    </div>
+
+    <!-- הודעות WhatsApp — containers עם overflow:hidden, מוסתרות בהתחלה, float-in בתורה -->
+    <div id="ofri-m1" class="ofri-msg ofri-m1 hidden">
+      <img src="img/ofri-m1.png" alt="הודעה 1">
+    </div>
+    <div id="ofri-m2" class="ofri-msg ofri-m2 hidden">
+      <img src="img/ofri-m2.png" alt="הודעה 2">
+    </div>
+    <div id="ofri-m3" class="ofri-msg ofri-m3 hidden">
+      <img src="img/ofri-m3.png" alt="הודעה 3">
+    </div>
+    <div id="ofri-m4" class="ofri-msg ofri-m4 hidden">
+      <img src="img/ofri-m4.png" alt="הודעה 4">
+    </div>
+
+    <!-- שני כפתורי ניווט: next (שמאל) + prev (ימין) -->
+    <button class="nav-btn next-btn" onclick="goTo(6)" aria-label="המשך"></button>
+    <button class="nav-btn prev-btn" onclick="goTo(4)" aria-label="חזרה"></button>
+  </section>
+
+</div><!-- /app -->
+
+<!-- ═══════════ Modal Zoom ═══════════ -->
+<div id="zoom-modal" class="zoom-modal hidden" role="dialog" aria-modal="true" aria-label="תצוגה מוגדלת">
+  <button id="zoom-close" class="zoom-close-btn" onclick="closeZoom()" aria-label="סגור"></button>
+  <iframe
+    id="zoom-iframe"
+    src="https://lomdot.education.gov.il/metodica/%D7%AA%D7%A9%D7%A4%D7%95/stem/%D7%9E%D7%AA%D7%9E%D7%98%D7%99%D7%A7%D7%94/simulations/time-management.html"
+    title="יישומון ניהול זמן – תצוגה מוגדלת"
+    sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+  ></iframe>
+</div>
+
+<script src="js/main.js"></script>
+</body>
+</html>
