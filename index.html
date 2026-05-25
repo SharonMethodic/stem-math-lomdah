@@ -39,25 +39,19 @@
       <img src="img/play-btn-big.png" alt="הפעל">
     </button>
 
-    <!-- טלפון + הודעות — מופיע אחרי סיום הוידאו -->
+    <!-- טלפון + הודעה — מופיע אחרי סיום הוידאו -->
     <div id="frame1-phone" class="frame1-state hidden">
       <div class="phone-wrap">
         <img class="phone-cats-img" src="img/phone-cats-msg2.png" alt="">
 
-        <!-- הודעה 1 — תמונה מפיגמה, מופיעה מיד עם הטלפון -->
-        <img id="notif-1"
-             class="phone-notif-img notif-slide"
-             src="img/notification-msg1.png"
-             alt="הדו&quot;ח השבועי זמין">
-
-        <!-- הודעה 2 — תמונה מפיגמה, מופיעה אחרי 3 שניות -->
+        <!-- הודעה 2 — מופיעה מיד עם סיום הוידאו (Message 1 הוסרה) -->
         <img id="notif-2"
-             class="phone-notif-img notif-slide hidden"
+             class="phone-notif-img notif-slide"
              src="img/notification-msg2.png"
              alt="4 שעות ו-21 דקות ביום">
 
       </div>
-      <!-- חץ "הבא" — מופיע יחד עם הודעה 2 -->
+      <!-- חץ "הבא" — מופיע יחד עם הטלפון -->
       <button id="next-s0" class="nav-btn next-btn hidden" onclick="goTo(1)" aria-label="המשך"></button>
     </div>
 
@@ -69,9 +63,18 @@
   ════════════════════════════════════════════════ -->
   <section class="screen" data-screen="1">
 
-    <!-- וידאו מלא-מסך ברקע (כמו מסך 0) -->
-    <video id="alex-video" class="screen-video" src="video/alex_video.mp4"
-           playsinline webkit-playsinline></video>
+    <!-- ═══ alex-video-wrap ═══════════════════════════════════════════
+         עוטף את הוידאו + ה-Sub יחד כדי שבמסך-מלא שניהם יוצגו.
+         כשהמשתמש לוחץ על fullscreen בנגן, ה-JS מפנה ל-wrap
+         ולא לוידאו בלבד — כך ה-Sub נשאר גלוי.
+    ═══════════════════════════════════════════════════════════════ -->
+    <div id="alex-video-wrap">
+
+      <!-- וידאו — ללא scale (פקדים גלויים לאורך כל הזמן) -->
+      <video id="alex-video" class="alex-video" src="video/Noa_Alex_Sub.mp4"
+             controls playsinline webkit-playsinline></video>
+
+    </div><!-- /alex-video-wrap -->
 
     <!-- תיבת טקסט עליונה — left:542, top:0 (פיגמה) -->
     <div class="textbox1-wrap textbox1-s2">
@@ -88,10 +91,10 @@
       <img src="img/btn-play.png" alt="הפעל">
     </button>
 
-
-<button class="nav-btn prev-btn" onclick="goTo(0)" aria-label="חזרה"></button>
+    <button class="nav-btn prev-btn" onclick="goTo(0)" aria-label="חזרה"></button>
     <!-- חץ "הבא" — מוסתר עד לסיום הוידאו של אלכס -->
     <button id="next-s1" class="nav-btn next-btn hidden" onclick="goTo(2)" aria-label="המשך"></button>
+
   </section>
 
   <!-- ═══════════════════════════════════════════════
@@ -109,8 +112,6 @@
     <div class="content-area">
       <!-- Breadcrumb שאלות 1–10 -->
       <nav class="breadcrumb" dir="ltr" aria-label="ניווט שאלות">
-        <span class="crumb" data-q="10">10</span>
-        <span class="crumb" data-q="9">9</span>
         <span class="crumb" data-q="8">8</span>
         <span class="crumb" data-q="7">7</span>
         <span class="crumb" data-q="6">6</span>
@@ -142,6 +143,7 @@
             <img src="img/btn-zoom.png" alt="הגדל">
           </button>
           <iframe
+            id="tool-iframe"
             class="tool-iframe"
             src="https://lomdot.education.gov.il/metodica/%D7%AA%D7%A9%D7%A4%D7%95/stem/%D7%9E%D7%AA%D7%9E%D7%98%D7%99%D7%A7%D7%94/simulations/time-management.html"
             title="יישומון ניהול זמן"
@@ -166,12 +168,10 @@
     <!-- כפתור עזרה -->
     <button id="help-btn-s4" class="help-btn" data-popup="help-popup-s3" aria-label="עזרה"></button>
 
-    <!-- אזור תוכן ראשי -->
+    <!-- אזור תוכן — breadcrumb + רקע textbox2 בלבד -->
     <div class="content-area">
       <!-- Breadcrumb -->
       <nav class="breadcrumb" dir="ltr" aria-label="ניווט שאלות">
-        <span class="crumb" data-q="10">10</span>
-        <span class="crumb" data-q="9">9</span>
         <span class="crumb" data-q="8">8</span>
         <span class="crumb" data-q="7">7</span>
         <span class="crumb" data-q="6">6</span>
@@ -182,62 +182,47 @@
         <span class="crumb current" data-q="1">1</span>
       </nav>
 
-      <!-- כרטיסיית תוכן -->
+      <!-- רקע textbox2 — לוח לבן עגול, ללא פאנלים פנימיים -->
       <div class="content-card">
-        <img class="textbox2-bg" src="img/textbox2.png" alt="">
+        <img class="textbox2-bg" src="img/textbox2-f4.png" alt="">
+      </div>
+    </div>
 
-        <!-- פאנל שמאל: טקסט + שדות קלט -->
-        <div class="left-panel left-panel-q4">
-          <p class="q-text">1. ב. ברוב הימים, לנועה יש 300 דקות פנויות ביום, והיא רוצה
-          לנצל אותן היטב. כדי לדייק בזמנים, היא מכוונת לה טיימרים.</p>
-          <p class="q-bold">הקלידו את מספר הדקות המתאים בכל טיימר:</p>
+    <!-- תוכן השאלה — ממוקם בצד ימין של הלוח (Figma: left:980, top:144) -->
+    <div class="q4-content">
+      <p class="q-text">1. ב. ברוב הימים, לנועה יש 300 דקות פנויות ביום, והיא רוצה
+      לנצל אותן היטב. כדי לדייק בזמנים, היא מכוונת לה טיימרים.</p>
+      <p class="q-bold">הקלידו את מספר הדקות המתאים בכל טיימר:</p>
 
-          <!-- שדות טיימר -->
-          <div class="timers-list">
+      <div class="timers-list">
 
-            <div class="timer-row">
-              <img class="clock-icon" src="img/clock-icon.png" alt="">
-              <div class="timer-fields">
-                <span class="timer-label"><strong>זמן חדר הכושר ברוטו</strong> <span class="lbl-normal">(20% מתוך 300)</span> =</span>
-                <input type="number" id="timer1" class="timer-input" min="0" max="999" placeholder="?">
-                <span class="unit-label">דקות</span>
-              </div>
-            </div>
-
-            <div class="timer-row">
-              <img class="clock-icon" src="img/clock-icon.png" alt="">
-              <div class="timer-fields">
-                <span class="timer-label"><strong>זמן האימון נטו</strong> <span class="lbl-normal">(בלי זמן ההגעה והחזרה)</span> =</span>
-                <input type="number" id="timer2" class="timer-input" min="0" max="999" placeholder="?">
-                <span class="unit-label">דקות</span>
-              </div>
-            </div>
-
-            <div class="timer-row">
-              <img class="clock-icon" src="img/clock-icon.png" alt="">
-              <div class="timer-fields">
-                <span class="timer-label"><strong>מקסימום זמן מסך</strong> <span class="lbl-normal">(35% מתוך 300)</span> =</span>
-                <input type="number" id="timer3" class="timer-input" min="0" max="999" placeholder="?">
-                <span class="unit-label">דקות</span>
-              </div>
-            </div>
-
+        <div class="timer-row">
+          <img class="clock-icon" src="img/clock-icon-f4.png" alt="">
+          <div class="timer-fields">
+            <span class="timer-label"><strong>זמן חדר הכושר ברוטו</strong> <span class="lbl-normal">(20% מתוך 300)</span> =</span>
+            <input type="number" id="timer1" class="timer-input" min="0" max="999" placeholder="?">
+            <span class="unit-label">דקות</span>
           </div>
-
         </div>
 
-        <!-- פאנל ימין: iframe -->
-        <div class="right-panel right-panel-q4">
-          <button class="zoom-btn" onclick="openZoom()" aria-label="הגדל יישומון">
-            <img src="img/btn-zoom.png" alt="הגדל">
-          </button>
-          <iframe
-            class="tool-iframe"
-            src="https://lomdot.education.gov.il/metodica/%D7%AA%D7%A9%D7%A4%D7%95/stem/%D7%9E%D7%AA%D7%9E%D7%98%D7%99%D7%A7%D7%94/simulations/time-management.html"
-            title="יישומון ניהול זמן"
-            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-          ></iframe>
+        <div class="timer-row">
+          <img class="clock-icon" src="img/clock-icon-f4.png" alt="">
+          <div class="timer-fields">
+            <span class="timer-label"><strong>זמן האימון נטו</strong> <span class="lbl-normal">(בלי זמן ההגעה והחזרה)</span> =</span>
+            <input type="number" id="timer2" class="timer-input" min="0" max="999" placeholder="?">
+            <span class="unit-label">דקות</span>
+          </div>
         </div>
+
+        <div class="timer-row">
+          <img class="clock-icon" src="img/clock-icon-f4.png" alt="">
+          <div class="timer-fields">
+            <span class="timer-label"><strong>מקסימום זמן מסך</strong> <span class="lbl-normal">(35% מתוך 300)</span> =</span>
+            <input type="number" id="timer3" class="timer-input" min="0" max="999" placeholder="?">
+            <span class="unit-label">דקות</span>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -257,17 +242,17 @@
 
     <!-- פידבק: תשובה נכונה -->
     <div id="feedback-correct" class="feedback-panel hidden">
-      <img class="feedback-bg-img" src="img/feedback-bg.png" alt="">
+      <img class="feedback-bg-img" src="img/feedback-bg-f4.png" alt="">
       <div class="feedback-text">
-        <p class="feedback-title correct-title">צדקת!</p>
+        <p class="feedback-title correct-title">צדקת! </p>
         <p>זמן חדר הכושר ברוטו הוא 20% מתוך 300 דקות.</p>
         <p>נמיר אותו למספר עשרוני ונחשב: 60 = 0.2 · 300</p>
         <p>כלומר, זמן חדר הכושר ברוטו הוא 60 דקות.</p>
-        <br>
+        <p class="feedback-spacer">&#8203;</p>
         <p>נוריד ממנו 20 דקות של הגעה וחזרה:</p>
-        <p>40 = 20 &#8722; 60</p>
+        <p>40 = 20 - 60</p>
         <p>כלומר, זמן האימון נטו הוא 40 דקות.</p>
-        <br>
+        <p class="feedback-spacer">&#8203;</p>
         <p>זמן המסך המקסימלי הוא 35% מתוך 300 דקות.</p>
         <p>נמיר אותו למספר עשרוני ונחשב 105 = 0.35 · 300</p>
         <p>כלומר, זמן המסך המקסימלי הוא 105 דקות.</p>
@@ -276,17 +261,17 @@
 
     <!-- פידבק: תשובה שגויה -->
     <div id="feedback-incorrect" class="feedback-panel hidden">
-      <img class="feedback-bg-img" src="img/feedback-bg-incorrect.png" alt="">
+      <img class="feedback-bg-img" src="img/feedback-bg-f4.png" alt="">
       <div class="feedback-text">
         <p class="feedback-title incorrect-title">זו טעות</p>
         <p>זמן חדר הכושר ברוטו הוא 20% מתוך 300 דקות.</p>
         <p>נמיר אותו למספר עשרוני ונחשב: 60 = 0.2 · 300</p>
         <p>כלומר, זמן חדר הכושר ברוטו הוא 60 דקות.</p>
-        <br>
+        <p class="feedback-spacer">&#8203;</p>
         <p>נוריד ממנו 20 דקות של הגעה וחזרה:</p>
-        <p>40 = 20 &#8722; 60</p>
+        <p>40 = 20 - 60</p>
         <p>כלומר, זמן האימון נטו הוא 40 דקות.</p>
-        <br>
+        <p class="feedback-spacer">&#8203;</p>
         <p>זמן המסך המקסימלי הוא 35% מתוך 300 דקות.</p>
         <p>נמיר אותו למספר עשרוני ונחשב 105 = 0.35 · 300</p>
         <p>כלומר, זמן המסך המקסימלי הוא 105 דקות.</p>
@@ -314,8 +299,6 @@
     <div class="content-area">
       <!-- Breadcrumb: שאלה 2 פעילה -->
       <nav class="breadcrumb" dir="ltr" aria-label="ניווט שאלות">
-        <span class="crumb" data-q="10">10</span>
-        <span class="crumb" data-q="9">9</span>
         <span class="crumb" data-q="8">8</span>
         <span class="crumb" data-q="7">7</span>
         <span class="crumb" data-q="6">6</span>
@@ -419,6 +402,42 @@
     <p>105 (זמן המסך).</p>
   </div>
 
+  <!-- Popup שאלה 3א (מסך 6) -->
+  <div id="help-popup-s6" class="help-popup hidden" role="tooltip">
+    <p>האחוז מתאר תמיד</p>
+    <p>"חלק מתוך... ".</p>
+    <p>אם ה"מתוך" שונה,</p>
+    <p>הערך המספרי יהיה שונה.</p>
+  </div>
+
+  <!-- Popup שאלה 3ב (מסך 7) -->
+  <div id="help-popup-s7" class="help-popup hidden" role="tooltip">
+    <p>האם זמן המסך הוא כל הזמן הפנוי או רק חלק ממנו?</p>
+  </div>
+
+  <!-- Popup שאלה 4 (מסך 9) -->
+  <div id="help-popup-s9" class="help-popup hidden" role="tooltip">
+    <p>האם זמן המסך הוא</p>
+    <p>כל הזמן הפנוי או</p>
+    <p>רק חלק ממנו?</p>
+  </div>
+
+  <!-- Popup שאלה 5א (מסך 11) — טקסט מ-Figma node 132-1761 -->
+  <div id="help-popup-s11" class="help-popup hidden" role="tooltip">
+    <p>הסתכלו על ציר ה-x</p>
+    <p>וזכרו שיש להוריד את</p>
+    <p>זמן ההליכה והחזרה</p>
+    <p>מחדר הכושר.</p>
+  </div>
+
+  <!-- Popup שאלה 5ב (מסך 12) — TODO: עדכן מ-Figma node 132-1939 -->
+  <div id="help-popup-s12" class="help-popup hidden" role="tooltip">
+    <p>הסתכלו על ציר ה-y</p>
+    <p>ואתרו את 350.</p>
+    <p>לאחר מכן בדקו</p>
+    <p>מה הערך המתאים בציר ה-x.</p>
+  </div>
+
   <!-- ═══════════════════════════════════════════════
        SCREEN 5 — Frame 6: WhatsApp chat (Ofri)
        הודעות WhatsApp של אופרי — float-in אחת אחת
@@ -464,17 +483,784 @@
     <button class="nav-btn prev-btn" onclick="goTo(4)" aria-label="חזרה"></button>
   </section>
 
+
+  <!-- ═══════════════════════════════════════════════
+       SCREEN 6 — Frame 7: Q3A — נכון/לא נכון
+       שאלה 3א: האם "40% מתוך 35%" הוא חישוב נכון?
+  ════════════════════════════════════════════════ -->
+  <section class="screen" data-screen="6">
+    <img class="screen-bg" src="img/bg-frame7.png" alt="">
+    <div class="dark-overlay"></div>
+
+    <button id="help-btn-s6" class="help-btn" data-popup="help-popup-s6" aria-label="עזרה"></button>
+
+    <div class="content-area">
+      <nav class="breadcrumb" dir="ltr" aria-label="ניווט שאלות">
+        <span class="crumb" data-q="8">8</span>
+        <span class="crumb" data-q="7">7</span>
+        <span class="crumb" data-q="6">6</span>
+        <span class="crumb" data-q="5">5</span>
+        <span class="crumb" data-q="4">4</span>
+        <span class="crumb current" data-q="3">3</span>
+        <span class="crumb" data-q="2">2</span>
+        <span class="crumb" data-q="1">1</span>
+      </nav>
+
+      <div class="content-card">
+        <img class="textbox2-bg" src="img/textbox2-q3.png" alt="">
+
+        <div class="left-panel left-panel-q3">
+          <div>
+            <p class="q-text">3. א. בהתחלה נועה כתבה לעופרי:</p>
+            <p class="q-bold">"כדי לדעת איזה אחוז מתוך הזמן הפנוי היומי (300 דקות)</p>
+            <p class="q-bold">מוקדש לסדרה האהובה עליי, אפשר פשוט לחשב</p>
+            <p class="q-bold">כמה הם 40% מתוך 35%."</p>
+          </div>
+          <p class="q-bold">סמנו אם המשפט נכון או לא נכון:</p>
+
+          <div class="radio-group">
+            <div class="radio-option" id="s6-radio-yes" onclick="radioClick('s6','yes')">
+              <span class="radio-label" id="s6-label-yes">נכון</span>
+              <div class="radio-icon-wrap"><img id="s6-icon-yes" src="img/radio-normal.svg" alt="" class="radio-icon-img"></div>
+            </div>
+            <div class="radio-option" id="s6-radio-no" onclick="radioClick('s6','no')">
+              <span class="radio-label" id="s6-label-no">לא נכון</span>
+              <div class="radio-icon-wrap"><img id="s6-icon-no" src="img/radio-normal.svg" alt="" class="radio-icon-img"></div>
+            </div>
+            <div class="radio-option" id="s6-radio-dontknow" onclick="radioClick('s6','dontknow')">
+              <span class="radio-label" id="s6-label-dontknow">לא ניתן לדעת</span>
+              <div class="radio-icon-wrap"><img id="s6-icon-dontknow" src="img/radio-normal.svg" alt="" class="radio-icon-img"></div>
+            </div>
+          </div>
+
+          <div id="feedback-s6-correct" class="s4-feedback-box hidden">
+            <p class="s4-feedback-title">צדקת!</p>
+            <p class="s4-feedback-body">משמעות המילה "מתוך" היא לקחת חלק מתוך משהו אחר.</p>
+            <p class="s4-feedback-body">במקרה הזה, הפרק הוא 40% מתוך זמן המסך, וזמן המסך</p>
+            <p class="s4-feedback-body">הוא 35% מתוך כל הזמן הפנוי.</p>
+          </div>
+          <div id="feedback-s6-incorrect" class="s4-feedback-box hidden">
+            <p class="s4-feedback-title">זו טעות</p>
+            <p class="s4-feedback-body">משמעות המילה "מתוך" היא לקחת חלק מתוך משהו אחר.</p>
+            <p class="s4-feedback-body">במקרה הזה, הפרק הוא 40% מתוך זמן המסך, וזמן המסך</p>
+            <p class="s4-feedback-body">הוא 35% מתוך כל הזמן הפנוי.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="q3-context-panel">
+      <div class="q3-context-text">
+        <p>נועה הסבירה לעופרי איך עובדת השיטה.</p>
+        <p>אבל לא כל ההסבר היה מדויק...</p>
+      </div>
+      <div class="q3-tv-box">
+        <p class="q3-tv-title">300 דקות:</p>
+        <div class="q3-tv-visual">
+          <div class="q3-tv-img-wrap">
+            <img class="q3-tv-img" src="img/tv-time-q3.png" alt="">
+          </div>
+          <span class="q3-tv-label q3-tv-rest-top">השאר</span>
+          <span class="q3-tv-label q3-tv-35">35%</span>
+          <span class="q3-tv-label q3-tv-20">20%</span>
+          <span class="q3-tv-label q3-tv-rest-bot">השאר</span>
+          <span class="q3-tv-label q3-tv-40">40%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="submit-row">
+      <button id="submit-btn-s6" class="submit-btn hidden" onclick="checkAnswersS6()" aria-label="בדוק תשובה"></button>
+      <div id="try-again-msg-s6" class="try-again-msg hidden">
+        <p class="try-again-err">זו אינה התשובה, נסו שוב.</p>
+        <p>תוכלו ללחוץ על כפתור העזרה</p>
+        <p>כדי לקבל רמז.</p>
+      </div>
+    </div>
+
+    <button class="nav-btn prev-btn" onclick="goTo(5)" aria-label="חזרה"></button>
+    <button id="next-s6" class="nav-btn next-btn hidden" onclick="goTo(7)" aria-label="המשך"></button>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SCREEN 7 — Frame 8: Q3B — נכון/לא נכון
+       שאלה 3ב: האם "40% מזמן המסך = 40% מהזמן הפנוי"?
+  ════════════════════════════════════════════════ -->
+  <section class="screen" data-screen="7">
+    <img class="screen-bg" src="img/bg-frame8.png" alt="">
+    <div class="dark-overlay"></div>
+
+    <button id="help-btn-s7" class="help-btn" data-popup="help-popup-s7" aria-label="עזרה"></button>
+
+    <div class="content-area">
+      <nav class="breadcrumb" dir="ltr" aria-label="ניווט שאלות">
+        <span class="crumb" data-q="8">8</span>
+        <span class="crumb" data-q="7">7</span>
+        <span class="crumb" data-q="6">6</span>
+        <span class="crumb" data-q="5">5</span>
+        <span class="crumb" data-q="4">4</span>
+        <span class="crumb current" data-q="3">3</span>
+        <span class="crumb" data-q="2">2</span>
+        <span class="crumb" data-q="1">1</span>
+      </nav>
+
+      <div class="content-card">
+        <img class="textbox2-bg" src="img/textbox2-q3.png" alt="">
+
+        <div class="left-panel left-panel-q3">
+          <div>
+            <p class="q-text">3. ב. אח"כ נועה כתבה לעופרי:</p>
+            <p class="q-bold" style="white-space: nowrap;">"40% מתוך זמן המסך שלי שווים בדיוק 40% מכל הזמן הפנוי שלי."</p>
+          </div>
+          <p class="q-bold">סמנו אם המשפט נכון או לא נכון:</p>
+
+          <div class="radio-group">
+            <div class="radio-option" id="s7-radio-yes" onclick="radioClick('s7','yes')">
+              <span class="radio-label" id="s7-label-yes">נכון</span>
+              <div class="radio-icon-wrap"><img id="s7-icon-yes" src="img/radio-normal.svg" alt="" class="radio-icon-img"></div>
+            </div>
+            <div class="radio-option" id="s7-radio-no" onclick="radioClick('s7','no')">
+              <span class="radio-label" id="s7-label-no">לא נכון</span>
+              <div class="radio-icon-wrap"><img id="s7-icon-no" src="img/radio-normal.svg" alt="" class="radio-icon-img"></div>
+            </div>
+            <div class="radio-option" id="s7-radio-dontknow" onclick="radioClick('s7','dontknow')">
+              <span class="radio-label" id="s7-label-dontknow">לא ניתן לדעת</span>
+              <div class="radio-icon-wrap"><img id="s7-icon-dontknow" src="img/radio-normal.svg" alt="" class="radio-icon-img"></div>
+            </div>
+          </div>
+
+          <div id="feedback-s7-correct" class="s4-feedback-box hidden">
+            <p class="s4-feedback-title">צדקת!</p>
+            <p class="s4-feedback-body">זמן המסך מהווה רק 35% מתוך הזמן הפנוי (300 הדקות).</p>
+            <p class="s4-feedback-body">כשמחשבים 40% מזמן המסך, לא מחשבים מתוך כל ה-300 דקות</p>
+            <p class="s4-feedback-body">אלא רק מתוך ה-35% (שהם 105 דקות).</p>
+            <p class="s4-feedback-body">לכן 40% מזמן המסך הם בעצם 40% מתוך 35% מהזמן הפנוי.</p>
+          </div>
+          <div id="feedback-s7-incorrect" class="s4-feedback-box hidden">
+            <p class="s4-feedback-title">זו טעות</p>
+            <p class="s4-feedback-body">זמן המסך מהווה רק 35% מתוך הזמן הפנוי (300 הדקות).</p>
+            <p class="s4-feedback-body">כשמחשבים 40% מזמן המסך, לא מחשבים מתוך כל ה-300 דקות</p>
+            <p class="s4-feedback-body">אלא רק מתוך ה-35% (שהם 105 דקות).</p>
+            <p class="s4-feedback-body">לכן 40% מזמן המסך הם בעצם 40% מתוך 35% מהזמן הפנוי.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="q3-context-panel">
+      <div class="q3-context-text">
+        <p>נועה הסבירה לעופרי איך עובדת השיטה.</p>
+        <p>אבל לא כל ההסבר היה מדויק...</p>
+      </div>
+      <div class="q3-tv-box">
+        <p class="q3-tv-title">300 דקות:</p>
+        <div class="q3-tv-visual">
+          <div class="q3-tv-img-wrap">
+            <img class="q3-tv-img" src="img/tv-time-q3.png" alt="">
+          </div>
+          <span class="q3-tv-label q3-tv-rest-top">השאר</span>
+          <span class="q3-tv-label q3-tv-35">35%</span>
+          <span class="q3-tv-label q3-tv-20">20%</span>
+          <span class="q3-tv-label q3-tv-rest-bot">השאר</span>
+          <span class="q3-tv-label q3-tv-40">40%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="submit-row">
+      <button id="submit-btn-s7" class="submit-btn hidden" onclick="checkAnswersS7()" aria-label="בדוק תשובה"></button>
+      <div id="try-again-msg-s7" class="try-again-msg hidden">
+        <p class="try-again-err">זו אינה התשובה, נסו שוב.</p>
+        <p>תוכלו ללחוץ על כפתור העזרה</p>
+        <p>כדי לקבל רמז.</p>
+      </div>
+    </div>
+
+    <button class="nav-btn prev-btn" onclick="goTo(6)" aria-label="חזרה"></button>
+    <button id="next-s7" class="nav-btn next-btn hidden" onclick="goTo(8)" aria-label="המשך"></button>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SCREEN 8 — Frame 9: notification float-in
+       נועה כמעט שכחה — התראת לוח שנה מופיעה
+  ════════════════════════════════════════════════ -->
+  <section class="screen" data-screen="8">
+    <img class="screen-bg" src="img/bg-frame9.png" alt="">
+
+    <div class="f9-textbox1">
+      <img src="img/textbox1-frame9.png" alt="">
+    </div>
+
+    <div class="f6-header-text">
+      <div>
+        <p>עברו כמה ימים והשיטה של נועה עבדה מעולה!</p>
+        <p>אבל אז הגיע יום חמישי, והיא כמעט שכחה…</p>
+      </div>
+    </div>
+
+    <div class="f9-phone">
+      <img src="img/phone-frame9.png" alt="">
+    </div>
+
+    <div id="f9-m1" class="f9-m1 hidden">
+      <img src="img/m1-frame9.png" alt="">
+      <div class="f9-m1-text">
+        <p class="f9-m1-title">לוח שנה</p>
+        <p class="f9-m1-body">תזכורת - תור לרופא שיניים!</p>
+      </div>
+    </div>
+
+    <button class="nav-btn next-btn" onclick="goTo(9)" aria-label="המשך"></button>
+    <button class="nav-btn prev-btn" onclick="goTo(7)" aria-label="חזרה"></button>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SCREEN 9 — Frame 10: Q4 — full-width radio
+       שאלה 4: חדר כושר (60 ד') = כמה % מ-210 ד' פנויות?
+  ════════════════════════════════════════════════ -->
+  <section class="screen" data-screen="9">
+    <img class="screen-bg" src="img/bg-frame10.png" alt="">
+    <div class="dark-overlay"></div>
+
+    <button id="help-btn-s9" class="help-btn" data-popup="help-popup-s9" aria-label="עזרה"></button>
+
+    <div class="content-area">
+      <nav class="breadcrumb" dir="ltr" aria-label="ניווט שאלות">
+        <span class="crumb" data-q="8">8</span>
+        <span class="crumb" data-q="7">7</span>
+        <span class="crumb" data-q="6">6</span>
+        <span class="crumb" data-q="5">5</span>
+        <span class="crumb current" data-q="4">4</span>
+        <span class="crumb" data-q="3">3</span>
+        <span class="crumb" data-q="2">2</span>
+        <span class="crumb" data-q="1">1</span>
+      </nav>
+
+      <div class="content-card">
+        <img class="textbox2-bg" src="img/textbox2-q3.png" alt="">
+
+        <div class="left-panel left-panel-f10">
+          <div>
+            <p class="q-text">4. לתור אצל הרופא (כולל ההליכה הלוך וחזור) נועה הקדישה כשעה וחצי, ולכן נשארו לה רק 210 דקות פנויות.</p>
+            <p class="q-text">ובכל זאת, היא לא ויתרה על חדר הכושר.</p>
+            <p class="q-text">איזה אחוז בערך מהזמן הפנוי של נועה באותו יום הוקדש לחדר הכושר (כולל ההליכה), אם זמן חדר הכושר הכולל היה כ-60 דקות?</p>
+          </div>
+          <p class="q-bold">סמנו את התשובה הנכונה:</p>
+
+          <div class="radio-group">
+            <div class="radio-option" id="s9-radio-a" onclick="radioClick('s9','a')">
+              <span class="radio-label" id="s9-label-a">כ-15.5%</span>
+              <div class="radio-icon-wrap"><img id="s9-icon-a" src="img/radio-normal.svg" alt="" class="radio-icon-img"></div>
+            </div>
+            <div class="radio-option" id="s9-radio-b" onclick="radioClick('s9','b')">
+              <span class="radio-label" id="s9-label-b">כ-20.5%</span>
+              <div class="radio-icon-wrap"><img id="s9-icon-b" src="img/radio-normal.svg" alt="" class="radio-icon-img"></div>
+            </div>
+            <div class="radio-option" id="s9-radio-c" onclick="radioClick('s9','c')">
+              <span class="radio-label" id="s9-label-c">כ-28.5%</span>
+              <div class="radio-icon-wrap"><img id="s9-icon-c" src="img/radio-normal.svg" alt="" class="radio-icon-img"></div>
+            </div>
+            <div class="radio-option" id="s9-radio-d" onclick="radioClick('s9','d')">
+              <span class="radio-label" id="s9-label-d">כ-35.5%</span>
+              <div class="radio-icon-wrap"><img id="s9-icon-d" src="img/radio-normal.svg" alt="" class="radio-icon-img"></div>
+            </div>
+          </div>
+
+          <div id="feedback-s9-correct" class="s9-feedback-box hidden">
+            <p class="s4-feedback-title">צדקת!</p>
+            <p class="s4-feedback-body">מכיוון שהזמן הפנוי הכולל התקצר, אותן 60 דקות מהוות</p>
+            <p class="s4-feedback-body">עכשיו יותר מ-25% מהזמן של נועה.</p>
+          </div>
+          <div id="feedback-s9-incorrect" class="s9-feedback-box hidden">
+            <p class="s4-feedback-title">זו טעות</p>
+            <p class="s4-feedback-body">מכיוון שהזמן הפנוי הכולל התקצר, אותן 60 דקות מהוות</p>
+            <p class="s4-feedback-body">עכשיו יותר מ-25% מהזמן של נועה.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="submit-row">
+      <button id="submit-btn-s9" class="submit-btn hidden" onclick="checkAnswersS9()" aria-label="בדוק תשובה"></button>
+      <div id="try-again-msg-s9" class="try-again-msg hidden">
+        <p class="try-again-err">זו אינה התשובה, נסו שוב.</p>
+        <p>תוכלו ללחוץ על כפתור העזרה</p>
+        <p>כדי לקבל רמז.</p>
+      </div>
+    </div>
+
+    <button class="nav-btn prev-btn" onclick="goTo(8)" aria-label="חזרה"></button>
+    <button id="next-s9" class="nav-btn next-btn hidden" onclick="goTo(10)" aria-label="המשך"></button>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SCREEN 10 — Frame 11: narrative
+       נועה מתרגלת ומתכוננת למבחן
+  ════════════════════════════════════════════════ -->
+  <section class="screen" data-screen="10">
+    <img class="screen-bg" src="img/bg-frame11.png" alt="">
+
+    <div class="f6-textbox1">
+      <img src="img/textbox1-frame11.png" alt="">
+    </div>
+
+    <div class="f6-header-text">
+      <div>
+        <p>עוד יום עבר ונועה התחילה להתרגל לשיטה, גם כשהיה צריך להתגמש פה ושם.</p>
+        <p>עכשיו היא מתכוננת לקראת מבחן גדול וחשוב.</p>
+      </div>
+    </div>
+
+    <button class="nav-btn prev-btn" onclick="goTo(9)" aria-label="חזרה"></button>
+    <button class="nav-btn next-btn" onclick="goTo(11)" aria-label="המשך"></button>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SCREEN 11 — Frame 12: Q5A — input + graph
+       שאלה 5א: גרף לינארי — הזן את סה"כ הזמן הפנוי
+       תשובה נכונה: 400 (60 נטו + 20 הליכה = 80 ברוטו = 20% × 400)
+  ════════════════════════════════════════════════ -->
+  <section class="screen" data-screen="11">
+    <img class="screen-bg" src="img/bg-frame12.png" alt="">
+    <div class="dark-overlay"></div>
+
+    <button id="help-btn-s11" class="help-btn" data-popup="help-popup-s11" aria-label="עזרה"></button>
+
+    <!-- breadcrumb + textbox2 background + שאלה (פאנל שמאל) -->
+    <div class="content-area">
+      <nav class="breadcrumb" dir="ltr" aria-label="ניווט שאלות">
+        <span class="crumb" data-q="10">10</span>
+        <span class="crumb" data-q="9">9</span>
+        <span class="crumb" data-q="8">8</span>
+        <span class="crumb" data-q="7">7</span>
+        <span class="crumb" data-q="6">6</span>
+        <span class="crumb current" data-q="5">5</span>
+        <span class="crumb" data-q="4">4</span>
+        <span class="crumb" data-q="3">3</span>
+        <span class="crumb" data-q="2">2</span>
+        <span class="crumb" data-q="1">1</span>
+      </nav>
+
+      <div class="content-card">
+        <img class="textbox2-bg" src="img/textbox2.png" alt="">
+
+        <!-- פאנל שמאל: שאלה + שדה קלט -->
+        <div class="left-panel left-panel-q5a">
+
+          <!-- טקסט השאלה -->
+          <div class="s11-question-wrap">
+            <p class="q-text">5. א. מה יהיה סה"כ הזמן הפנוי של נועה אם היא תקדיש 60 דקות</p>
+            <p class="q-text">לאימון נטו, כשזמן חדר הכושר ברוטו (כולל 20 דקות הליכה לחדר הכושר)</p>
+            <p class="q-text">יישאר 20% מתוך הזמן הפנוי?</p>
+            <p class="q-text">&ZeroWidthSpace;</p>
+            <p class="q-bold">היעזרו בגרף והקלידו את המספר החסר:</p>
+          </div>
+
+          <!-- שורת קלט: input ראשון (ימין ב-RTL) → "דקות" שני (שמאל ב-RTL) -->
+          <div class="s11-input-row">
+            <input type="number" id="s11-input" class="s11-input-field"
+                   min="0" max="9999" placeholder="">
+            <label class="s11-unit">דקות</label>
+          </div>
+
+        </div><!-- /left-panel-q5a -->
+      </div><!-- /content-card -->
+    </div><!-- /content-area -->
+
+    <!-- ══ פאנל ימין (הקשר + גרף) — ברמת מסך ══
+         Figma: left:980, top:144, w:789, h:795, pt:80 pr:73 pb:271 pl:50 -->
+    <div class="s11-right-panel">
+
+      <!-- טקסט הקשר -->
+      <div class="s11-context-text">
+        <p>בגלל העומס בלימודים, נועה לא הספיקה להתאמן.</p>
+        <p>היא החליטה לבדוק מה יקרה ביום שבו היא תרצה להאריך</p>
+        <p>את האימון נטו לשעה שלמה (60 דקות).</p>
+      </div>
+
+      <!-- כרטיסיית גרף — כל הרכיבים יחידה אחת הניתנת להגדלה/הקטנה ע"י כפתור הזום -->
+      <div id="graph-card-host" class="graph-card-host">
+        <div class="graph-card" id="graph-card">
+
+          <!-- תמונת הגרף (חיתוך מתוך 1920×1080) -->
+          <div class="graph-img-container">
+            <img class="graph-full-img" src="img/graph-q5.png" alt="גרף">
+          </div>
+
+          <!-- תוויות ציר -->
+          <div class="graph-lbl-top">סה״כ זמן פנוי ביום</div>
+          <div class="graph-lbl-bottom">
+            <p>זמן חדר הכושר ברוטו</p>
+            <p>(כולל הליכה הלוך חזור)</p>
+          </div>
+
+          <!-- כפתור זום — חלק מהיחידה המוגדלת -->
+          <button class="graph-zoom-btn" onclick="toggleGraphZoom('graph-card')" aria-label="הגדל/הקטן גרף">
+            <img src="img/btn-zoom-in.png" alt="">
+          </button>
+
+          <!-- קווי הטלה לצירים — מנוהלים ע"י JS בזמן ריחוף על נקודה -->
+          <div class="gp-proj-h hidden" id="graph-proj-h"></div>
+          <div class="gp-proj-v hidden" id="graph-proj-v"></div>
+
+          <!-- נקודות נתונים — 5 מצבים: normal/hover/selected/correct/incorrect
+               data-cx/cy = מרכז הנקודה בפיקסלים; left/top = פינה שמאל-עליון (28×26) -->
+          <!-- data-cx/cy = מרכז הנקודה (left+14, top+13) לחישוב קווי ההטלה -->
+          <div class="gp" data-cx="135" data-cy="416" style="left:121px;top:403px;">
+            <img class="gp-n"  src="img/gp-dot-normal.svg"    alt="">
+            <img class="gp-h"  src="img/gp-dot-hover.svg"     alt="">
+            <img class="gp-s"  src="img/gp-dot-selected.svg"  alt="">
+            <img class="gp-ck" src="img/gp-icon-correct.svg"  alt="">
+            <img class="gp-xk" src="img/gp-icon-incorrect.svg" alt="">
+            <span class="gp-lbl">(10 ,50)</span>
+          </div>
+          <div class="gp" data-cx="180" data-cy="369" style="left:166px;top:356px;">
+            <img class="gp-n"  src="img/gp-dot-normal.svg"    alt="">
+            <img class="gp-h"  src="img/gp-dot-hover.svg"     alt="">
+            <img class="gp-s"  src="img/gp-dot-selected.svg"  alt="">
+            <img class="gp-ck" src="img/gp-icon-correct.svg"  alt="">
+            <img class="gp-xk" src="img/gp-icon-incorrect.svg" alt="">
+            <span class="gp-lbl">(20 ,100)</span>
+          </div>
+          <div class="gp" data-cx="225" data-cy="319" style="left:211px;top:306px;">
+            <img class="gp-n"  src="img/gp-dot-normal.svg"    alt="">
+            <img class="gp-h"  src="img/gp-dot-hover.svg"     alt="">
+            <img class="gp-s"  src="img/gp-dot-selected.svg"  alt="">
+            <img class="gp-ck" src="img/gp-icon-correct.svg"  alt="">
+            <img class="gp-xk" src="img/gp-icon-incorrect.svg" alt="">
+            <span class="gp-lbl">(30 ,150)</span>
+          </div>
+          <div class="gp" data-cx="270" data-cy="272" style="left:256px;top:259px;">
+            <img class="gp-n"  src="img/gp-dot-normal.svg"    alt="">
+            <img class="gp-h"  src="img/gp-dot-hover.svg"     alt="">
+            <img class="gp-s"  src="img/gp-dot-selected.svg"  alt="">
+            <img class="gp-ck" src="img/gp-icon-correct.svg"  alt="">
+            <img class="gp-xk" src="img/gp-icon-incorrect.svg" alt="">
+            <span class="gp-lbl">(40 ,200)</span>
+          </div>
+          <div class="gp" data-cx="315" data-cy="221" style="left:301px;top:208px;">
+            <img class="gp-n"  src="img/gp-dot-normal.svg"    alt="">
+            <img class="gp-h"  src="img/gp-dot-hover.svg"     alt="">
+            <img class="gp-s"  src="img/gp-dot-selected.svg"  alt="">
+            <img class="gp-ck" src="img/gp-icon-correct.svg"  alt="">
+            <img class="gp-xk" src="img/gp-icon-incorrect.svg" alt="">
+            <span class="gp-lbl">(50 ,250)</span>
+          </div>
+          <div class="gp" data-cx="360" data-cy="174" style="left:346px;top:161px;">
+            <img class="gp-n"  src="img/gp-dot-normal.svg"    alt="">
+            <img class="gp-h"  src="img/gp-dot-hover.svg"     alt="">
+            <img class="gp-s"  src="img/gp-dot-selected.svg"  alt="">
+            <img class="gp-ck" src="img/gp-icon-correct.svg"  alt="">
+            <img class="gp-xk" src="img/gp-icon-incorrect.svg" alt="">
+            <span class="gp-lbl">(60 ,300)</span>
+          </div>
+          <div class="gp" data-cx="405" data-cy="125" style="left:391px;top:112px;">
+            <img class="gp-n"  src="img/gp-dot-normal.svg"    alt="">
+            <img class="gp-h"  src="img/gp-dot-hover.svg"     alt="">
+            <img class="gp-s"  src="img/gp-dot-selected.svg"  alt="">
+            <img class="gp-ck" src="img/gp-icon-correct.svg"  alt="">
+            <img class="gp-xk" src="img/gp-icon-incorrect.svg" alt="">
+            <span class="gp-lbl">(70 ,350)</span>
+          </div>
+          <!-- הנקודה (80,400) היא התשובה לשאלה — data-answer="true" -->
+          <div class="gp" data-cx="451" data-cy="77" data-answer="true" style="left:437px;top:64px;">
+            <img class="gp-n"  src="img/gp-dot-normal.svg"    alt="">
+            <img class="gp-h"  src="img/gp-dot-hover.svg"     alt="">
+            <img class="gp-s"  src="img/gp-dot-selected.svg"  alt="">
+            <img class="gp-ck" src="img/gp-icon-correct.svg"  alt="">
+            <img class="gp-xk" src="img/gp-icon-incorrect.svg" alt="">
+            <span class="gp-lbl">(80 ,400)</span>
+          </div>
+
+        </div><!-- /graph-card -->
+      </div><!-- /graph-card-host -->
+    </div><!-- /s11-right-panel -->
+
+    <!-- ══ כדור כחול + טקסט הסבר (מחוץ לפאנלים — ברמת מסך) ══
+         Figma dot: left:1079, top:605 | text: visual-left≈473, top:593, w≈591 -->
+    <img class="s11-dot-bullet" src="img/dot-blue-q5.svg" alt="">
+    <div class="s11-graph-note">
+      <p>כל נקודה על הקו מייצגת זוג סדור שמתאים לשיטה: </p>
+      <p>כמה דקות מוקדשות לחדר הכושר (כולל 20 דקות הליכה),</p>
+      <p>ומהו הזמן הכולל שמתאים לכך.</p>
+    </div>
+
+    <!-- ══ פידבק נכון — מסך 11 (Q5A) ══
+         Figma 132-1401: left:980, top:144, w:789, h:795, pt:80 pb:271 pl:50 pr:73 -->
+    <div id="feedback-s11-correct" class="s11-feedback-panel hidden">
+      <img class="s11-feedback-bg" src="img/feedback-bg-s11-correct.png" alt="">
+      <div class="s11-feedback-text">
+        <p class="s11-feedback-title">צדקת! </p>
+        <p>נועה רוצה להתאמן 60 דקות נטו,</p>
+        <p>ובנוסף יש 20 דקות קבועות של הליכה (הלוך וחזור),</p>
+        <p>כך שבסך הכול מדובר ב-80 דקות.</p>
+        <p>נאתר את 80 על הציר האופקי בגרף,</p>
+        <p>נעלה ממנו כלפי מעלה עד שנפגוש את הנקודה,</p>
+        <p>ומשם נפנה שמאלה אל הציר האנכי - שם נקבל 400.</p>
+        <p>לכן הנקודה המתאימה היא (400 ,80).</p>
+        <p>כלומר, 400 דקות של זמן פנוי.</p>
+      </div>
+    </div>
+
+    <!-- ══ פידבק שגוי — מסך 11 (Q5A) ══
+         Figma 132-1461: אותו layout, טקסט שונה -->
+    <div id="feedback-s11-incorrect" class="s11-feedback-panel hidden">
+      <img class="s11-feedback-bg" src="img/feedback-bg-s11-incorrect.png" alt="">
+      <div class="s11-feedback-text">
+        <p class="s11-feedback-title s11-feedback-incorrect-title">זו טעות</p>
+        <p>נועה רוצה להתאמן 60 דקות נטו,</p>
+        <p>ובנוסף יש 20 דקות קבועות של הליכה (הלוך וחזור),</p>
+        <p>כך שבסך הכול מדובר ב-80 דקות.</p>
+        <p>נאתר את 80 על הציר האופקי בגרף,</p>
+        <p>נעלה ממנו כלפי מעלה עד שנפגוש את הנקודה,</p>
+        <p>ומשם נפנה שמאלה אל הציר האנכי - שם נקבל 400.</p>
+        <p>לכן הנקודה המתאימה היא (400 ,80).</p>
+        <p>כלומר, 400 דקות של זמן פנוי.</p>
+      </div>
+    </div>
+
+    <!-- ══ שורת "צדקתי" + הודעת ניסיון ראשון שגוי ══ -->
+    <div class="submit-row">
+      <button id="submit-btn-s11" class="submit-btn hidden"
+              onclick="checkAnswersS11()" aria-label="בדוק תשובה"></button>
+      <div id="try-again-msg-s11" class="try-again-msg hidden">
+        <p class="try-again-err">זו אינה התשובה, נסו שוב.</p>
+        <p>תוכלו ללחוץ על כפתור העזרה</p>
+        <p>כדי לקבל רמז.</p>
+      </div>
+    </div>
+
+    <button class="nav-btn prev-btn" onclick="goTo(10)" aria-label="חזרה"></button>
+    <button id="next-s11" class="nav-btn next-btn hidden" onclick="goTo(12)" aria-label="המשך"></button>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SCREEN 12 — Frame 13: Q5B — input + graph (same as Q5A, answer = (70,350))
+       תשובה נכונה: 50 דקות נטו (70 ברוטו − 20 הליכה)
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="screen" data-screen="12">
+    <img class="screen-bg" src="img/bg-frame12.png" alt="">
+    <div class="dark-overlay"></div>
+
+    <button id="help-btn-s12" class="help-btn" data-popup="help-popup-s12" aria-label="עזרה"></button>
+
+    <!-- breadcrumb + textbox2 background + שאלה (פאנל שמאל) -->
+    <div class="content-area">
+      <nav class="breadcrumb" dir="ltr" aria-label="ניווט שאלות">
+        <span class="crumb" data-q="10">10</span>
+        <span class="crumb" data-q="9">9</span>
+        <span class="crumb" data-q="8">8</span>
+        <span class="crumb" data-q="7">7</span>
+        <span class="crumb" data-q="6">6</span>
+        <span class="crumb current" data-q="5">5</span>
+        <span class="crumb" data-q="4">4</span>
+        <span class="crumb" data-q="3">3</span>
+        <span class="crumb" data-q="2">2</span>
+        <span class="crumb" data-q="1">1</span>
+      </nav>
+
+      <div class="content-card">
+        <img class="textbox2-bg" src="img/textbox2.png" alt="">
+
+        <!-- פאנל שמאל: שאלה + שדה קלט -->
+        <div class="left-panel left-panel-q5a">
+
+          <!-- טקסט השאלה -->
+          <div class="s11-question-wrap">
+            <p class="q-text">5. ב. מה יהיה זמן האימון נטו של נועה</p>
+            <p class="q-text">אם סה"כ הזמן הפנוי שיש לה הוא 350 דקות?</p>
+            <p class="q-text">&ZeroWidthSpace;</p>
+            <p class="q-bold">היעזרו בגרף והקלידו את המספר החסר:</p>
+          </div>
+
+          <!-- שורת קלט: input ראשון (ימין ב-RTL) → "דקות" שני (שמאל ב-RTL) -->
+          <div class="s11-input-row">
+            <input type="number" id="s12-input" class="s11-input-field"
+                   min="0" max="9999" placeholder="">
+            <label class="s11-unit">דקות</label>
+          </div>
+
+        </div><!-- /left-panel-q5a -->
+      </div><!-- /content-card -->
+    </div><!-- /content-area -->
+
+    <!-- ══ פאנל ימין (הקשר + גרף) ══ -->
+    <div class="s11-right-panel">
+
+      <!-- טקסט הקשר -->
+      <div class="s11-context-text">
+        <p>בגלל העומס בלימודים, נועה לא הספיקה להתאמן.</p>
+        <p>היא החליטה לבדוק מה יקרה ביום שבו היא תרצה להאריך</p>
+        <p>את האימון נטו לשעה שלמה (60 דקות).</p>
+      </div>
+
+      <!-- כרטיסיית גרף — עצמאית לשאלה 5ב, ניתנת להגדלה עצמאית -->
+      <div id="graph-card-s12-host" class="graph-card-host">
+        <div class="graph-card" id="graph-card-s12">
+
+          <!-- תמונת הגרף -->
+          <div class="graph-img-container">
+            <img class="graph-full-img" src="img/graph-q5.png" alt="גרף">
+          </div>
+
+          <!-- תוויות ציר -->
+          <div class="graph-lbl-top">סה״כ זמן פנוי ביום</div>
+          <div class="graph-lbl-bottom">
+            <p>זמן חדר הכושר ברוטו</p>
+            <p>(כולל הליכה הלוך חזור)</p>
+          </div>
+
+          <!-- כפתור זום -->
+          <button class="graph-zoom-btn" onclick="toggleGraphZoom('graph-card-s12')" aria-label="הגדל/הקטן גרף">
+            <img src="img/btn-zoom-in.png" alt="">
+          </button>
+
+          <!-- קווי הטלה -->
+          <div class="gp-proj-h hidden"></div>
+          <div class="gp-proj-v hidden"></div>
+
+          <!-- נקודות נתונים — זהות ל-Q5A, אך data-answer="true" על (70,350) -->
+          <div class="gp" data-cx="135" data-cy="416" style="left:121px;top:403px;">
+            <img class="gp-n"  src="img/gp-dot-normal.svg"    alt="">
+            <img class="gp-h"  src="img/gp-dot-hover.svg"     alt="">
+            <img class="gp-s"  src="img/gp-dot-selected.svg"  alt="">
+            <img class="gp-ck" src="img/gp-icon-correct.svg"  alt="">
+            <img class="gp-xk" src="img/gp-icon-incorrect.svg" alt="">
+            <span class="gp-lbl">(10 ,50)</span>
+          </div>
+          <div class="gp" data-cx="180" data-cy="369" style="left:166px;top:356px;">
+            <img class="gp-n"  src="img/gp-dot-normal.svg"    alt="">
+            <img class="gp-h"  src="img/gp-dot-hover.svg"     alt="">
+            <img class="gp-s"  src="img/gp-dot-selected.svg"  alt="">
+            <img class="gp-ck" src="img/gp-icon-correct.svg"  alt="">
+            <img class="gp-xk" src="img/gp-icon-incorrect.svg" alt="">
+            <span class="gp-lbl">(20 ,100)</span>
+          </div>
+          <div class="gp" data-cx="225" data-cy="319" style="left:211px;top:306px;">
+            <img class="gp-n"  src="img/gp-dot-normal.svg"    alt="">
+            <img class="gp-h"  src="img/gp-dot-hover.svg"     alt="">
+            <img class="gp-s"  src="img/gp-dot-selected.svg"  alt="">
+            <img class="gp-ck" src="img/gp-icon-correct.svg"  alt="">
+            <img class="gp-xk" src="img/gp-icon-incorrect.svg" alt="">
+            <span class="gp-lbl">(30 ,150)</span>
+          </div>
+          <div class="gp" data-cx="270" data-cy="272" style="left:256px;top:259px;">
+            <img class="gp-n"  src="img/gp-dot-normal.svg"    alt="">
+            <img class="gp-h"  src="img/gp-dot-hover.svg"     alt="">
+            <img class="gp-s"  src="img/gp-dot-selected.svg"  alt="">
+            <img class="gp-ck" src="img/gp-icon-correct.svg"  alt="">
+            <img class="gp-xk" src="img/gp-icon-incorrect.svg" alt="">
+            <span class="gp-lbl">(40 ,200)</span>
+          </div>
+          <div class="gp" data-cx="315" data-cy="221" style="left:301px;top:208px;">
+            <img class="gp-n"  src="img/gp-dot-normal.svg"    alt="">
+            <img class="gp-h"  src="img/gp-dot-hover.svg"     alt="">
+            <img class="gp-s"  src="img/gp-dot-selected.svg"  alt="">
+            <img class="gp-ck" src="img/gp-icon-correct.svg"  alt="">
+            <img class="gp-xk" src="img/gp-icon-incorrect.svg" alt="">
+            <span class="gp-lbl">(50 ,250)</span>
+          </div>
+          <div class="gp" data-cx="360" data-cy="174" style="left:346px;top:161px;">
+            <img class="gp-n"  src="img/gp-dot-normal.svg"    alt="">
+            <img class="gp-h"  src="img/gp-dot-hover.svg"     alt="">
+            <img class="gp-s"  src="img/gp-dot-selected.svg"  alt="">
+            <img class="gp-ck" src="img/gp-icon-correct.svg"  alt="">
+            <img class="gp-xk" src="img/gp-icon-incorrect.svg" alt="">
+            <span class="gp-lbl">(60 ,300)</span>
+          </div>
+          <!-- הנקודה (70,350) היא התשובה לשאלה 5ב — data-answer="true" -->
+          <div class="gp" data-cx="405" data-cy="125" data-answer="true" style="left:391px;top:112px;">
+            <img class="gp-n"  src="img/gp-dot-normal.svg"    alt="">
+            <img class="gp-h"  src="img/gp-dot-hover.svg"     alt="">
+            <img class="gp-s"  src="img/gp-dot-selected.svg"  alt="">
+            <img class="gp-ck" src="img/gp-icon-correct.svg"  alt="">
+            <img class="gp-xk" src="img/gp-icon-incorrect.svg" alt="">
+            <span class="gp-lbl">(70 ,350)</span>
+          </div>
+          <div class="gp" data-cx="451" data-cy="77" style="left:437px;top:64px;">
+            <img class="gp-n"  src="img/gp-dot-normal.svg"    alt="">
+            <img class="gp-h"  src="img/gp-dot-hover.svg"     alt="">
+            <img class="gp-s"  src="img/gp-dot-selected.svg"  alt="">
+            <img class="gp-ck" src="img/gp-icon-correct.svg"  alt="">
+            <img class="gp-xk" src="img/gp-icon-incorrect.svg" alt="">
+            <span class="gp-lbl">(80 ,400)</span>
+          </div>
+
+        </div><!-- /graph-card-s12 -->
+      </div><!-- /graph-card-s12-host -->
+    </div><!-- /s11-right-panel -->
+
+    <!-- ══ כדור כחול + טקסט הסבר ══ -->
+    <img class="s11-dot-bullet" src="img/dot-blue-q5.svg" alt="">
+    <div class="s11-graph-note">
+      <p>כל נקודה על הקו מייצגת זוג סדור שמתאים לשיטה: </p>
+      <p>כמה דקות מוקדשות לחדר הכושר (כולל 20 דקות הליכה),</p>
+      <p>ומהו הזמן הכולל שמתאים לכך.</p>
+    </div>
+
+    <!-- ══ פידבק נכון — מסך 12 (Q5B)
+         TODO: החלף feedback-bg-s11-correct.png ב-feedback-bg-s12-correct.png (Figma 132-1985) ══ -->
+    <div id="feedback-s12-correct" class="s11-feedback-panel hidden">
+      <img class="s11-feedback-bg" src="img/feedback-bg-s11-correct.png" alt="">
+      <div class="s11-feedback-text">
+        <p class="s11-feedback-title">צדקת! </p>
+        <p>סה"כ הזמן הפנוי הוא 350 דקות.</p>
+        <p>נאתר את 350 על הציר האנכי בגרף,</p>
+        <p>נפנה ימינה עד שנפגוש את הנקודה,</p>
+        <p>ומשם נרד לציר האופקי — שם נקבל 70.</p>
+        <p>70 דקות ברוטו פחות 20 דקות הליכה</p>
+        <p>= 50 דקות זמן אימון נטו.</p>
+      </div>
+    </div>
+
+    <!-- ══ פידבק שגוי — מסך 12 (Q5B)
+         TODO: החלף feedback-bg-s11-incorrect.png ב-feedback-bg-s12-incorrect.png (Figma 132-2009) ══ -->
+    <div id="feedback-s12-incorrect" class="s11-feedback-panel hidden">
+      <img class="s11-feedback-bg" src="img/feedback-bg-s11-incorrect.png" alt="">
+      <div class="s11-feedback-text">
+        <p class="s11-feedback-title s11-feedback-incorrect-title">זו טעות</p>
+        <p>סה"כ הזמן הפנוי הוא 350 דקות.</p>
+        <p>נאתר את 350 על הציר האנכי בגרף,</p>
+        <p>נפנה ימינה עד שנפגוש את הנקודה,</p>
+        <p>ומשם נרד לציר האופקי — שם נקבל 70.</p>
+        <p>70 דקות ברוטו פחות 20 דקות הליכה</p>
+        <p>= 50 דקות זמן אימון נטו.</p>
+      </div>
+    </div>
+
+    <!-- ══ שורת "צדקתי" + הודעת ניסיון ראשון שגוי ══ -->
+    <div class="submit-row">
+      <button id="submit-btn-s12" class="submit-btn hidden"
+              onclick="checkAnswersS12()" aria-label="בדוק תשובה"></button>
+      <div id="try-again-msg-s12" class="try-again-msg hidden">
+        <p class="try-again-err">זו אינה התשובה, נסו שוב.</p>
+        <p>תוכלו ללחוץ על כפתור העזרה</p>
+        <p>כדי לקבל רמז.</p>
+      </div>
+    </div>
+
+    <button class="nav-btn prev-btn" onclick="goTo(11)" aria-label="חזרה"></button>
+    <button id="next-s12" class="nav-btn next-btn hidden" onclick="goTo(13)" aria-label="המשך"></button>
+  </section>
+
+  <!-- ═══ Graph Zoom Modal — בתוך #app כדי לשמור על קנה מידה ═══
+       הכרטיסייה עצמה (#graph-card) מועברת לכאן ב-DOM כשפותחים זום
+       ומוחזרת ל-#graph-card-host כשסוגרים. ═══════════════════ -->
+  <div id="graph-zoom-modal" class="graph-zoom-overlay hidden"
+       onclick="closeGraphZoom()" role="dialog" aria-modal="true" aria-label="גרף מוגדל">
+    <div class="graph-zoom-content" onclick="event.stopPropagation()">
+      <!-- אין כפתור X — כפתור הזום עצמו בתוך הכרטיסייה מחליף תמונה ל-zoom-out -->
+      <div id="graph-zoom-host" class="graph-zoom-host"></div>
+    </div>
+  </div>
+
 </div><!-- /app -->
 
 <!-- ═══════════ Modal Zoom ═══════════ -->
 <div id="zoom-modal" class="zoom-modal hidden" role="dialog" aria-modal="true" aria-label="תצוגה מוגדלת">
   <button id="zoom-close" class="zoom-close-btn" onclick="closeZoom()" aria-label="סגור"></button>
-  <iframe
-    id="zoom-iframe"
-    src="https://lomdot.education.gov.il/metodica/%D7%AA%D7%A9%D7%A4%D7%95/stem/%D7%9E%D7%AA%D7%9E%D7%98%D7%99%D7%A7%D7%94/simulations/time-management.html"
-    title="יישומון ניהול זמן – תצוגה מוגדלת"
-    sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-  ></iframe>
+  <!-- ה-iframe מועבר לכאן בזמן זום (DOM move — ללא reload) ומוחזר בסגירה -->
+  <div id="zoom-iframe-slot"></div>
 </div>
 
 <script src="js/main.js"></script>

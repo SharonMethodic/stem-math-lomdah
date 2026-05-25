@@ -78,18 +78,43 @@ html, body {
 }
 
 /*
-  VEO watermark crop:
-  Figma uses scaleMode FILL which zooms the video slightly,
-  pushing the bottom VEO watermark out of frame.
-  We replicate this with a 1.08x scale anchored to top-center:
-  - 8% of 1080px = ~86px clipped from the bottom
-  - ~77px clipped equally from each side (visually unnoticeable)
-  .screen already has overflow:hidden so the overflow is clipped.
+  VEO watermark crop — noa-video only.
+  alex-video (Noa_Alex_21-5-26.mp4) is a production video without watermark,
+  so NO scale is applied → native controls stay fully visible within the screen.
 */
-#noa-video,
-#alex-video {
+#noa-video {
   transform: scale(1.08);
   transform-origin: top center;
+}
+
+/* ─── SCREEN 1 — alex-video wrapper ─────────────────────────────────────
+   Wraps the video so that the wrapper (not just the video element) is
+   fullscreened. JS (onAlexFullscreenChange) handles the redirect and
+   applies the correct scale transform inside fullscreen.
+─────────────────────────────────────────────────────────────────────── */
+#alex-video-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+#alex-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: auto;
+  cursor: default;
+  /* No transform — controls visible at the bottom of the element */
+}
+
+/* In fullscreen the wrapper fills the screen; inner layout stays 1920×1080
+   via JS transform (onAlexFullscreenChange).  Make bg black during transition. */
+#alex-video-wrap:fullscreen,
+#alex-video-wrap:-webkit-full-screen {
+  background: #000;
 }
 
 /* Frame 1 states — טלפון + הודעות (מופיע אחרי וידאו) */
@@ -246,7 +271,7 @@ html, body {
   padding: 10px 50px;
   font-size: 28px;
   font-weight: 600;
-  color: #000;
+  color: #030303;
   text-align: right;
   line-height: 1.5;
   gap: 2px;
@@ -293,12 +318,9 @@ html, body {
 .notif-bold {
   font-size: 25px;
   font-weight: 700;
-  color: #000;
+  color: #030303;
   line-height: 1.4;
 }
-
-/* ─── SCREEN 1 — Alex video (full-screen, same as .screen-video) ─── */
-/* הוידאו של אלכס משתמש ב-.screen-video הכללי — אין מבנה טלפון */
 
 /* ─── Play buttons ──────────────────────────────────────── */
 
@@ -372,19 +394,19 @@ html, body {
 .help-popup {
   position: absolute;
   left: 73px;
-  top: 100px;
+  top: 69px;                    /* Figma: top:69 */
   width: 430px;
   height: 253px;
   background: #fef3bf;
-  border: 8px solid #1a1a12;
+  border: 10px solid #21211c;   /* Figma: border-10, #21211c */
   border-radius: 40px;
+  overflow: hidden;
   z-index: 10;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: stretch;  /* stretch = p ממלאים רוחב מלא → text-align:right עובד */
-  padding: 24px 35px;
-  gap: 0;
+  align-items: stretch;
+  padding: 56px 24px 56px 35px; /* Figma: py:56, pr:24, pl:35 */
   direction: rtl;
 }
 
@@ -392,10 +414,10 @@ html, body {
   font-family: 'Assistant', sans-serif;
   font-weight: 600; /* SemiBold */
   font-size: 36px;
-  color: #000;
+  color: #030303;
   text-align: right;
-  line-height: 1.45;
-  white-space: nowrap;
+  line-height: normal;
+  white-space: normal;           /* טקסט עוטף שורות כמו בפיגמה */
 }
 
 /* ─── Content Area (Screens 3 & 4) ─────────────────────── */
@@ -434,7 +456,7 @@ html, body {
   font-family: 'Open Sans', sans-serif;
   font-weight: 700;
   font-size: 36px;
-  color: #fff;
+  color: #fcfafa;
   letter-spacing: -3.6px;
   opacity: 0.4;
   user-select: none;
@@ -484,20 +506,41 @@ html, body {
 .q-text {
   font-size: 28px;
   font-weight: 600;
-  color: #000;
+  color: #030303;
   line-height: 1.55;
 }
 
 .q-bold {
   font-size: 28px;
   font-weight: 700;
-  color: #000;
+  color: #030303;
   line-height: 1.55;
 }
 
-/* Q1B left panel adjustments */
+/* Q1B left panel adjustments (legacy — kept for other refs) */
 .left-panel-q4 {
   gap: 20px;
+}
+
+/* ─── Frame 4 (Screen 3) — New layout: question content on right side ─
+   הפיגמה (עדכני): left:885, top:144, w:851, h:785, padding:80px.
+   ה-iframe וה-left-panel הוסרו; השאלה + טיימרים עוברים לצד ימין.
+   inner width = 851 - 160 = 691px (מספיק לשורות הטיימר ‎771px עם clip)
+─────────────────────────────────────────────────────────────────────── */
+.q4-content {
+  position: absolute;
+  left: 885px;
+  top: 144px;
+  width: 851px;
+  height: 785px;
+  box-sizing: border-box;
+  padding: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  direction: rtl;
+  z-index: 5;
+  overflow: hidden;
 }
 
 /* ─── Timer rows (Screen 4) ─────────────────────────────── */
@@ -542,9 +585,9 @@ html, body {
 }
 
 .timer-label {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 600;
-  color: #000;
+  color: #030303;
   white-space: nowrap;
   text-align: right;
 }
@@ -562,7 +605,7 @@ html, body {
   font-family: 'Assistant', sans-serif;
   font-weight: 700;
   font-size: 28px;
-  color: #000;
+  color: #030303;
   text-align: center;
   outline: none;
   flex-shrink: 0;
@@ -588,7 +631,7 @@ html, body {
 .unit-label {
   font-size: 26px;
   font-weight: 400;
-  color: #000;
+  color: #030303;
   white-space: nowrap;
 }
 
@@ -655,6 +698,8 @@ html, body {
   line-height: 1.55;
   text-align: right;
   direction: rtl;
+  white-space: nowrap;   /* מונע עטיפת שורות — מיקום קבוע כמו בפיגמה */
+  flex-shrink: 0;        /* לא מתכווץ בflex — שומר על מיקום יציב */
 }
 
 .try-again-err {
@@ -665,7 +710,7 @@ html, body {
 
 .try-again-msg p:not(.try-again-err) {
   font-weight: 400;
-  color: #000;
+  color: #030303;
 }
 
 /* ─── Right Panel (iframe) ──────────────────────────────── */
@@ -723,15 +768,17 @@ html, body {
 
 /* ─── Feedback Panels (Screen 3 — screen-level absolute) ────
    Figma: left:980, top:144, width:789, height:795
-   רקע: תמונת מסך מלא (1920×1080) ממוקמת עם offsets שלILIAM
-   כך שרק חלק הפאנל נחתך ומוצג (overflow:hidden)
+   פאנל המשוב — בצד שמאל (Figma node 51-253: left:151, top:144, 809×818)
+   רקע: תמונה מפיגמה ממלאת את הקונטיינר (inset:0, size-full, object-bottom)
    ──────────────────────────────────────────────────────── */
 .feedback-panel {
   position: absolute;
-  left: 980px;
+  left: 151px;
   top: 144px;
-  width: 789px;
-  height: 795px;
+  width: 809px;
+  height: 818px;
+  background: #171717;          /* rgb(23,23,23) — מתוך פיקסלים בפיגמה */
+  border-radius: 45px;          /* פינות מעוגלות כמו בפיגמה */
   overflow: hidden;
   z-index: 20;
   animation: feedbackIn 0.35s ease forwards;
@@ -742,52 +789,49 @@ html, body {
   to   { opacity: 1; transform: scale(1); }
 }
 
-/* תמונת הרקע — 1920×1080 ממוקמת כך שנראה רק אזור הפאנל */
+/* תמונת הרקע — מוחבאת; הרקע מוגדר על הפאנל עצמו ב-CSS */
 .feedback-bg-img {
-  position: absolute;
-  width:  243.35%;  /* 1920 / 789 */
-  height: 135.85%;  /* 1080 / 795 */
-  left:  -124.59%;  /* -983 / 789 */
-  top:    -17.61%;  /* -140 / 795 */
-  pointer-events: none;
-  user-select: none;
-  z-index: 0;
+  display: none;
 }
 
-/* טקסט הפידבק — padding מפיגמה: pt:80 pr:73 pb:271 pl:50 */
+/* טקסט הפידבק — Figma: pt:80 pr:80 pb:271 pl:50, items-end, direction:rtl */
 .feedback-text {
   position: absolute;
   inset: 0;
-  padding: 80px 73px 271px 50px;
+  padding: 80px 80px 271px 50px;
   text-align: right;
   direction: rtl;
   z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 0;
+  align-items: flex-end;   /* RTL: flex-end = physical right */
   overflow: hidden;
 }
 
+/* כל שורת טקסט — Assistant SemiBold 28px, whitespace-pre, leading-normal */
 .feedback-text p {
   font-size: 28px;
   font-weight: 600;
-  color: #fff;
-  line-height: 1.5;
+  color: #fcfafa;
+  line-height: normal;
   white-space: pre;
+  width: 100%;
+  text-align: right;
 }
 
-/* כותרת פידבק — bold לבן, הרקע נותן את הצבע הויזואלי */
+/* שורה ריקה — שומרת גובה שורה אחת */
+.feedback-spacer {
+  line-height: normal !important;
+}
+
+/* כותרת פידבק — ExtraBold כמו בפיגמה */
 .feedback-title {
-  font-weight: 700 !important;
+  font-weight: 800 !important;
   font-size: 28px !important;
-  margin-bottom: 4px;
-  color: #fff !important;
 }
 
-.correct-title,
-.incorrect-title {
-  color: #fff !important;
-}
+.correct-title   { color: #1a7f37 !important; }   /* ירוק — "צדקת!" */
+.incorrect-title { color: #ca433d !important; }   /* אדום — "זו טעות" */
 
 /* ─── Zoom Modal ────────────────────────────────────────── */
 .zoom-modal {
@@ -798,6 +842,11 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* ה-slot הוא מיכל גמיש שמעביר לאיפריים את מימדי ה-modal */
+#zoom-iframe-slot {
+  display: contents; /* transparent wrapper — הילדים מקבלים layout מהאב */
 }
 
 .zoom-modal iframe {
@@ -842,7 +891,7 @@ html, body {
   flex-direction: column;
   gap: 10px;
   padding: 80px 73px 271px 50px;
-  align-items: flex-end;
+  align-items: flex-start;
   direction: rtl;
   z-index: 6; /* מעל content-area (z:5) כדי שלא יוסתר ע"י textbox2-bg */
 }
@@ -850,7 +899,7 @@ html, body {
 .s4-context-text {
   font-size: 28px;
   font-weight: 600;
-  color: #000;
+  color: #030303;
   text-align: right;
   line-height: 1.5;
   flex-shrink: 0;
@@ -878,7 +927,7 @@ html, body {
 .s4-tv-title {
   font-size: 28px;
   font-weight: 700;
-  color: #000;
+  color: #030303;
   text-align: right;
   white-space: nowrap;
   width: 100%;
@@ -914,7 +963,7 @@ html, body {
   font-family: 'Assistant', sans-serif;
   font-size: 28px;
   font-weight: 700;
-  color: #000;
+  color: #030303;
   white-space: nowrap;
 }
 
@@ -947,7 +996,7 @@ html, body {
   font-family: 'Assistant', sans-serif;
   font-size: 28px;
   font-weight: 700;
-  color: #fff;
+  color: #fcfafa;
   text-align: right;
   line-height: 1.5;
   width: 100%;
@@ -958,7 +1007,7 @@ html, body {
   font-family: 'Assistant', sans-serif;
   font-size: 28px;
   font-weight: 600;
-  color: #fff;
+  color: #fcfafa;
   text-align: right;
   line-height: 1.5;
   width: 100%;
@@ -1008,7 +1057,7 @@ html, body {
   font-weight: 600;
   font-size: 28px;
   line-height: 1.4;
-  color: #000;
+  color: #030303;
   margin: 0;
   white-space: nowrap;
 }
@@ -1053,7 +1102,704 @@ html, body {
 .ofri-m4 { left: 198px; top: 855px; width: 483.311px; height: 112.215px; }
 .ofri-m4 img { left: -198px; top: -855px; }
 
+/* ─── Left panel Q3 variant ─────────────────────────────── */
+.left-panel-q3 {
+  gap: 15px;
+  width: 876px;
+  /* RTL: flex-start = physical right — aligns all children to the same right edge */
+  align-items: flex-start;
+}
+
+/* ─── Radio buttons (Screens 6, 7, 9) ───────────────────── */
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  /*
+    RTL flex reversal: flex-start = physical RIGHT.
+    align-items: flex-start aligns each row to the right edge ✓
+  */
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+.radio-option {
+  display: flex;
+  flex-direction: row;
+  gap: 9px;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  /* direction: ltr שומר על סדר DOM: [label שמאל] [עיגול ימין] */
+  direction: ltr;
+}
+
+.radio-option.disabled {
+  cursor: default;
+  pointer-events: none;
+}
+
+.radio-label {
+  font-family: 'Assistant', sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: #030303;
+  text-align: right;
+  white-space: nowrap;
+  direction: rtl;  /* keep Hebrew text flowing RTL within the LTR row */
+}
+
+.radio-label.radio-correct-text {
+  font-weight: 600;
+  color: #4d6f11;
+}
+
+.radio-label.radio-incorrect-text {
+  font-weight: 600;
+  color: #ca433d;
+}
+
+.radio-icon-wrap {
+  position: relative;
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  overflow: hidden;   /* ברירת מחדל — חותך */
+}
+
+/* Correct: ממדים פיקסליים מדויקים מ-Figma (container 15×15):
+   top -8.33px (=55.54%×15), width 21.66px (=15+44.39%×15), height 23.33px (=15+55.54%×15) */
+.radio-icon-wrap.is-correct {
+  overflow: visible;
+}
+.radio-icon-wrap.is-correct .radio-icon-img {
+  top:    -8.33px;
+  left:   0;
+  right:  unset;
+  bottom: unset;
+  width:  21.66px;
+  height: 23.33px;
+  object-fit: contain;
+}
+
+.radio-icon-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ─── Q3 Context Panel (Screens 6 & 7) ──────────────────── */
+/*
+  Same position as s4-context-panel (left:980, top:144)
+  but taller TV-box and different content.
+*/
+.q3-context-panel {
+  position: absolute;
+  left: 980px;
+  top: 144px;
+  width: 789px;
+  height: 795px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 80px 73px 271px 50px;
+  align-items: flex-start;
+  direction: rtl;
+  z-index: 6;
+}
+
+.q3-context-text {
+  font-size: 28px;
+  font-weight: 600;
+  color: #030303;
+  text-align: right;
+  line-height: 1.5;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.q3-context-text p { margin: 0; }
+
+/* Gray box with TV visualization */
+.q3-tv-box {
+  background: #cccccf;
+  border-radius: 45px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.25);
+  width: 589px;
+  height: 537px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 50px;
+  padding-top: 20px;
+  padding-right: 32px;
+  padding-left: 32px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.q3-tv-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #030303;
+  text-align: right;
+  white-space: nowrap;
+  min-width: 100%;
+  margin: 0;
+}
+
+/* 522×430 outer container — image + label overlay */
+.q3-tv-visual {
+  position: relative;
+  width: 522px;
+  height: 430px;
+  flex-shrink: 0;
+}
+
+/* 514.952×378.422 inner clip container, offset per Figma */
+.q3-tv-img-wrap {
+  position: absolute;
+  left: 0.19px;
+  top: 27.91px;
+  width: 514.952px;
+  height: 378.422px;
+  overflow: hidden;
+}
+
+.q3-tv-img {
+  position: absolute;
+  width: 353.97%;
+  height: 270.95%;
+  left: -205.93%;
+  top: -114.74%;
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Label overlays — right-anchored using: right = container_w(522) − figma_left */
+.q3-tv-label {
+  position: absolute;
+  font-family: 'Assistant', sans-serif;
+  font-size: 33px;
+  font-weight: 700;
+  white-space: nowrap;
+  z-index: 1;
+}
+
+/* Top row labels (top:107px) */
+.q3-tv-rest-top { right: 335px; top: 107px; color: #030303; }
+.q3-tv-35       { right: 197px; top: 107px; color: #fcfafa; }
+.q3-tv-20       { right: 80px;  top: 107px; color: #fcfafa; }
+
+/* Bottom row labels (top:328px) */
+.q3-tv-rest-bot { right: 304px; top: 328px; color: #030303; }
+.q3-tv-40       { right: 121px; top: 328px; color: #030303; }
+
+/* ─── Frame 9 (Screen 8): Calendar notification ──────────── */
+
+/* Textbox1 header — canvas pos (1047,0), size 872.707×192 */
+.f9-textbox1 {
+  position: absolute;
+  left: 1047px; top: 0;
+  width: 872.707px; height: 192px;
+  overflow: hidden;
+  z-index: 5;
+  pointer-events: none; user-select: none;
+}
+.f9-textbox1 img {
+  position: absolute;
+  width: 1920px; height: 1080px;
+  left: -1047px; top: 0;
+}
+
+/* Phone — canvas pos (200,209), size 600.227×871 */
+.f9-phone {
+  position: absolute;
+  left: 200px; top: 209px;
+  width: 600.227px; height: 871px;
+  overflow: hidden;
+  pointer-events: none; user-select: none;
+  z-index: 2;
+}
+.f9-phone img {
+  position: absolute;
+  width: 1920px; height: 1080px;
+  left: -200px; top: -209px;
+}
+
+/* M1 notification bubble — canvas pos (242.85,368.26), size 514.677×137.983 */
+.f9-m1 {
+  position: absolute;
+  left: 242.85px; top: 368.26px;
+  width: 514.677px; height: 137.983px;
+  overflow: hidden;
+  pointer-events: none; user-select: none;
+  z-index: 3;
+}
+.f9-m1 img {
+  position: absolute;
+  width: 1920px; height: 1080px;
+  left: -243px; top: -368px;
+}
+
+/* Text overlay on M1 notification
+   right-anchored: right = 514.677 − 444.15 = 70.527px
+   top = 137.983/2 − 37 = 32px */
+.f9-m1-text {
+  position: absolute;
+  right: 70.527px;
+  top: 32px;
+  text-align: right;
+  direction: rtl;
+  white-space: nowrap;
+  z-index: 1;
+}
+.f9-m1-title {
+  font-family: 'Assistant', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #030303;
+  margin: 0;
+  line-height: normal;
+}
+.f9-m1-body {
+  font-family: 'Assistant', sans-serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: #030303;
+  margin: 0;
+  line-height: normal;
+}
+
+/* ─── Frame 10 (Screen 9): Q4 — full-width card ─────────── */
+/*
+  No right context panel — the content card spans the full width.
+  Figma: left:151px, top:144px, width:1618px, height:795px
+  padding: 80px(top) 73px(right) 271px(bottom) 50px(left)
+*/
+.left-panel-f10 {
+  width: 1618px;
+  height: 795px;
+  padding: 80px 73px 271px 50px;
+  gap: 15px;
+  /* RTL: flex-start = physical right — aligns all children to the right */
+  align-items: flex-start;
+}
+
+/*
+  Feedback box for Q4 — same style as .s4-feedback-box but shorter (193px vs 275px).
+  Figma: w:672, h:193, bg:#111, border-radius:45, padding-right:32
+*/
+.s9-feedback-box {
+  width: 672px;
+  min-height: 193px;
+  background: #111;
+  border-radius: 45px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.25);
+  padding: 20px 32px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  flex-shrink: 0;
+  direction: rtl;
+  text-align: right;
+}
+
+/* ─── Frame 11 (Screen 10): narrative — uses Frame 6 header CSS ──
+   .f6-textbox1 and .f6-header-text are already defined above.
+   No additional rules needed.
+   ─────────────────────────────────────────────────────────── */
+
 /* ─── Utility ───────────────────────────────────────────── */
 .hidden {
   display: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCREEN 11 — Frame 12: Q5A — input + graph
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Left panel variant for Q5A ─────────────────────────── */
+.left-panel-q5a {
+  gap: 20px;
+  width: 876px;
+  align-items: flex-start;  /* RTL: flex-start = physical right */
+}
+
+.s11-question-wrap {
+  width: 771px;
+  direction: rtl;
+}
+
+/* שורת קלט: input + תווית "דקות"
+   Figma: w-771 → inner w-717, justify-end, gap:5, px:5
+   RTL flex-row: flex-start = main-start = ימין פיזי → items בצד ימין
+   DOM order: [דקות][input] → visual RTL: [input][דקות] from left-to-right ✓ */
+.s11-input-row {
+  width: 771px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;  /* RTL row: flex-start = physical RIGHT — מיישר לאותו קצה כמו השאלה */
+  gap: 5px;
+  direction: rtl;
+  padding: 0 5px;
+}
+
+.s11-input-field {
+  width: 101px;
+  height: 52px;
+  background: #fefdfd;
+  border: 3px solid #2b369b;   /* כחול — Figma: border-[#2b369b] */
+  border-radius: 8px;
+  font-family: 'Assistant', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #030303;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.s11-input-field:focus { outline: none; border-color: #2b369b; }
+.s11-input-field:disabled { opacity: 1; -webkit-text-fill-color: inherit; cursor: default; }
+.s11-input-field.correct   { border-color: #1a7f37 !important; background: #f0faf3; }
+.s11-input-field.incorrect { border-color: #ca433d !important; background: #fdf0f0; }
+
+.s11-unit {
+  font-family: 'Assistant', sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: #030303;
+  white-space: nowrap;
+}
+
+/* ─── Feedback panels — Screen 11 (Q5A) ─────────────────────
+   Figma: left:980, top:144, w:789, h:795
+   רקע: תמונת 1920×1080 מלאה, נחתכת ע"י overflow:hidden לגבולות הפאנל
+   ──────────────────────────────────────────────────────────── */
+.s11-feedback-panel {
+  position: absolute;
+  left: 980px;
+  top: 144px;
+  width: 789px;
+  height: 795px;
+  overflow: hidden;
+  border-radius: 45px;
+  z-index: 20;
+  animation: feedbackIn 0.35s ease forwards;
+}
+
+.s11-feedback-bg {
+  position: absolute;
+  width:  243.35%;   /* 1920 / 789 */
+  height: 135.85%;   /* 1080 / 795 */
+  left:  -124.59%;   /* -983 / 789 */
+  top:    -17.61%;   /* -140 / 795 */
+  pointer-events: none;
+}
+
+/* טקסט — Figma: pt:80 pr:73 pb:271 pl:50, white, SemiBold 28px */
+.s11-feedback-text {
+  position: absolute;
+  inset: 0;
+  padding: 80px 73px 271px 50px;
+  direction: rtl;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;  /* RTL column: flex-start = ימין פיזי */
+  z-index: 1;
+}
+
+.s11-feedback-text p {
+  font-family: 'Assistant', sans-serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: #fcfafa;
+  line-height: normal;
+  white-space: pre;
+  width: 100%;
+  text-align: right;
+  margin: 0;
+}
+
+.s11-feedback-title {
+  font-weight: 800 !important;
+  color: #1a7f37 !important;   /* ירוק — "צדקת!" */
+}
+
+.s11-feedback-incorrect-title {
+  color: #ca433d !important;   /* אדום — "זו טעות" */
+}
+
+/* ─── Right panel — context + graph ──────────────────────── */
+/* Figma: left:980, top:144, w:789, h:795, pt:80 pr:73 pb:271 pl:50 */
+.s11-right-panel {
+  position: absolute;
+  left: 980px;
+  top: 144px;
+  width: 789px;
+  height: 795px;
+  padding: 80px 73px 271px 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* RTL column flex: flex-start = physical RIGHT — מיישר טקסט + גרף לימין */
+  gap: 15px;
+  direction: rtl;
+  overflow: hidden;
+  z-index: 6;
+}
+
+.s11-context-text {
+  width: 100%;
+  direction: rtl;
+  text-align: right;
+}
+.s11-context-text p {
+  font-family: 'Assistant', sans-serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: #030303;
+  line-height: 1.45;
+  white-space: nowrap;
+}
+
+/* ─── Graph card: 589×513, white bg, rounded, shadow, overflow:hidden */
+.graph-card {
+  position: relative;
+  width: 589px;
+  height: 513px;
+  background: #fffefe;
+  border-radius: 45px;
+  box-shadow: 0 0 8px 4px rgba(0,0,0,0.3);
+  overflow: hidden;
+  flex-shrink: 0;
+  direction: ltr;   /* כל המיקומים בתוך הגרף הם pixel-exact מפיגמה */
+}
+
+/* ─── Graph image (crop from full 1920×1080 frame) ────────
+   Container centered in card: 535.771×493.573
+   Image fills container via percentage offsets from Figma   ──────────────────────────────────────────────────────── */
+.graph-img-container {
+  position: absolute;
+  width: 535.771px;
+  height: 493.573px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+}
+
+.graph-full-img {
+  position: absolute;
+  width: 358.36%;      /* 1920 / 535.771 */
+  height: 218.81%;     /* 1080 / 493.573 */
+  left: -206.62%;
+  top: -79.22%;
+  max-width: none;
+  pointer-events: none;
+}
+
+/* ─── Top label: "סה״כ זמן פנוי ביום" ───────────────────── */
+/* Figma: bg:#2b369b, left:103, top:16, w:151, h:30, rounded:5 */
+.graph-lbl-top {
+  position: absolute;
+  left: 103px;
+  top: 16px;
+  width: 151px;
+  height: 30px;
+  background: #2b369b;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Assistant', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: #fefdfd;
+  white-space: nowrap;
+  direction: rtl;
+}
+
+/* ─── Bottom label: "זמן חדר הכושר ברוטו…" ──────────────── */
+/* Figma orig: top:400 — הוזז ל-top:450 כדי שלא יחפוף את השרטוט (ציר X ≈ y:468) */
+.graph-lbl-bottom {
+  position: absolute;
+  left: 378px;
+  top: 450px;
+  width: 178px;
+  background: #2b369b;
+  border-radius: 5px;
+  padding: 2px 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  direction: rtl;
+}
+.graph-lbl-bottom p {
+  font-family: 'Assistant', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: #fefdfd;
+  line-height: 1.3;
+  text-align: right;
+  width: 100%;
+}
+
+/* ─── Zoom button: top-right of card ─────────────────────── */
+/* Figma updated: right:0, top:0, w:50, h:55, rounded:10 (הוקטן מ-100×100) */
+.graph-zoom-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50px;
+  height: 55px;
+  background: rgba(0,0,0,0.75);
+  border: none;
+  border-radius: 10px;
+  padding: 0;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.graph-zoom-btn img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ═══ Interactive graph points (.gp) ════════════════════════
+   כל נקודה = 28×26px (אזור הנקודה מפיגמה).
+   5 מצבים: normal / hover / selected / correct / incorrect   ══════════════════════════════════════════════════════════ */
+.gp {
+  position: absolute;
+  width: 28px;
+  height: 26px;
+  cursor: pointer;
+  z-index: 5;
+  direction: ltr;
+}
+
+/* כל תמונות המצב + תווית: מוסתרות כברירת מחדל */
+.gp .gp-n,
+.gp .gp-h,
+.gp .gp-s,
+.gp .gp-ck,
+.gp .gp-xk { display: none; position: absolute; pointer-events: none; }
+.gp .gp-lbl { display: none; position: absolute; left: 28px; top: 3px;
+  font-family: 'Assistant', sans-serif; font-size: 20px; font-weight: 500;
+  color: #030303; white-space: nowrap; direction: ltr; }
+
+/* ── NORMAL: עיגול קטן 20×20, ממורכז באזור 28×26 ── */
+.gp .gp-n { display: block; width: 20px; height: 20px; left: 4px; top: 3px; }
+
+/* ── HOVER: נקודה גדולה 28×26 + תווית קואורדינטה ── */
+.gp:hover .gp-n  { display: none; }
+.gp:hover .gp-h  { display: block; width: 28px; height: 26px; left: 0; top: 0; }
+.gp:hover .gp-lbl { display: block; }
+
+/* ── SELECTED: עיגול כהה 25×25 ── */
+.gp.is-selected .gp-n { display: none; }
+.gp.is-selected .gp-s { display: block; width: 25px; height: 25px; left: 2px; top: 1px; }
+
+/* ── CORRECT: עיגול רגיל + וי ירוק ── */
+/* וי: 17×16px, Figma offset: left≈9, top≈3 */
+.gp.is-correct .gp-ck { display: block; width: 17px; height: 16px; left: 9px; top: 3px; }
+/* שמור גם תמונת hover כשהנקודה נכונה */
+.gp.is-correct:hover .gp-n  { display: none; }
+.gp.is-correct:hover .gp-h  { display: block; width: 28px; height: 26px; left: 0; top: 0; }
+
+/* ── INCORRECT: עיגול רגיל + X אדום ── */
+/* X: 8×8px, Figma offset: left=10, top=9 */
+.gp.is-incorrect .gp-xk { display: block; width: 8px; height: 8px; left: 10px; top: 9px; }
+.gp.is-incorrect:hover .gp-n { display: none; }
+.gp.is-incorrect:hover .gp-h { display: block; width: 28px; height: 26px; left: 0; top: 0; }
+
+/* ── קווי הטלה לצירים (JS מציב ומציג) ── */
+.gp-proj-h,
+.gp-proj-v {
+  position: absolute;
+  pointer-events: none;
+  z-index: 4;
+}
+.gp-proj-h { height: 0; border-top: 1.5px dashed rgba(43,54,155,0.65); }
+.gp-proj-v { width:  0; border-left: 1.5px dashed rgba(43,54,155,0.65); }
+
+/* ── עוגן (host) לכרטיסיית הגרף — שומר מקום כשהכרטיסייה עוברת ל-modal ── */
+.graph-card-host {
+  width: 589px;
+  height: 513px;
+  flex-shrink: 0;
+}
+
+/* ─── Blue bullet dot (screen-level, outside panels) ─────── */
+/* Figma: left:1079, top:605, size:15×15 */
+.s11-dot-bullet {
+  position: absolute;
+  left: 1079px;
+  top: 605px;
+  width: 15px;
+  height: 15px;
+  z-index: 6;
+}
+
+/* ─── Graph annotation note (screen-level, outside panels) ─ */
+/* Figma: visual-left≈473, top:593, w:591
+   (original: left:1063.82, translateX(-100%), w:590.81) */
+.s11-graph-note {
+  position: absolute;
+  left: 473px;
+  top: 593px;
+  width: 591px;
+  direction: rtl;
+  text-align: right;
+  z-index: 6;
+}
+.s11-graph-note p {
+  font-family: 'Assistant', sans-serif;
+  font-size: 28px;
+  font-weight: 500;
+  color: #2b369b;
+  line-height: 1.45;
+}
+
+/* ═══ Graph Zoom Modal — #graph-card עובר בDOM לכאן ═══════
+   הכרטיסייה (589×513) מוגדלת ×1.7 בתוך graph-zoom-host (1001×872).
+   כל האינטראקציות (hover, קווי הטלה) ממשיכות לעבוד.
+   ═══════════════════════════════════════════════════════ */
+
+/* אוברליי: מכסה את כל הלומדה (inset:0 ביחס ל-#app) */
+.graph-zoom-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.88);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* תוכן: host של הכרטיסייה (ללא כפתור X — כפתור הזום בכרטיסייה מחליף תמונה) */
+.graph-zoom-content { position: relative; }
+
+/* Host לכרטיסייה המוגדלת: 589×1.7=1001 × 513×1.7=872 */
+/* הכרטיסייה עצמה (border-radius:45px + overflow:hidden) מטפלת בגבולות הויזואליים */
+.graph-zoom-host {
+  width: 1001px;
+  height: 872px;
+  position: relative;
+  /* ❌ ללא overflow:hidden — היה חותך את הכרטיסייה המוגדלת */
+  /* ❌ ללא border-radius — הכרטיסייה עצמה מעגלת את הפינות */
+}
+
+/* הכרטיסייה עצמה כשהיא מוגדלת (×1.7 מהפינה השמאלית-עליונה) */
+#graph-card.is-zoomed {
+  transform: scale(1.7);
+  transform-origin: top left;
 }

@@ -5,7 +5,7 @@
 'use strict';
 
 /* ─── Globals ───────────────────────────────────────────── */
-const TOTAL_SCREENS = 6;
+const TOTAL_SCREENS = 13;
 let currentScreen = 0;
 
 const CORRECT_ANSWERS = { timer1: 60, timer2: 40, timer3: 105 };
@@ -43,6 +43,7 @@ function goTo(n) {
 
   resetScreenState();
   if (n === 5) enterFrame6();
+  if (n === 8) enterFrame9();
 }
 
 /** Reset transient UI state when changing screen */
@@ -93,7 +94,6 @@ function resetScreenState() {
 
   // כשחוזרים למסך 0 — מאפסים טלפון, הודעות, חץ וידאו
   const phoneDiv = document.getElementById('frame1-phone');
-  const notif1   = document.getElementById('notif-1');
   const notif2   = document.getElementById('notif-2');
   const nextBtn0 = document.getElementById('next-s0');
   const playBtn0 = document.getElementById('play-btn-s0');
@@ -102,19 +102,98 @@ function resetScreenState() {
   if (noaVideoWatched) {
     // כבר צפתה — מציג מצב סופי: טלפון + הודעה 2 + חץ, ללא Play
     if (phoneDiv) phoneDiv.classList.remove('hidden');
-    if (notif1)   notif1.classList.add('hidden');
     if (notif2)   notif2.classList.remove('hidden');
     if (nextBtn0) nextBtn0.classList.remove('hidden');
     if (playBtn0) playBtn0.style.display = 'none';
   } else {
     // טרם צפתה — מאפס הכל למצב התחלתי
     if (phoneDiv) phoneDiv.classList.add('hidden');
-    if (notif1)   notif1.classList.remove('hidden');
     if (notif2)   notif2.classList.add('hidden');
     if (nextBtn0) nextBtn0.classList.add('hidden');
     if (playBtn0) playBtn0.style.display = '';
   }
   if (noaVid) { noaVid.pause(); noaVid.currentTime = 0; }
+
+  // ── מסך 6 (Q3A) — אפס רק אם השאלה טרם הושלמה ────────────
+  if (!screen6Done) {
+    attemptCountS6 = 0;
+    s6Selection = null;
+    ['yes', 'no', 'dontknow'].forEach(opt => setRadioVisual('s6', opt, 'normal'));
+    ['s6-radio-yes', 's6-radio-no', 's6-radio-dontknow'].forEach(id =>
+      document.getElementById(id)?.classList.remove('disabled'));
+    document.getElementById('submit-btn-s6')?.classList.add('hidden');
+    document.getElementById('try-again-msg-s6')?.classList.add('hidden');
+    document.getElementById('feedback-s6-correct')?.classList.add('hidden');
+    document.getElementById('feedback-s6-incorrect')?.classList.add('hidden');
+    document.getElementById('next-s6')?.classList.add('hidden');
+  }
+
+  // ── מסך 7 (Q3B) — אפס רק אם השאלה טרם הושלמה ────────────
+  if (!screen7Done) {
+    attemptCountS7 = 0;
+    s7Selection = null;
+    ['yes', 'no', 'dontknow'].forEach(opt => setRadioVisual('s7', opt, 'normal'));
+    ['s7-radio-yes', 's7-radio-no', 's7-radio-dontknow'].forEach(id =>
+      document.getElementById(id)?.classList.remove('disabled'));
+    document.getElementById('submit-btn-s7')?.classList.add('hidden');
+    document.getElementById('try-again-msg-s7')?.classList.add('hidden');
+    document.getElementById('feedback-s7-correct')?.classList.add('hidden');
+    document.getElementById('feedback-s7-incorrect')?.classList.add('hidden');
+    document.getElementById('next-s7')?.classList.add('hidden');
+  }
+
+  // ── מסך 9 (Q4) — אפס רק אם השאלה טרם הושלמה ────────────
+  if (!screen9Done) {
+    attemptCountS9 = 0;
+    s9Selection = null;
+    RADIO_OPTIONS['s9'].forEach(opt => setRadioVisual('s9', opt, 'normal'));
+    ['s9-radio-a', 's9-radio-b', 's9-radio-c', 's9-radio-d'].forEach(id =>
+      document.getElementById(id)?.classList.remove('disabled'));
+    document.getElementById('submit-btn-s9')?.classList.add('hidden');
+    document.getElementById('try-again-msg-s9')?.classList.add('hidden');
+    document.getElementById('feedback-s9-correct')?.classList.add('hidden');
+    document.getElementById('feedback-s9-incorrect')?.classList.add('hidden');
+    document.getElementById('next-s9')?.classList.add('hidden');
+  }
+
+  // ── מסך 11 (Q5A) — אפס רק אם השאלה טרם הושלמה ──────────
+  if (!screen11Done) {
+    attemptCountS11 = 0;
+    const inp = document.getElementById('s11-input');
+    if (inp) { inp.value = ''; inp.disabled = false; inp.className = 's11-input-field'; }
+    document.getElementById('submit-btn-s11')?.classList.add('hidden');
+    document.getElementById('try-again-msg-s11')?.classList.add('hidden');
+    document.getElementById('next-s11')?.classList.add('hidden');
+    document.getElementById('feedback-s11-correct')?.classList.add('hidden');
+    document.getElementById('feedback-s11-incorrect')?.classList.add('hidden');
+    // אפס מצב נקודות גרף Q5A בלבד
+    document.querySelectorAll('#graph-card .gp').forEach(gp =>
+      gp.classList.remove('is-selected', 'is-correct', 'is-incorrect'));
+    hideProjection();
+  }
+
+  // ── מסך 12 (Q5B) — אפס רק אם השאלה טרם הושלמה ──────────
+  if (!screen12Done) {
+    attemptCountS12 = 0;
+    const inpS12 = document.getElementById('s12-input');
+    if (inpS12) { inpS12.value = ''; inpS12.disabled = false; inpS12.className = 's11-input-field'; }
+    document.getElementById('submit-btn-s12')?.classList.add('hidden');
+    document.getElementById('try-again-msg-s12')?.classList.add('hidden');
+    document.getElementById('next-s12')?.classList.add('hidden');
+    document.getElementById('feedback-s12-correct')?.classList.add('hidden');
+    document.getElementById('feedback-s12-incorrect')?.classList.add('hidden');
+    // אפס מצב נקודות גרף Q5B בלבד
+    document.querySelectorAll('#graph-card-s12 .gp').forEach(gp =>
+      gp.classList.remove('is-selected', 'is-correct', 'is-incorrect'));
+  }
+
+  // ודא שה-modal זום סגור בכל מעבר מסך
+  closeGraphZoom();
+
+  // ── Screen 8 (Frame 9): notification ─────────────────────
+  if (!frame9Seen) {
+    document.getElementById('f9-m1')?.classList.add('hidden');
+  }
 
   // ── Screen 5 (Frame 6): WhatsApp messages ─────────────────
   // אם עדיין לא נצפה — ודא שכל ההודעות מוסתרות
@@ -123,7 +202,7 @@ function resetScreenState() {
       document.getElementById(id)?.classList.add('hidden'));
   }
 
-  // עצור גם את וידאו אלכס ואפס כפתור Play שלו
+  // עצור גם את וידאו אלכס ואפס כפתור Play שלו + כיתוב Sub
   const alexVid  = document.getElementById('alex-video');
   const playBtn1 = document.getElementById('play-btn');
   const nextS1   = document.getElementById('next-s1');
@@ -152,8 +231,8 @@ document.addEventListener('DOMContentLoaded', () => {
 /* ─── Screen 0: Noa fullscreen video ───────────────────── */
 /*
    מצב א: Play overlay מלא-מסך → לחיצה → וידאו מתנגן.
-   מצב ב: וידאו נגמר → טלפון מופיע + הודעה 1 ("הדו"ח השבועי זמין").
-   מצב ג: אחרי 2 שניות → הודעה 2 מחליפה הודעה 1 + חץ ניווט מופיע.
+   מצב ב: וידאו נגמר → טלפון מופיע + הודעה 2 + חץ מיד.
+   (Message 1 הוסרה — אין עיכוב)
    אין replay לוידאו זה.
 */
 function initNoaVideo() {
@@ -164,20 +243,14 @@ function initNoaVideo() {
 
   function revealPhone() {
     const phoneDiv = document.getElementById('frame1-phone');
-    const notif1   = document.getElementById('notif-1');
     const notif2   = document.getElementById('notif-2');
     const nextBtn  = document.getElementById('next-s0');
 
-    // מצב ב: טלפון + הודעה 1
+    // טלפון + הודעה 2 + חץ — מיד (Message 1 הוסרה)
     if (phoneDiv) phoneDiv.classList.remove('hidden');
-
-    // מצב ג: אחרי 3 שניות — הודעה 2 מחליפה + חץ
-    setTimeout(() => {
-      if (notif1)  notif1.classList.add('hidden');
-      if (notif2)  notif2.classList.remove('hidden');
-      if (nextBtn) nextBtn.classList.remove('hidden');
-      noaVideoWatched = true;   // סימון: הסרטון נצפה עד הסוף
-    }, 3000);
+    if (notif2)   notif2.classList.remove('hidden');
+    if (nextBtn)  nextBtn.classList.remove('hidden');
+    noaVideoWatched = true;
   }
 
   // לחיצה על Play overlay → מתחיל את הוידאו
@@ -206,7 +279,7 @@ function initNoaVideo() {
   });
 }
 
-/* ─── Screen 1: Alex video ──────────────────────────────── */
+/* ─── Screen 1: Alex video ───────────────────────────────── */
 /*
    פעם ראשונה: חץ "הבא" מופיע רק אחרי שהסרטון נגמר.
    פעמים הבאות: חץ "הבא" מופיע מיד (alexVideoWatched = true).
@@ -214,12 +287,40 @@ function initNoaVideo() {
 let alexVideoWatched = false;
 let noaVideoWatched  = false;
 let frame6Seen       = false;
+let frame9Seen       = false;
 
 /* Resume-state flags for question screens.
    Once true, resetScreenState() skips resetting that screen
    so the learner cannot re-answer after navigating forward. */
 let screen3Done = false;  // Screen 3 (Q1 — timer inputs)
 let screen4Done = false;  // Screen 4 (Q2 — single timer input)
+let screen6Done = false;  // Screen 6 (Q3A — radio button)
+let screen7Done = false;  // Screen 7 (Q3B — radio button)
+
+/* Radio button selections for Q3 screens */
+let s6Selection = null;   // 'yes' | 'no'
+let s7Selection = null;
+
+/* Attempt counters for Q3 screens */
+let attemptCountS6 = 0;
+let attemptCountS7 = 0;
+
+/* Correct answers for Q3 */
+const CORRECT_ANSWER_S6 = 'yes';  // Q3A: נכון
+const CORRECT_ANSWER_S7 = 'no';   // Q3B: לא נכון
+
+/* ─── Radio options map — used by radioClick() ──────────── */
+const RADIO_OPTIONS = {
+  's6': ['yes', 'no', 'dontknow'],
+  's7': ['yes', 'no', 'dontknow'],
+  's9': ['a', 'b', 'c', 'd'],
+};
+
+/* Resume-state flag / selection / attempts for Q4 (Screen 9) */
+let screen9Done = false;
+let s9Selection = null;
+let attemptCountS9 = 0;
+const CORRECT_ANSWER_S9 = 'c';  // Q4: כ-28.5%
 
 function initAlexVideo() {
   const playBtn   = document.getElementById('play-btn');
@@ -228,6 +329,7 @@ function initAlexVideo() {
 
   if (!playBtn || !alexVideo) return;
 
+  // לחיצה על Play overlay → מתחיל את הוידאו (overlay נעלם; controls נגישים)
   playBtn.addEventListener('click', () => {
     alexVideo.play()
       .then(() => {
@@ -240,13 +342,59 @@ function initAlexVideo() {
       });
   });
 
+  // סיום הוידאו → חץ הבא מופיע
   alexVideo.addEventListener('ended', () => {
     alexVideoWatched = true;
     setTimeout(() => {
       if (nextBtn) nextBtn.classList.remove('hidden');
-      playBtn.style.display = '';   // כפתור Play חוזר לצפייה חוזרת
+      playBtn.style.display = '';  // כפתור Play חוזר לצפייה חוזרת
     }, 400);
   });
+
+  // שגיאת טעינה → דלג לחץ הבא
+  alexVideo.addEventListener('error', () => {
+    console.warn('alex-video could not load — showing next button');
+    playBtn.style.display = 'none';
+    if (nextBtn) nextBtn.classList.remove('hidden');
+  });
+
+  // ── Fullscreen: כאשר הוידאו עצמו עובר למסך-מלא (דרך כפתור הנגן),
+  //    מפנים מיד ל-wrapper כדי שה-Sub יישאר גלוי.
+  //    כאשר ה-wrapper עצמו במסך-מלא — מחשבים scale כמו scaleApp.
+  function onAlexFullscreenChange() {
+    const wrap = document.getElementById('alex-video-wrap');
+    if (!wrap) return;
+
+    const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+    const exit = (document.exitFullscreen || document.webkitExitFullscreen).bind(document);
+    const enterWrap = (wrap.requestFullscreen || wrap.webkitRequestFullscreen).bind(wrap);
+
+    if (fsEl === alexVideo) {
+      // הוידאו עצמו הלך למסך-מלא → מפנים ל-wrapper
+      exit().then(() => enterWrap().catch(console.error)).catch(console.error);
+      return;
+    }
+
+    if (fsEl === wrap) {
+      // ה-wrapper במסך-מלא → scale כדי לשמור 1920×1080
+      const sw = window.screen.width;
+      const sh = window.screen.height;
+      const scale = Math.min(sw / 1920, sh / 1080);
+      const ox = (sw - 1920 * scale) / 2;
+      const oy = (sh - 1080 * scale) / 2;
+      wrap.style.width          = '1920px';
+      wrap.style.height         = '1080px';
+      wrap.style.transformOrigin = 'top left';
+      wrap.style.transform      = `translate(${ox}px, ${oy}px) scale(${scale})`;
+    } else {
+      // יצאנו ממסך-מלא → איפוס
+      wrap.style.width = wrap.style.height = '';
+      wrap.style.transform = wrap.style.transformOrigin = '';
+    }
+  }
+
+  document.addEventListener('fullscreenchange',       onAlexFullscreenChange);
+  document.addEventListener('webkitfullscreenchange', onAlexFullscreenChange);
 }
 
 /* ─── Help Popup — כל המסכים ───────────────────────────────
@@ -416,16 +564,28 @@ function prefillAnswers() {
 }
 
 /* ─── Zoom Modal ────────────────────────────────────────── */
+/*
+  כדי למנוע reset של ה-iframe בעת Zoom:
+  יש iframe אחד בלבד (#tool-iframe).
+  openZoom  → מזיז אותו מ-.right-panel → #zoom-iframe-slot (DOM move, ללא reload)
+  closeZoom → מחזיר אותו ל-.right-panel
+
+  הדפדפן שומר את ה-browsing context של iframe כשמזיזים אותו בתוך אותו document.
+*/
 function openZoom() {
-  const modal = document.getElementById('zoom-modal');
+  const modal  = document.getElementById('zoom-modal');
+  const slot   = document.getElementById('zoom-iframe-slot');
+  const iframe = document.getElementById('tool-iframe');
+  if (iframe && slot) slot.appendChild(iframe);   // הזז → modal
   modal.classList.remove('hidden');
-  document.body.style.overflow = 'hidden';
 }
 
 function closeZoom() {
-  const modal = document.getElementById('zoom-modal');
+  const modal  = document.getElementById('zoom-modal');
+  const panel  = document.querySelector('#app .right-panel');
+  const iframe = document.getElementById('tool-iframe');
+  if (iframe && panel) panel.appendChild(iframe); // החזר → right-panel
   modal.classList.add('hidden');
-  document.body.style.overflow = '';
 }
 
 document.getElementById('zoom-modal').addEventListener('click', (e) => {
@@ -565,6 +725,214 @@ function enterFrame6() {
   frame6Seen = true;
 }
 
+/* ─── Screen 8 (Frame 9): Calendar notification ─────────── */
+function enterFrame9() {
+  const el = document.getElementById('f9-m1');
+
+  if (frame9Seen) {
+    // ביקור חוזר — הצג מיד ללא אנימציה
+    if (el) { el.style.animation = 'none'; el.classList.remove('hidden'); }
+    return;
+  }
+
+  // ביקור ראשון — אנימציית float-in אחרי 1 שנייה
+  if (el) el.classList.add('hidden');
+
+  setTimeout(() => {
+    if (currentScreen !== 8) return;
+    if (!el) return;
+    el.classList.remove('hidden');
+    el.style.animation = 'none';
+    el.offsetHeight;   // force reflow
+    el.style.animation = 'floatIn 0.6s ease forwards';
+    new Audio('audio/whatsapp_message_3.mp3').play().catch(() => {});
+  }, 1000);
+
+  frame9Seen = true;
+}
+
+/* ─── Radio buttons — Screens 6 & 7 (Q3A / Q3B) ─────────── */
+
+/** Update radio button icon and label color */
+function setRadioVisual(screen, optId, state) {
+  const icon  = document.getElementById(`${screen}-icon-${optId}`);
+  const label = document.getElementById(`${screen}-label-${optId}`);
+  const wrap  = icon?.parentElement;  // .radio-icon-wrap
+  if (!icon || !label) return;
+
+  icon.src = `img/radio-${state}.svg`;
+
+  /* correct state: checkmark overflows container (by design) — toggle class */
+  if (wrap) wrap.classList.toggle('is-correct', state === 'correct');
+
+  label.className = 'radio-label';
+  if (state === 'correct')   label.classList.add('radio-correct-text');
+  if (state === 'incorrect') label.classList.add('radio-incorrect-text');
+}
+
+/** User clicks a radio option */
+function radioClick(screen, value) {
+  if (screen === 's6' && screen6Done) return;
+  if (screen === 's7' && screen7Done) return;
+  if (screen === 's9' && screen9Done) return;
+
+  // Reset all options for this screen then highlight selected
+  const options = RADIO_OPTIONS[screen] || [];
+  options.forEach(opt =>
+    setRadioVisual(screen, opt, opt === value ? 'selected' : 'normal'));
+
+  if      (screen === 's6') s6Selection = value;
+  else if (screen === 's7') s7Selection = value;
+  else if (screen === 's9') s9Selection = value;
+
+  // Show submit button once something is selected
+  const btn = document.getElementById(`submit-btn-${screen}`);
+  if (btn && !btn.disabled) btn.classList.remove('hidden');
+}
+
+/** Check Q3A answer */
+function checkAnswersS6() {
+  if (attemptCountS6 >= MAX_ATTEMPTS) return;
+  if (!s6Selection) return;
+
+  attemptCountS6++;
+  const isCorrect = (s6Selection === CORRECT_ANSWER_S6);
+
+  if (isCorrect) {
+    setRadioVisual('s6', s6Selection, 'correct');
+    document.getElementById('try-again-msg-s6')?.classList.add('hidden');
+    _showFeedbackRadio('s6', 'correct');
+    disableSubmitS6();
+  } else if (attemptCountS6 >= MAX_ATTEMPTS) {
+    // Second wrong attempt — mark selected wrong, reveal correct, leave 3rd neutral
+    const wrongId = s6Selection;
+    ['yes', 'no', 'dontknow'].forEach(opt => {
+      if (opt === CORRECT_ANSWER_S6) setRadioVisual('s6', opt, 'correct');
+      else if (opt === wrongId)      setRadioVisual('s6', opt, 'incorrect');
+      // else: leave normal (not selected, not correct)
+    });
+    document.getElementById('try-again-msg-s6')?.classList.add('hidden');
+    _showFeedbackRadio('s6', 'incorrect');
+    disableSubmitS6();
+  } else {
+    // First wrong attempt — show message, keep selection highlighted + submit visible
+    document.getElementById('try-again-msg-s6')?.classList.remove('hidden');
+    // Selection stays (s6Selection unchanged), submit button stays visible
+    // so the learner can choose again and re-submit
+  }
+}
+
+/** Check Q3B answer */
+function checkAnswersS7() {
+  if (attemptCountS7 >= MAX_ATTEMPTS) return;
+  if (!s7Selection) return;
+
+  attemptCountS7++;
+  const isCorrect = (s7Selection === CORRECT_ANSWER_S7);
+
+  if (isCorrect) {
+    setRadioVisual('s7', s7Selection, 'correct');
+    document.getElementById('try-again-msg-s7')?.classList.add('hidden');
+    _showFeedbackRadio('s7', 'correct');
+    disableSubmitS7();
+  } else if (attemptCountS7 >= MAX_ATTEMPTS) {
+    // Second wrong attempt — mark selected wrong, reveal correct, leave 3rd neutral
+    const wrongId = s7Selection;
+    ['yes', 'no', 'dontknow'].forEach(opt => {
+      if (opt === CORRECT_ANSWER_S7) setRadioVisual('s7', opt, 'correct');
+      else if (opt === wrongId)      setRadioVisual('s7', opt, 'incorrect');
+    });
+    document.getElementById('try-again-msg-s7')?.classList.add('hidden');
+    _showFeedbackRadio('s7', 'incorrect');
+    disableSubmitS7();
+  } else {
+    // First wrong attempt — show message, keep selection highlighted + submit visible
+    document.getElementById('try-again-msg-s7')?.classList.remove('hidden');
+    // Selection stays, submit stays visible so learner can choose again
+  }
+}
+
+function _showFeedbackRadio(screen, type) {
+  document.getElementById(`feedback-${screen}-correct`)?.classList.add('hidden');
+  document.getElementById(`feedback-${screen}-incorrect`)?.classList.add('hidden');
+  document.getElementById(`feedback-${screen}-${type}`)?.classList.remove('hidden');
+}
+
+function disableSubmitS6() {
+  screen6Done = true;
+  const btn = document.getElementById('submit-btn-s6');
+  if (btn) { btn.disabled = true; btn.classList.add('hidden'); }
+  ['s6-radio-yes', 's6-radio-no', 's6-radio-dontknow'].forEach(id =>
+    document.getElementById(id)?.classList.add('disabled'));
+  document.getElementById('next-s6')?.classList.remove('hidden');
+}
+
+function disableSubmitS7() {
+  screen7Done = true;
+  const btn = document.getElementById('submit-btn-s7');
+  if (btn) { btn.disabled = true; btn.classList.add('hidden'); }
+  ['s7-radio-yes', 's7-radio-no', 's7-radio-dontknow'].forEach(id =>
+    document.getElementById(id)?.classList.add('disabled'));
+  document.getElementById('next-s7')?.classList.remove('hidden');
+}
+
+/* ─── Screen 9 (Frame 10): Q4 — full-width radio ────────── */
+
+function checkAnswersS9() {
+  if (attemptCountS9 >= MAX_ATTEMPTS) return;
+  if (!s9Selection) return;
+
+  attemptCountS9++;
+  const isCorrect = (s9Selection === CORRECT_ANSWER_S9);
+
+  if (isCorrect) {
+    setRadioVisual('s9', s9Selection, 'correct');
+    document.getElementById('try-again-msg-s9')?.classList.add('hidden');
+    _showFeedbackRadio('s9', 'correct');
+    disableSubmitS9();
+  } else if (attemptCountS9 >= MAX_ATTEMPTS) {
+    // 2nd wrong attempt — mark selected wrong, reveal correct, leave others normal
+    const wrongId = s9Selection;
+    RADIO_OPTIONS['s9'].forEach(opt => {
+      if (opt === CORRECT_ANSWER_S9) setRadioVisual('s9', opt, 'correct');
+      else if (opt === wrongId)      setRadioVisual('s9', opt, 'incorrect');
+      // else: leave normal
+    });
+    document.getElementById('try-again-msg-s9')?.classList.add('hidden');
+    _showFeedbackRadio('s9', 'incorrect');
+    disableSubmitS9();
+  } else {
+    // 1st wrong attempt — show message, keep selection highlighted + submit visible
+    document.getElementById('try-again-msg-s9')?.classList.remove('hidden');
+    // Selection stays (s9Selection unchanged), submit stays visible so learner can try again
+    // NOT hiding submit → try-again text position stays fixed when learner changes selection
+  }
+}
+
+function disableSubmitS9() {
+  screen9Done = true;
+  const btn = document.getElementById('submit-btn-s9');
+  if (btn) { btn.disabled = true; btn.classList.add('hidden'); }
+  ['s9-radio-a', 's9-radio-b', 's9-radio-c', 's9-radio-d'].forEach(id =>
+    document.getElementById(id)?.classList.add('disabled'));
+  document.getElementById('next-s9')?.classList.remove('hidden');
+}
+
+/* ─── Dev mode: postMessage bridge ─────────────────────── */
+// מאפשר ל-index_dev.html לשלוט בניווט דרך postMessage
+// (עובד גם כש-iframe חסום ע"י אבטחת file://)
+window.addEventListener('message', (e) => {
+  if (!e.data || e.data.type !== 'DEV_GOTO') return;
+  const n = parseInt(e.data.screen, 10);
+  if (!isNaN(n)) goTo(n);
+});
+
+// מודיע לחלון ההורה כמה מסכים יש (לעדכון ה-dev bar)
+if (window.parent !== window) {
+  const screenCount = document.querySelectorAll('.screen').length;
+  window.parent.postMessage({ type: 'DEV_READY', total: screenCount }, '*');
+}
+
 /* ─── CSS animation for shake ───────────────────────────── */
 (function injectShakeCSS() {
   const style = document.createElement('style');
@@ -579,3 +947,233 @@ function enterFrame6() {
   `;
   document.head.appendChild(style);
 })();
+
+/* ═══════════════════════════════════════════════════════════
+   SCREEN 11 (Frame 12): Q5A — input + graph
+   תשובה נכונה: 400 (60 נטו + 20 הליכה = 80 ברוטו = 20% × 400)
+   ═══════════════════════════════════════════════════════════ */
+
+let screen11Done    = false;
+let attemptCountS11 = 0;
+const CORRECT_S11   = 400;
+
+/* מציג כפתור Submit ברגע שיש ערך בשדה */
+document.getElementById('s11-input')?.addEventListener('input', () => {
+  const btn = document.getElementById('submit-btn-s11');
+  if (!btn || btn.disabled) return;
+  const val = document.getElementById('s11-input').value.trim();
+  btn.classList.toggle('hidden', val === '' || isNaN(parseInt(val, 10)));
+});
+
+function checkAnswersS11() {
+  if (screen11Done) return;
+  if (attemptCountS11 >= MAX_ATTEMPTS) return;
+
+  const inp = document.getElementById('s11-input');
+  const val = parseInt(inp?.value, 10);
+  if (isNaN(val)) return;
+
+  attemptCountS11++;
+  const isCorrect = (val === CORRECT_S11);
+
+  if (isCorrect) {
+    inp.classList.add('correct');
+    document.getElementById('try-again-msg-s11')?.classList.add('hidden');
+    disableSubmitS11('correct');
+  } else if (attemptCountS11 >= MAX_ATTEMPTS) {
+    // ניסיון שני שגוי — ממלא תשובה נכונה + צובע אדום
+    inp.classList.add('incorrect');
+    inp.value = CORRECT_S11;
+    document.getElementById('try-again-msg-s11')?.classList.add('hidden');
+    disableSubmitS11('incorrect');
+  } else {
+    // ניסיון ראשון שגוי — הודעת try-again, כפתור נשאר גלוי
+    document.getElementById('try-again-msg-s11')?.classList.remove('hidden');
+    // הכפתור נשאר גלוי והשדה פתוח לניסיון נוסף
+  }
+}
+
+function disableSubmitS11(feedbackType) {
+  screen11Done = true;
+  const btn = document.getElementById('submit-btn-s11');
+  if (btn) { btn.disabled = true; btn.classList.add('hidden'); }
+  const inp = document.getElementById('s11-input');
+  if (inp) inp.disabled = true;
+  document.getElementById('next-s11')?.classList.remove('hidden');
+
+  // מסמן את נקודת התשובה (80,400) על גרף Q5A (ממוקדת ב-#graph-card)
+  const answerDot = document.querySelector('#graph-card .gp[data-answer="true"]');
+  if (answerDot) {
+    answerDot.classList.add(feedbackType === 'correct' ? 'is-correct' : 'is-incorrect');
+  }
+
+  // מציג פאנל פידבק מתאים
+  const panelCorrect   = document.getElementById('feedback-s11-correct');
+  const panelIncorrect = document.getElementById('feedback-s11-incorrect');
+  if (feedbackType === 'correct') {
+    panelCorrect?.classList.remove('hidden');
+  } else {
+    panelIncorrect?.classList.remove('hidden');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCREEN 12 (Frame 13): Q5B — input + graph
+   תשובה נכונה: 50 דקות נטו (70 ברוטו − 20 הליכה)
+   ═══════════════════════════════════════════════════════════ */
+
+let screen12Done    = false;
+let attemptCountS12 = 0;
+const CORRECT_S12   = 50;
+
+/* מציג כפתור Submit ברגע שיש ערך בשדה */
+document.getElementById('s12-input')?.addEventListener('input', () => {
+  const btn = document.getElementById('submit-btn-s12');
+  if (!btn || btn.disabled) return;
+  const val = document.getElementById('s12-input').value.trim();
+  btn.classList.toggle('hidden', val === '' || isNaN(parseInt(val, 10)));
+});
+
+function checkAnswersS12() {
+  if (screen12Done) return;
+  if (attemptCountS12 >= MAX_ATTEMPTS) return;
+
+  const inp = document.getElementById('s12-input');
+  const val = parseInt(inp?.value, 10);
+  if (isNaN(val)) return;
+
+  attemptCountS12++;
+  const isCorrect = (val === CORRECT_S12);
+
+  if (isCorrect) {
+    inp.classList.add('correct');
+    document.getElementById('try-again-msg-s12')?.classList.add('hidden');
+    disableSubmitS12('correct');
+  } else if (attemptCountS12 >= MAX_ATTEMPTS) {
+    // ניסיון שני שגוי — ממלא תשובה נכונה + צובע אדום
+    inp.classList.add('incorrect');
+    inp.value = CORRECT_S12;
+    document.getElementById('try-again-msg-s12')?.classList.add('hidden');
+    disableSubmitS12('incorrect');
+  } else {
+    // ניסיון ראשון שגוי — הודעת try-again בלבד
+    document.getElementById('try-again-msg-s12')?.classList.remove('hidden');
+  }
+}
+
+function disableSubmitS12(feedbackType) {
+  screen12Done = true;
+  const btn = document.getElementById('submit-btn-s12');
+  if (btn) { btn.disabled = true; btn.classList.add('hidden'); }
+  const inp = document.getElementById('s12-input');
+  if (inp) inp.disabled = true;
+  document.getElementById('next-s12')?.classList.remove('hidden');
+
+  // מסמן את נקודת התשובה (70,350) על גרף Q5B
+  const answerDot = document.querySelector('#graph-card-s12 .gp[data-answer="true"]');
+  if (answerDot) {
+    answerDot.classList.add(feedbackType === 'correct' ? 'is-correct' : 'is-incorrect');
+  }
+
+  // מציג פאנל פידבק מתאים
+  document.getElementById(`feedback-s12-${feedbackType}`)?.classList.remove('hidden');
+}
+
+/* ═══ Graph: interactive data points + projection lines ══════
+   axis constants (pixel coords within 589×513 card):
+     Y-axis (x=0): cx at x=10 is 137, step per 10 units ≈ 45.3px → x=0 ≈ 92
+     X-axis (y=0): cy at y=50 is 419, step per 50 units ≈ 48.9px → y=0 ≈ 468
+   ══════════════════════════════════════════════════════════ */
+const GP_YAXIS_X = 92;
+const GP_XAXIS_Y = 468;
+
+function initGraphPoints() {
+  document.querySelectorAll('.gp').forEach(gp => {
+    gp.addEventListener('mouseenter', () => {
+      // מוצא את קווי ההטלה של הגרף הספציפי שמכיל את הנקודה
+      const card = gp.closest('.graph-card');
+      const projH = card?.querySelector('.gp-proj-h');
+      const projV = card?.querySelector('.gp-proj-v');
+      showProjection(parseInt(gp.dataset.cx), parseInt(gp.dataset.cy), projH, projV);
+    });
+    gp.addEventListener('mouseleave', () => {
+      const card = gp.closest('.graph-card');
+      const projH = card?.querySelector('.gp-proj-h');
+      const projV = card?.querySelector('.gp-proj-v');
+      hideProjection(projH, projV);
+    });
+  });
+}
+
+function showProjection(cx, cy, projH, projV) {
+  if (!projH || !projV) return;
+  // קו אופקי: מציר Y עד מרכז הנקודה
+  projH.style.left  = GP_YAXIS_X + 'px';
+  projH.style.top   = cy + 'px';
+  projH.style.width = (cx - GP_YAXIS_X) + 'px';
+  projH.classList.remove('hidden');
+  // קו אנכי: ממרכז הנקודה עד ציר X
+  projV.style.left   = cx + 'px';
+  projV.style.top    = cy + 'px';
+  projV.style.height = (GP_XAXIS_Y - cy) + 'px';
+  projV.classList.remove('hidden');
+}
+
+/* ללא ארגומנטים — מסתיר את כל קווי ההטלה בכל הגרפים */
+function hideProjection(projH, projV) {
+  if (projH && projV) {
+    projH.classList.add('hidden');
+    projV.classList.add('hidden');
+  } else {
+    document.querySelectorAll('.gp-proj-h, .gp-proj-v').forEach(el => el.classList.add('hidden'));
+  }
+}
+
+/* ─── Graph Zoom: DOM-move approach ────────────────────────
+   הכרטיסייה הפעילה (graph-card או graph-card-s12) עוברת פיזית
+   לתוך #graph-zoom-host ומקבלת scale(1.7).
+   zoomedCardId שומר איזו כרטיסייה נמצאת כרגע ב-modal,
+   כדי שנוכל להחזיר אותה ל-host המתאים בסגירה.
+   ──────────────────────────────────────────────────────── */
+let zoomedCardId = null;
+
+function openGraphZoom(cardId) {
+  const card = document.getElementById(cardId);
+  const host = document.getElementById('graph-zoom-host');
+  if (!card || !host) return;
+  zoomedCardId = cardId;
+  host.appendChild(card);
+  card.classList.add('is-zoomed');
+  document.getElementById('graph-zoom-modal').classList.remove('hidden');
+  const zoomImg = card.querySelector('.graph-zoom-btn img');
+  if (zoomImg) zoomImg.src = 'img/btn-zoom-out.png';
+}
+
+function closeGraphZoom() {
+  if (!zoomedCardId) return;
+  const card = document.getElementById(zoomedCardId);
+  /* כל כרטיסייה חוזרת ל-host שלה: graph-card → graph-card-host, graph-card-s12 → graph-card-s12-host */
+  const origHost = document.getElementById(zoomedCardId + '-host');
+  if (!card || !origHost) return;
+  card.classList.remove('is-zoomed');
+  origHost.appendChild(card);
+  document.getElementById('graph-zoom-modal').classList.add('hidden');
+  hideProjection(); // ללא ארגומנטים = מסתיר הכל
+  const zoomImg = card.querySelector('.graph-zoom-btn img');
+  if (zoomImg) zoomImg.src = 'img/btn-zoom-in.png';
+  zoomedCardId = null;
+}
+
+function toggleGraphZoom(cardId = 'graph-card') {
+  document.getElementById('graph-zoom-modal').classList.contains('hidden')
+    ? openGraphZoom(cardId)
+    : closeGraphZoom();
+}
+
+/* סגור zoom + iframe modal עם Escape */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeGraphZoom(); closeZoom?.(); }
+});
+
+/* הפעל נקודות גרף לאחר טעינת ה-DOM */
+initGraphPoints();
