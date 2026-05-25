@@ -1723,8 +1723,10 @@ html, body {
   /* ❌ ללא border-radius — הכרטיסייה עצמה מעגלת את הפינות */
 }
 
-/* הכרטיסייה עצמה כשהיא מוגדלת (×1.7 מהפינה השמאלית-עליונה) */
-#graph-card.is-zoomed {
+/* הכרטיסייה עצמה כשהיא מוגדלת (×1.7 מהפינה השמאלית-עליונה)
+   חל על שתי כרטיסיות הגרף: Q5A (#graph-card) ו-Q5B (#graph-card-s12) */
+#graph-card.is-zoomed,
+#graph-card-s12.is-zoomed {
   transform: scale(1.7);
   transform-origin: top left;
 }

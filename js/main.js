@@ -185,8 +185,9 @@ function resetScreenState() {
       gp.classList.remove('is-selected', 'is-correct', 'is-incorrect'));
   }
 
-  // ודא שה-modal זום סגור בכל מעבר מסך
+  // ודא שה-modal זום סגור וקווי ההטלה מוסתרים בכל מעבר מסך
   closeGraphZoom();
+  hideProjection(); // נקה קווי hover שנשארו ממעבר מהיר (ללא mouseleave)
 
   // ── Screen 8 (Frame 9): notification ─────────────────────
   if (!frame9Seen) {
@@ -567,14 +568,20 @@ function prefillAnswers() {
 /* ─── Keyboard Navigation ───────────────────────────────── */
 function initKeyboard() {
   document.addEventListener('keydown', (e) => {
+    // אל תנווט בזמן שהמשתמש מקליד בשדה קלט
+    const tag = e.target.tagName;
+    const isEditable = (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable);
+
     switch (e.key) {
       case 'ArrowRight':
       case 'ArrowUp':
+        if (isEditable) break;
         // Presentation convention: right/up = next slide (regardless of RTL)
         goTo(currentScreen + 1);
         break;
       case 'ArrowLeft':
       case 'ArrowDown':
+        if (isEditable) break;
         goTo(currentScreen - 1);
         break;
       case 'Escape':
