@@ -1,0 +1,309 @@
+/* ============================================================
+   Time Management Widget — internal/local implementation
+   Source reference (unchanged): widgets/time-management-widget-original.html
+   All selectors prefixed `tmw-` to avoid colliding with lesson styles.
+   ============================================================ */
+
+/* Outer scroll container — direction:ltr so any vertical scrollbar
+   lands on the visual right edge of the widget, even though the lesson
+   is RTL. The inner .tmw-inner restores direction:rtl for content. */
+.tmw-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  direction: ltr;
+  overflow: auto;
+  z-index: 1;
+}
+
+/* When zoomed, the widget keeps the same DOM (so all state is preserved)
+   but layout boxes actually grow — using CSS `zoom` instead of
+   `transform: scale()` so that scrollHeight, clientHeight, font sizes,
+   paddings, and absolute-positioned child coordinates all scale together.
+   This is what makes "scroll to the bottom" reveal the true visual
+   bottom in zoomed mode (transform: scale alone left scrollHeight at the
+   unzoomed value and clipped the bottom).
+   Factor 1.2 keeps the visual right edge clear of the prev-nav button
+   given .right-panel sits at #app x=1059 inside .content-card. */
+.tmw-container.tmw-zoomed {
+  zoom: 1.2;
+  z-index: 5;
+}
+
+.tmw-inner {
+  direction: rtl;
+  padding: 22px 24px;
+  box-sizing: border-box;
+  font-family: 'Assistant', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.tmw-container h1 {
+  text-align: center;
+  color: #2c3e50;
+  font-size: 24px;
+  margin: 0 0 14px 0;
+}
+
+/* Single toggle button — Figma component "Zoom In / Zoom Out" (node 227:1832):
+   50×55 dark rounded frame, with the white magnifier icon laid on top.
+   Positioned as a container-level overlay at the top-right corner of the
+   TimeManagementWidget Container (visual right in the dir="ltr" outer wrapper),
+   so it reads as a separate UI control — not as an input inside the widget form. */
+.tmw-zoom-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;                                  /* visual right edge of container (LTR) */
+  width: 50px;                                  /* Figma 227:1831 / 227:1833 */
+  height: 55px;
+  padding: 0;
+  background-color: rgba(0, 0, 0, 0.75);        /* Figma: dark semi-transparent frame */
+  background-image: url('../img/btn-zoom-in.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;                     /* icon's transparent corners reveal the dark frame */
+  border: none;
+  border-radius: 10px;                          /* Figma */
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.15s ease;
+}
+
+.tmw-zoom-btn:hover {
+  transform: scale(1.08);
+}
+
+.tmw-container.tmw-zoomed .tmw-zoom-btn {
+  background-image: url('../img/btn-zoom-out.png');
+}
+
+.tmw-scoreboard {
+  display: flex;
+  justify-content: space-between;
+  background-color: #2c3e50;
+  color: #ffffff;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.tmw-score-item span {
+  color: #f1c40f;
+  margin-right: 5px;
+}
+
+.tmw-slider-container {
+  background-color: #e8f4f8;
+  padding: 14px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  text-align: center;
+  border: 1px solid #d4e6f1;
+}
+
+.tmw-slider-container label {
+  font-weight: bold;
+  color: #2980b9;
+  font-size: 16px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.tmw-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  background: transparent;
+  margin-bottom: 10px;
+}
+
+.tmw-range:focus { outline: none; }
+
+.tmw-range::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8px;
+  cursor: pointer;
+  background: #bdc3c7;
+  border-radius: 4px;
+}
+
+.tmw-range::-webkit-slider-thumb {
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background: #3498db;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.tmw-range::-moz-range-track {
+  width: 100%;
+  height: 8px;
+  cursor: pointer;
+  background: #bdc3c7;
+  border-radius: 4px;
+}
+
+.tmw-range::-moz-range-thumb {
+  height: 24px;
+  width: 24px;
+  border: none;
+  border-radius: 50%;
+  background: #3498db;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.tmw-time-display {
+  font-size: 22px;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.tmw-input-group {
+  margin-bottom: 12px;
+  background: #f9f9f9;
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid #eeeeee;
+}
+
+.tmw-input-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+  color: #34495e;
+  font-size: 15px;
+}
+
+.tmw-input-group input {
+  width: 100%;
+  padding: 9px;
+  border: 2px solid #bdc3c7;
+  border-radius: 6px;
+  font-size: 16px;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.tmw-input-group input:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+.tmw-input-group input:disabled {
+  background-color: #ecf0f1;
+  color: #7f8c8d;
+}
+
+.tmw-btn-check,
+.tmw-btn-restart {
+  width: 100%;
+  padding: 12px;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  font-family: inherit;
+  transition: background-color 0.3s;
+}
+
+.tmw-btn-check  { background-color: #27ae60; }
+.tmw-btn-check:hover  { background-color: #219653; }
+.tmw-btn-check:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+
+.tmw-btn-restart {
+  background-color: #e67e22;
+  margin-top: 12px;
+  display: none;
+}
+.tmw-btn-restart:hover { background-color: #d35400; }
+
+.tmw-feedback {
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: bold;
+  display: none;
+  font-size: 16px;
+}
+
+.tmw-feedback.tmw-error {
+  background-color: #fadbd8;
+  color: #c0392b;
+  border: 1px solid #e74c3c;
+}
+
+.tmw-feedback.tmw-success {
+  background-color: #d5f5e3;
+  color: #27ae60;
+  border: 1px solid #2ecc71;
+}
+
+.tmw-feedback.tmw-finished {
+  background-color: #fdf2e9;
+  color: #d35400;
+  border: 2px solid #e67e22;
+  font-size: 20px;
+  padding: 18px;
+  box-shadow: 0 4px 10px rgba(230, 126, 34, 0.2);
+}
+
+.tmw-correct-answers-box {
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333333;
+  text-align: right;
+}
+
+.tmw-chart-container {
+  margin-top: 16px;
+  display: none;
+}
+
+.tmw-stacked-bar {
+  width: 100%;
+  height: 30px;
+  background-color: #ecf0f1;
+  border-radius: 15px;
+  display: flex;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tmw-bar-segment {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: bold;
+  width: 0%;
+  transition: width 1s ease-in-out;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.tmw-gym-segment    { background-color: #2ecc71; }
+.tmw-screen-segment { background-color: #3498db; }
+.tmw-other-segment  { background-color: #bdc3c7; color: #2c3e50; }

@@ -713,7 +713,10 @@ html, body {
   color: #030303;
 }
 
-/* ─── Right Panel (iframe) ──────────────────────────────── */
+/* ─── Right Panel (TimeManagementWidget Container) ──────────
+   Holds the local Time Management Widget on Frame 3 (Q1A) and
+   inherits dimensions for Q1B via .right-panel-q4.
+   ─────────────────────────────────────────────────────── */
 .right-panel {
   position: absolute;
   z-index: 2;
@@ -726,44 +729,6 @@ html, body {
 /* Q1B uses the same dimensions as Q1A */
 .right-panel-q4 {
   /* inherits left/top/width/height from .right-panel — no overrides */
-}
-
-.tool-iframe {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border: none;
-  background: #f0f0f0;
-  border-radius: 8px;
-  direction: rtl; /* סקרולבר בצד ימין בהתאם לכיוון הלומדה */
-}
-
-/* Zoom button — RIGHT side of iframe (RTL: right = outside container right edge) */
-.zoom-btn {
-  position: absolute;
-  top: 0;
-  right: -55px;   /* sits just to the right of the iframe */
-  width: 55px;
-  height: 66px;
-  background: rgba(0,0,0,0.75);
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.15s ease;
-}
-
-.zoom-btn:hover {
-  transform: scale(1.08);
-}
-
-.zoom-btn img {
-  width: 44px;
-  height: 48px;
-  object-fit: contain;
 }
 
 /* ─── Feedback Panels (Screen 3 — screen-level absolute) ────
@@ -833,48 +798,8 @@ html, body {
 .correct-title   { color: #1a7f37 !important; }   /* ירוק — "צדקת!" */
 .incorrect-title { color: #ca433d !important; }   /* אדום — "זו טעות" */
 
-/* ─── Zoom Modal ────────────────────────────────────────── */
-.zoom-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  background: rgba(0,0,0,0.88);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* ה-slot הוא מיכל גמיש שמעביר לאיפריים את מימדי ה-modal */
-#zoom-iframe-slot {
-  display: contents; /* transparent wrapper — הילדים מקבלים layout מהאב */
-}
-
-.zoom-modal iframe {
-  width: 90vw;
-  height: 85vh;
-  border: none;
-  border-radius: 12px;
-  background: #fff;
-}
-
-/* כפתור סגירת Zoom — Role=Close, State=Normal מפיגמה */
-.zoom-close-btn {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  width: 150px;
-  height: 150px;
-  background: url('../img/btn-help-close-normal.png') center/contain no-repeat;
-  border: none;
-  cursor: pointer;
-  z-index: 10;
-  padding: 0;
-  transition: none;
-}
-
-.zoom-close-btn:hover {
-  background-image: url('../img/btn-help-close-hover.png');
-}
+/* ─── (Time Management Widget iframe zoom modal removed —
+       widget is now a local in-page widget; no zoom UI required.) ─── */
 
 /* ─── Screen 4 (Frame 5): Context Panel ─────────────────────
    פאנל הקשר הסטטי בצד ימין — ברמת מסך, תמיד גלוי.

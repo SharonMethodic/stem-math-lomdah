@@ -6,6 +6,7 @@
   <title>לומדה – ניהול זמן | STEM מתמטיקה</title>
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Open+Sans:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/time-management-widget.css">
 </head>
 <body>
 
@@ -99,7 +100,7 @@
 
   <!-- ═══════════════════════════════════════════════
        SCREEN 2 — Frame 3: Question 1A
-       רקע + שאלה + iframe חיצוני + עזרה
+       רקע + שאלה + יישומון מקומי (TimeManagementWidget Container) + עזרה
   ════════════════════════════════════════════════ -->
   <section class="screen" data-screen="2">
     <img class="screen-bg" src="img/bg-frame3.png" alt="">
@@ -137,18 +138,54 @@
           בדקו איך זה משפיע על התכנון שלה.</p>
         </div>
 
-        <!-- פאנל ימין: iframe -->
+        <!-- פאנל ימין: TimeManagementWidget Container — יישומון מקומי (ללא iframe) -->
         <div class="right-panel">
-          <button class="zoom-btn" onclick="openZoom()" aria-label="הגדל יישומון">
-            <img src="img/btn-zoom.png" alt="הגדל">
-          </button>
-          <iframe
-            id="tool-iframe"
-            class="tool-iframe"
-            src="https://lomdot.education.gov.il/metodica/%D7%AA%D7%A9%D7%A4%D7%95/stem/%D7%9E%D7%AA%D7%9E%D7%98%D7%99%D7%A7%D7%94/simulations/time-management.html"
-            title="יישומון ניהול זמן"
-            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-          ></iframe>
+          <!-- Outer container is dir="ltr" so any vertical scrollbar lands on the visual right.
+               Inner .tmw-inner restores dir="rtl" for the actual content. -->
+          <div id="tmw-container" class="tmw-container">
+            <button id="tmw-zoom-btn" class="tmw-zoom-btn" type="button"
+                    aria-label="הגדל יישומון" title="הגדל יישומון"></button>
+
+            <div class="tmw-inner" dir="rtl">
+              <h1>כלי לניהול הזמן</h1>
+
+              <div class="tmw-scoreboard">
+                <div class="tmw-score-item">ניסיונות: <span id="tmw-attempts-val">0</span> מתוך 5</div>
+                <div class="tmw-score-item">הצלחות: <span id="tmw-successes-val">0</span></div>
+              </div>
+
+              <div class="tmw-slider-container">
+                <label for="tmw-time-slider">המשימה: בדקו 5 זמנים שונים.</label>
+                <input type="range" id="tmw-time-slider" class="tmw-range"
+                       min="120" max="400" step="10" value="300">
+                <div class="tmw-time-display">זמן פנוי נבחר: <span id="tmw-time-display-val">300</span> דקות</div>
+              </div>
+
+              <div class="tmw-input-group">
+                <label for="tmw-gym-total-input">1. חדר כושר סך הכל (20%):</label>
+                <input type="number" id="tmw-gym-total-input" placeholder="הקלידו דקות">
+
+                <label for="tmw-gym-net-input" style="margin-top: 12px; color: #e67e22;">זמן אימון נטו (לאחר הפחתת 20 ד' הליכה):</label>
+                <input type="number" id="tmw-gym-net-input" placeholder="הקלידו דקות נטו">
+
+                <label for="tmw-screen-input" style="margin-top: 12px;">2. זמן מסך מקסימלי (35%):</label>
+                <input type="number" id="tmw-screen-input" placeholder="הקלידו דקות">
+              </div>
+
+              <button id="tmw-check-btn"   class="tmw-btn-check"   type="button">בדקו את התשובות</button>
+              <button id="tmw-restart-btn" class="tmw-btn-restart" type="button">התחל משחק מחדש</button>
+
+              <div id="tmw-feedback" class="tmw-feedback"></div>
+
+              <div id="tmw-chart-section" class="tmw-chart-container">
+                <div class="tmw-stacked-bar">
+                  <div id="tmw-chart-gym"    class="tmw-bar-segment tmw-gym-segment">כושר</div>
+                  <div id="tmw-chart-screen" class="tmw-bar-segment tmw-screen-segment">מסך</div>
+                  <div id="tmw-chart-other"  class="tmw-bar-segment tmw-other-segment">אחר</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1256,13 +1293,7 @@
 
 </div><!-- /app -->
 
-<!-- ═══════════ Modal Zoom ═══════════ -->
-<div id="zoom-modal" class="zoom-modal hidden" role="dialog" aria-modal="true" aria-label="תצוגה מוגדלת">
-  <button id="zoom-close" class="zoom-close-btn" onclick="closeZoom()" aria-label="סגור"></button>
-  <!-- ה-iframe מועבר לכאן בזמן זום (DOM move — ללא reload) ומוחזר בסגירה -->
-  <div id="zoom-iframe-slot"></div>
-</div>
-
+<script src="js/time-management-widget.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

@@ -11,8 +11,6 @@ let currentScreen = 0;
 const CORRECT_ANSWERS = { timer1: 60, timer2: 40, timer3: 105 };
 let attemptCount = 0;
 const MAX_ATTEMPTS = 2;
-const IFRAME_URL =
-  'https://lomdot.education.gov.il/metodica/%D7%AA%D7%A9%D7%A4%D7%95/stem/%D7%9E%D7%AA%D7%9E%D7%98%D7%99%D7%A7%D7%94/simulations/time-management.html';
 
 /* ─── Scale canvas to viewport ─────────────────────────── */
 function scaleApp() {
@@ -563,34 +561,8 @@ function prefillAnswers() {
   }
 }
 
-/* ─── Zoom Modal ────────────────────────────────────────── */
-/*
-  כדי למנוע reset של ה-iframe בעת Zoom:
-  יש iframe אחד בלבד (#tool-iframe).
-  openZoom  → מזיז אותו מ-.right-panel → #zoom-iframe-slot (DOM move, ללא reload)
-  closeZoom → מחזיר אותו ל-.right-panel
-
-  הדפדפן שומר את ה-browsing context של iframe כשמזיזים אותו בתוך אותו document.
-*/
-function openZoom() {
-  const modal  = document.getElementById('zoom-modal');
-  const slot   = document.getElementById('zoom-iframe-slot');
-  const iframe = document.getElementById('tool-iframe');
-  if (iframe && slot) slot.appendChild(iframe);   // הזז → modal
-  modal.classList.remove('hidden');
-}
-
-function closeZoom() {
-  const modal  = document.getElementById('zoom-modal');
-  const panel  = document.querySelector('#app .right-panel');
-  const iframe = document.getElementById('tool-iframe');
-  if (iframe && panel) panel.appendChild(iframe); // החזר → right-panel
-  modal.classList.add('hidden');
-}
-
-document.getElementById('zoom-modal').addEventListener('click', (e) => {
-  if (e.target === e.currentTarget) closeZoom();
-});
+/* ─── (Time Management Widget zoom modal removed —
+       the widget is now a local in-page widget; no iframe to zoom.) ─── */
 
 /* ─── Keyboard Navigation ───────────────────────────────── */
 function initKeyboard() {
@@ -606,7 +578,6 @@ function initKeyboard() {
         goTo(currentScreen - 1);
         break;
       case 'Escape':
-        closeZoom();
         closeAllPopups();
         break;
     }
@@ -920,7 +891,7 @@ function disableSubmitS9() {
 
 /* ─── Dev mode: postMessage bridge ─────────────────────── */
 // מאפשר ל-index_dev.html לשלוט בניווט דרך postMessage
-// (עובד גם כש-iframe חסום ע"י אבטחת file://)
+// (עובד גם כש-Chrome חוסם גישה ישירה ל-contentWindow בפרוטוקול file://)
 window.addEventListener('message', (e) => {
   if (!e.data || e.data.type !== 'DEV_GOTO') return;
   const n = parseInt(e.data.screen, 10);
@@ -1170,9 +1141,9 @@ function toggleGraphZoom(cardId = 'graph-card') {
     : closeGraphZoom();
 }
 
-/* סגור zoom + iframe modal עם Escape */
+/* סגור graph zoom עם Escape */
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeGraphZoom(); closeZoom?.(); }
+  if (e.key === 'Escape') closeGraphZoom();
 });
 
 /* הפעל נקודות גרף לאחר טעינת ה-DOM */
