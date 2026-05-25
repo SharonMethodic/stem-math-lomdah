@@ -139,7 +139,9 @@
         </div>
 
         <!-- פאנל ימין: TimeManagementWidget Container — יישומון מקומי (ללא iframe) -->
-        <div class="right-panel">
+        <!-- id="tmw-host-s2": DOM-move target — goTo() moves #tmw-container here when on screen 1,
+             and to #tmw-host-s16 when on screen 16. -->
+        <div class="right-panel" id="tmw-host-s2">
           <!-- Outer container is dir="ltr" so any vertical scrollbar lands on the visual right.
                Inner .tmw-inner restores dir="rtl" for the actual content. -->
           <div id="tmw-container" class="tmw-container">
@@ -473,6 +475,30 @@
     <p>ואתרו את 350.</p>
     <p>לאחר מכן בדקו</p>
     <p>מה הערך המתאים בציר ה-x.</p>
+  </div>
+
+  <!-- Popup שאלה 5ג (מסך 13) -->
+  <div id="help-popup-s13" class="help-popup hidden" role="tooltip">
+    <p>חפשו מצב שבו זמן האימון נטו הוא 0 דקות.</p>
+    <p>זכרו: זמן אימון נטו = זמן חדר הכושר ברוטו − 20 דקות הליכה.</p>
+  </div>
+
+  <!-- Popup שאלה 6 (מסך 15) -->
+  <div id="help-popup-s15" class="help-popup hidden" role="tooltip">
+    <p>כמה הם 20% מתוך 105 דקות?</p>
+    <p>הוסיפו את התוצאה ל-105.</p>
+  </div>
+
+  <!-- Popup שאלה 7 (מסך 16) -->
+  <div id="help-popup-s16" class="help-popup hidden" role="tooltip">
+    <p>נסו מצבים שבהם הזמן הפנוי גדל ב-80% וב-20%.</p>
+    <p>שימו לב לאחוז שזמן המסך תופס מהזמן הפנוי.</p>
+  </div>
+
+  <!-- Popup שאלה 8 (מסך 17) -->
+  <div id="help-popup-s17" class="help-popup hidden" role="tooltip">
+    <p>חשבו איזה אחוז היוו 105 דקות מתוך 300,</p>
+    <p>והשוו לאחוז ש-126 דקות מהוות מתוך 360.</p>
   </div>
 
   <!-- ═══════════════════════════════════════════════
@@ -866,8 +892,6 @@
     <!-- breadcrumb + textbox2 background + שאלה (פאנל שמאל) -->
     <div class="content-area">
       <nav class="breadcrumb" dir="ltr" aria-label="ניווט שאלות">
-        <span class="crumb" data-q="10">10</span>
-        <span class="crumb" data-q="9">9</span>
         <span class="crumb" data-q="8">8</span>
         <span class="crumb" data-q="7">7</span>
         <span class="crumb" data-q="6">6</span>
@@ -1084,8 +1108,6 @@
     <!-- breadcrumb + textbox2 background + שאלה (פאנל שמאל) -->
     <div class="content-area">
       <nav class="breadcrumb" dir="ltr" aria-label="ניווט שאלות">
-        <span class="crumb" data-q="10">10</span>
-        <span class="crumb" data-q="9">9</span>
         <span class="crumb" data-q="8">8</span>
         <span class="crumb" data-q="7">7</span>
         <span class="crumb" data-q="6">6</span>
@@ -1278,6 +1300,523 @@
 
     <button class="nav-btn prev-btn" onclick="goTo(11)" aria-label="חזרה"></button>
     <button id="next-s12" class="nav-btn next-btn hidden" onclick="goTo(13)" aria-label="המשך"></button>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SCREEN 13 — Frame 14: Q5C — multi-select dots on graph
+       שאלה 5ג: אילו נקודות מייצגות זמן אימון נטו = 0?
+       תשובות נכונות: (10,50) ו-(20,100)
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="screen" data-screen="13">
+    <img class="screen-bg" src="img/bg-frame13.png" alt="">
+    <div class="dark-overlay"></div>
+
+    <button id="help-btn-s13" class="help-btn" data-popup="help-popup-s13" aria-label="עזרה"></button>
+
+    <!-- breadcrumb + textbox2 background frame -->
+    <div class="content-area">
+      <nav class="breadcrumb" dir="ltr" aria-label="ניווט שאלות">
+        <span class="crumb" data-q="8">8</span>
+        <span class="crumb" data-q="7">7</span>
+        <span class="crumb" data-q="6">6</span>
+        <span class="crumb current" data-q="5">5</span>
+        <span class="crumb" data-q="4">4</span>
+        <span class="crumb" data-q="3">3</span>
+        <span class="crumb" data-q="2">2</span>
+        <span class="crumb" data-q="1">1</span>
+      </nav>
+      <div class="content-card">
+        <img class="textbox2-bg" src="img/textbox2.png" alt="">
+      </div>
+    </div>
+
+    <!-- Textbox content — Figma: left:161, top:144, w:1608, h:795, pt:80 pr:73 pb:271 pl:50 -->
+    <div class="s13-textbox-content">
+
+      <!-- שאלה -->
+      <div class="s13-question-wrap">
+        <p class="q-text">5. ג. אילו נקודות מייצגות זוגות סדורים שבהם לנועה יש סה"כ זמן פנוי שלא משאיר לה כלל זמן לאימון?</p>
+        <p class="q-bold">לחצו על הנקודות המתאימות בגרף.</p>
+      </div>
+
+      <!-- שורת הסבר + גרף: direction:ltr כדי שהגרף יהיה בסוף (ימין ב-RTL) -->
+      <div class="s13-note-graph-row">
+
+        <!-- הסבר בכחול — גלוי רק כשגרף לצדו -->
+        <div class="s13-note-text">
+          <p>כל נקודה על הקו מייצגת זוג סדור שמתאים לשיטה: </p>
+          <p>כמה דקות מוקדשות לחדר הכושר (כולל 20 דקות הליכה),</p>
+          <p>ומהו הזמן הכולל שמתאים לכך.</p>
+        </div>
+
+        <!-- כרטיסיית גרף S13 — ללא כפתור זום, עם multi-select dots -->
+        <div id="graph-card-s13-host" class="graph-card-host">
+          <div class="graph-card" id="graph-card-s13">
+
+            <!-- תמונת הגרף -->
+            <div class="graph-img-container">
+              <img class="graph-full-img" src="img/graph-q5.png" alt="גרף">
+            </div>
+
+            <!-- תוויות ציר -->
+            <div class="graph-lbl-top">סה״כ זמן פנוי ביום</div>
+            <div class="graph-lbl-bottom">
+              <p>זמן חדר הכושר ברוטו</p>
+              <p>(כולל הליכה הלוך חזור)</p>
+            </div>
+
+            <!-- קווי הטלה -->
+            <div class="gp-proj-h hidden"></div>
+            <div class="gp-proj-v hidden"></div>
+
+            <!-- נקודות נתונים — s13-gp (multi-select, 2 correct: (20,100) ו-(10,50)) -->
+            <!-- (80,400) -->
+            <div class="s13-gp gp" data-cx="450" data-cy="74" style="left:440px;top:64px;">
+              <img class="gp-n"  src="img/gp-dot-normal.svg"     alt="">
+              <img class="gp-h"  src="img/gp-dot-hover.svg"      alt="">
+              <img class="gp-s"  src="img/gp-dot-selected.svg"   alt="">
+              <img class="gp-ck" src="img/gp-icon-correct.svg"   alt="">
+              <img class="gp-xk" src="img/gp-icon-incorrect.svg" alt="">
+              <span class="gp-lbl">(80 ,400)</span>
+            </div>
+            <!-- (70,350) -->
+            <div class="s13-gp gp" data-cx="405" data-cy="124" style="left:398px;top:110px;">
+              <img class="gp-n"  src="img/gp-dot-normal.svg"     alt="">
+              <img class="gp-h"  src="img/gp-dot-hover.svg"      alt="">
+              <img class="gp-s"  src="img/gp-dot-selected.svg"   alt="">
+              <img class="gp-ck" src="img/gp-icon-correct.svg"   alt="">
+              <img class="gp-xk" src="img/gp-icon-incorrect.svg" alt="">
+              <span class="gp-lbl">(70 ,350)</span>
+            </div>
+            <!-- (60,300) -->
+            <div class="s13-gp gp" data-cx="360" data-cy="174" style="left:350px;top:163px;">
+              <img class="gp-n"  src="img/gp-dot-normal.svg"     alt="">
+              <img class="gp-h"  src="img/gp-dot-hover.svg"      alt="">
+              <img class="gp-s"  src="img/gp-dot-selected.svg"   alt="">
+              <img class="gp-ck" src="img/gp-icon-correct.svg"   alt="">
+              <img class="gp-xk" src="img/gp-icon-incorrect.svg" alt="">
+              <span class="gp-lbl">(60 ,300)</span>
+            </div>
+            <!-- (50,250) -->
+            <div class="s13-gp gp" data-cx="315" data-cy="221" style="left:305px;top:214px;">
+              <img class="gp-n"  src="img/gp-dot-normal.svg"     alt="">
+              <img class="gp-h"  src="img/gp-dot-hover.svg"      alt="">
+              <img class="gp-s"  src="img/gp-dot-selected.svg"   alt="">
+              <img class="gp-ck" src="img/gp-icon-correct.svg"   alt="">
+              <img class="gp-xk" src="img/gp-icon-incorrect.svg" alt="">
+              <span class="gp-lbl">(50 ,250)</span>
+            </div>
+            <!-- (40,200) -->
+            <div class="s13-gp gp" data-cx="270" data-cy="272" style="left:261px;top:262px;">
+              <img class="gp-n"  src="img/gp-dot-normal.svg"     alt="">
+              <img class="gp-h"  src="img/gp-dot-hover.svg"      alt="">
+              <img class="gp-s"  src="img/gp-dot-selected.svg"   alt="">
+              <img class="gp-ck" src="img/gp-icon-correct.svg"   alt="">
+              <img class="gp-xk" src="img/gp-icon-incorrect.svg" alt="">
+              <span class="gp-lbl">(40 ,200)</span>
+            </div>
+            <!-- (30,150) -->
+            <div class="s13-gp gp" data-cx="225" data-cy="319" style="left:215px;top:310px;">
+              <img class="gp-n"  src="img/gp-dot-normal.svg"     alt="">
+              <img class="gp-h"  src="img/gp-dot-hover.svg"      alt="">
+              <img class="gp-s"  src="img/gp-dot-selected.svg"   alt="">
+              <img class="gp-ck" src="img/gp-icon-correct.svg"   alt="">
+              <img class="gp-xk" src="img/gp-icon-incorrect.svg" alt="">
+              <span class="gp-lbl">(30 ,150)</span>
+            </div>
+            <!-- (20,100) — CORRECT ANSWER -->
+            <div class="s13-gp gp" data-cx="180" data-cy="369" data-answer="true" style="left:169px;top:358px;">
+              <img class="gp-n"  src="img/gp-dot-normal.svg"     alt="">
+              <img class="gp-h"  src="img/gp-dot-hover.svg"      alt="">
+              <img class="gp-s"  src="img/gp-dot-selected.svg"   alt="">
+              <img class="gp-ck" src="img/gp-icon-correct.svg"   alt="">
+              <img class="gp-xk" src="img/gp-icon-incorrect.svg" alt="">
+              <span class="gp-lbl">(20 ,100)</span>
+            </div>
+            <!-- (10,50) — CORRECT ANSWER -->
+            <div class="s13-gp gp" data-cx="135" data-cy="416" data-answer="true" style="left:123px;top:406px;">
+              <img class="gp-n"  src="img/gp-dot-normal.svg"     alt="">
+              <img class="gp-h"  src="img/gp-dot-hover.svg"      alt="">
+              <img class="gp-s"  src="img/gp-dot-selected.svg"   alt="">
+              <img class="gp-ck" src="img/gp-icon-correct.svg"   alt="">
+              <img class="gp-xk" src="img/gp-icon-incorrect.svg" alt="">
+              <span class="gp-lbl">(10 ,50)</span>
+            </div>
+
+          </div><!-- /graph-card-s13 -->
+        </div><!-- /graph-card-s13-host -->
+
+      </div><!-- /s13-note-graph-row -->
+
+      <!-- ══ פידבק נכון / שגוי — בתוך s13-textbox-content, מוצב absolute
+           בתחום s13-note-text (שמאל הגרף). q8-feedback-box מגדיר העיצוב. ══ -->
+      <div id="feedback-s13-correct" class="q8-feedback-box s13-feedback-pos hidden">
+        <p class="s11-feedback-title">צדקת! </p>
+        <p>כאשר זמן חדר הכושר ברוטו קטן מ-20 דקות (זמן ההליכה)</p>
+        <p>או שווה לו, לנועה לא נשאר זמן לאימון עצמו.</p>
+        <p>הנקודה (10 ,50): 10 דקות ברוטו — פחות מזמן ההליכה.</p>
+        <p>הנקודה (20 ,100): 20 דקות ברוטו — בדיוק ההליכה, נטו = 0.</p>
+      </div>
+
+      <div id="feedback-s13-incorrect" class="q8-feedback-box s13-feedback-pos hidden">
+        <p class="s11-feedback-title s11-feedback-incorrect-title">זו טעות</p>
+        <p>חפשו נקודות שבהן זמן חדר הכושר ברוטו קטן מ-20 דקות</p>
+        <p>או שווה להן — כי 20 דקות הן זמן ההליכה בלבד.</p>
+        <p>הנקודות הנכונות הן (10 ,50) ו-(20 ,100).</p>
+      </div>
+
+    </div><!-- /s13-textbox-content -->
+
+    <!-- ══ שורת "צדקתי?" + הודעת ניסיון ראשון שגוי ══ -->
+    <div class="submit-row">
+      <button id="submit-btn-s13" class="submit-btn hidden"
+              onclick="checkAnswersS13()" aria-label="בדוק תשובה"></button>
+      <div id="try-again-msg-s13" class="try-again-msg hidden">
+        <p class="try-again-err">זו אינה התשובה, נסו שוב.</p>
+        <p>תוכלו ללחוץ על כפתור העזרה</p>
+        <p>כדי לקבל רמז.</p>
+      </div>
+    </div>
+
+    <button class="nav-btn prev-btn" onclick="goTo(12)" aria-label="חזרה"></button>
+    <button id="next-s13" class="nav-btn next-btn hidden" onclick="goTo(14)" aria-label="המשך"></button>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SCREEN 14 — Frame 15: narrative — נועה נחה אחרי המבחן
+  ════════════════════════════════════════════════ -->
+  <section class="screen" data-screen="14">
+    <img class="screen-bg" src="img/bg-frame14.png" alt="">
+
+    <div class="f6-textbox1">
+      <img src="img/textbox1.png" alt="">
+    </div>
+
+    <div class="f6-header-text">
+      <div>
+        <p>אחרי המבחן הגדול, נועה הרגישה שהיא צריכה קצת מנוחה.</p>
+      </div>
+    </div>
+
+    <button class="nav-btn prev-btn" onclick="goTo(13)" aria-label="חזרה"></button>
+    <button class="nav-btn next-btn" onclick="goTo(15)" aria-label="המשך"></button>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SCREEN 15 — Frame 16: Q6 — radio button
+       שאלה 6: 105 × 1.2 = 126 דקות זמן מסך
+       תשובה נכונה: c (126 דקות)
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="screen" data-screen="15">
+    <img class="screen-bg" src="img/bg-frame15.png" alt="">
+    <div class="dark-overlay"></div>
+
+    <button id="help-btn-s15" class="help-btn" data-popup="help-popup-s15" aria-label="עזרה"></button>
+
+    <div class="content-area">
+      <nav class="breadcrumb" dir="ltr" aria-label="ניווט שאלות">
+        <span class="crumb" data-q="8">8</span>
+        <span class="crumb" data-q="7">7</span>
+        <span class="crumb current" data-q="6">6</span>
+        <span class="crumb" data-q="5">5</span>
+        <span class="crumb" data-q="4">4</span>
+        <span class="crumb" data-q="3">3</span>
+        <span class="crumb" data-q="2">2</span>
+        <span class="crumb" data-q="1">1</span>
+      </nav>
+
+      <div class="content-card">
+        <img class="textbox2-bg" src="img/textbox2.png" alt="">
+
+        <div class="left-panel left-panel-f10">
+          <div>
+            <p class="q-text">6. יום אחרי המבחן הגדול, נועה החליטה להוסיף לעצמה עוד 20% זמן מסך</p>
+            <p class="q-text">מזמן המסך המקורי שלה, שהוא 105 דקות.</p>
+            <p class="q-text">כמה זמן מסך יהיה לנועה באותו יום?</p>
+          </div>
+          <p class="q-bold">סמנו את התשובה הנכונה:</p>
+
+          <div class="radio-group">
+            <div class="radio-option" id="s15-radio-a" onclick="radioClick('s15','a')">
+              <span class="radio-label" id="s15-label-a">120 דקות</span>
+              <div class="radio-icon-wrap"><img id="s15-icon-a" src="img/radio-normal.svg" alt="" class="radio-icon-img"></div>
+            </div>
+            <div class="radio-option" id="s15-radio-b" onclick="radioClick('s15','b')">
+              <span class="radio-label" id="s15-label-b">125 דקות</span>
+              <div class="radio-icon-wrap"><img id="s15-icon-b" src="img/radio-normal.svg" alt="" class="radio-icon-img"></div>
+            </div>
+            <div class="radio-option" id="s15-radio-c" onclick="radioClick('s15','c')">
+              <span class="radio-label" id="s15-label-c">126 דקות</span>
+              <div class="radio-icon-wrap"><img id="s15-icon-c" src="img/radio-normal.svg" alt="" class="radio-icon-img"></div>
+            </div>
+            <div class="radio-option" id="s15-radio-d" onclick="radioClick('s15','d')">
+              <span class="radio-label" id="s15-label-d">230 דקות</span>
+              <div class="radio-icon-wrap"><img id="s15-icon-d" src="img/radio-normal.svg" alt="" class="radio-icon-img"></div>
+            </div>
+          </div>
+
+          <!-- ══ פידבק נכון / שגוי — inline בתוך left-panel (אחרי רשימת הרדיו)
+               q8-feedback-box = dark rounded box, Figma ref node 259:1447 ══ -->
+          <div id="feedback-s15-correct" class="q8-feedback-box hidden">
+            <p class="s11-feedback-title">צדקת! </p>
+            <p>105 דקות + 20% = 105 × 1.2 = 126 דקות.</p>
+            <p>כלומר, נועה תקבל 21 דקות נוספות,</p>
+            <p>ויהיו לה סך הכל 126 דקות זמן מסך.</p>
+          </div>
+
+          <div id="feedback-s15-incorrect" class="q8-feedback-box hidden">
+            <p class="s11-feedback-title s11-feedback-incorrect-title">זו טעות</p>
+            <p>20% מתוך 105 = 105 × 0.2 = 21 דקות.</p>
+            <p>105 + 21 = 126 דקות.</p>
+            <p>אפשר גם לחשב: 105 × 1.2 = 126.</p>
+          </div>
+
+        </div><!-- /left-panel -->
+      </div><!-- /content-card -->
+    </div><!-- /content-area -->
+
+    <!-- ══ שורת "צדקתי?" ══ -->
+    <div class="submit-row">
+      <button id="submit-btn-s15" class="submit-btn hidden"
+              onclick="checkAnswersS15()" aria-label="בדוק תשובה"></button>
+      <div id="try-again-msg-s15" class="try-again-msg hidden">
+        <p class="try-again-err">זו אינה התשובה, נסו שוב.</p>
+        <p>תוכלו ללחוץ על כפתור העזרה</p>
+        <p>כדי לקבל רמז.</p>
+      </div>
+    </div>
+
+    <button class="nav-btn prev-btn" onclick="goTo(14)" aria-label="חזרה"></button>
+    <button id="next-s15" class="nav-btn next-btn hidden" onclick="goTo(16)" aria-label="המשך"></button>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SCREEN 16 — Frame 17: Q7 — TMW widget (DOM-move)
+       שאלה 7: בדקו מה יקרה לזמן המסך אם הזמן הפנוי יגדל ב-80% וב-20%
+       אין submit — שאלת חקירה חופשית
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="screen" data-screen="16">
+    <img class="screen-bg" src="img/bg-frame16.png" alt="">
+    <div class="dark-overlay"></div>
+
+    <button id="help-btn-s16" class="help-btn" data-popup="help-popup-s16" aria-label="עזרה"></button>
+
+    <div class="content-area">
+      <nav class="breadcrumb" dir="ltr" aria-label="ניווט שאלות">
+        <span class="crumb" data-q="8">8</span>
+        <span class="crumb current" data-q="7">7</span>
+        <span class="crumb" data-q="6">6</span>
+        <span class="crumb" data-q="5">5</span>
+        <span class="crumb" data-q="4">4</span>
+        <span class="crumb" data-q="3">3</span>
+        <span class="crumb" data-q="2">2</span>
+        <span class="crumb" data-q="1">1</span>
+      </nav>
+
+      <div class="content-card">
+        <img class="textbox2-bg" src="img/textbox2.png" alt="">
+
+        <!-- פאנל שמאל: שאלה -->
+        <div class="left-panel">
+          <p class="q-text">7. הגיע סוף השבוע והזמן הפנוי של נועה גדל.</p>
+          <p class="q-text">נועה התלבטה בכמה להגדיל את זמן המסך שלה ועשתה מספר חישובים</p>
+          <p class="q-text">ביישומון חדש שהיא בנתה לעצמה, ומיועד לניהול הזמן שלה בסוף השבוע.</p>
+          <p class="q-text">&ZeroWidthSpace;</p>
+          <p class="q-bold">השתמשו ביישומון מימין ועזרו לנועה לבדוק מה יקרה לזמן המסך שלה,</p>
+          <p class="q-bold">אם הזמן הפנוי שלה יגדל ב-80% וב-20%.</p>
+        </div>
+
+        <!-- פאנל ימין: TMW widget host — tmw-container מועבר לכאן ב-goTo(16) -->
+        <div id="tmw-host-s16" class="right-panel">
+          <!-- #tmw-container יגיע לכאן דרך DOM-move ב-goTo() -->
+        </div>
+
+      </div><!-- /content-card -->
+    </div><!-- /content-area -->
+
+    <button class="nav-btn prev-btn" onclick="goTo(15)" aria-label="חזרה"></button>
+    <button class="nav-btn next-btn" onclick="goTo(17)" aria-label="המשך"></button>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SCREEN 17 — Frame 18: Q8 — custom dropdown fill-in
+       שאלה 8: 126/360 = 35%, האחוז לא משתנה
+       dropdown1: "35%", dropdown2: "לא משתנה"
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="screen" data-screen="17">
+    <img class="screen-bg" src="img/bg-frame17.png" alt="">
+    <div class="dark-overlay"></div>
+
+    <button id="help-btn-s17" class="help-btn" data-popup="help-popup-s17" aria-label="עזרה"></button>
+
+    <div class="content-area">
+      <nav class="breadcrumb" dir="ltr" aria-label="ניווט שאלות">
+        <span class="crumb current" data-q="8">8</span>
+        <span class="crumb" data-q="7">7</span>
+        <span class="crumb" data-q="6">6</span>
+        <span class="crumb" data-q="5">5</span>
+        <span class="crumb" data-q="4">4</span>
+        <span class="crumb" data-q="3">3</span>
+        <span class="crumb" data-q="2">2</span>
+        <span class="crumb" data-q="1">1</span>
+      </nav>
+
+      <div class="content-card">
+        <img class="textbox2-bg" src="img/textbox2.png" alt="">
+
+        <!-- פאנל שמאל: שאלה + fill-in dropdowns -->
+        <div class="left-panel left-panel-f10">
+
+          <div>
+            <p class="q-text">8. באחד מסופי השבוע, הזמן הפנוי של נועה גדל מ-300 דקות ל-360 דקות.</p>
+            <p class="q-text">נועה מחליטה להגדיל גם את זמן המסך שלה מ-105 דקות ביום רגיל ל-126 דקות.</p>
+          </div>
+          <p class="q-bold">השלימו את המסקנה המתמטית של נועה:</p>
+
+          <!-- תיבת fill-in: שורות טקסט + dropdown -->
+          <div class="s17-fillin-box">
+            <p class="s17-fillin-line">איזה קטע!</p>
+
+            <!-- שורה עם dropdown 1 -->
+            <div class="s17-dropdown-row">
+              <span class="s17-fillin-text">126 דקות מתוך 360 דקות, הם בדיוק</span>
+              <div class="s17-dropdown-wrap" id="dd1-wrap">
+                <button class="s17-dropdown-btn" id="dd1-btn"
+                        onclick="toggleDropdownMenu(17, 1)" aria-haspopup="listbox"
+                        aria-expanded="false" type="button">
+                  <span id="dd1-value" class="s17-dd-value">בחרו...</span>
+                  <img src="img/chevron-down.svg" class="s17-dd-chevron" alt="">
+                </button>
+                <ul class="s17-dropdown-list hidden" id="dd1-list" role="listbox">
+                  <li onclick="selectDropdown(17,1,'30%')">30%</li>
+                  <li onclick="selectDropdown(17,1,'35%')">35%</li>
+                  <li onclick="selectDropdown(17,1,'40%')">40%</li>
+                  <li onclick="selectDropdown(17,1,'45%')">45%</li>
+                </ul>
+              </div>
+              <span class="s17-fillin-text">.</span>
+            </div>
+
+            <p class="s17-fillin-line">זה אומר שאם מגדילים את השלם ב-20%, וגם את החלק היחסי ב-20%, האחוז</p>
+
+            <!-- שורה עם dropdown 2 -->
+            <div class="s17-dropdown-row">
+              <span class="s17-fillin-text">שהחלק תופס מתוך השלם</span>
+              <div class="s17-dropdown-wrap" id="dd2-wrap">
+                <button class="s17-dropdown-btn" id="dd2-btn"
+                        onclick="toggleDropdownMenu(17, 2)" aria-haspopup="listbox"
+                        aria-expanded="false" type="button">
+                  <span id="dd2-value" class="s17-dd-value">בחרו...</span>
+                  <img src="img/chevron-down.svg" class="s17-dd-chevron" alt="">
+                </button>
+                <ul class="s17-dropdown-list hidden" id="dd2-list" role="listbox">
+                  <li onclick="selectDropdown(17,2,'גדל')">גדל</li>
+                  <li onclick="selectDropdown(17,2,'קטן')">קטן</li>
+                  <li onclick="selectDropdown(17,2,'לא משתנה')">לא משתנה</li>
+                </ul>
+              </div>
+              <span class="s17-fillin-text">.</span>
+            </div>
+          </div><!-- /s17-fillin-box -->
+
+          <!-- ══ פידבק נכון / שגוי — inline בתוך left-panel (אחרי fill-in dropdowns)
+               q8-feedback-box = dark rounded box, Figma ref node 259:1447 ══ -->
+          <div id="feedback-s17-correct" class="q8-feedback-box hidden">
+            <p class="s11-feedback-title">צדקת! </p>
+            <p>105 מתוך 300 = 35%.</p>
+            <p>126 מתוך 360 = 35%.</p>
+            <p>כאשר מגדילים את השלם ואת החלק באותו אחוז (20%),</p>
+            <p>האחוז שהחלק תופס מהשלם נשאר זהה!</p>
+          </div>
+
+          <div id="feedback-s17-incorrect" class="q8-feedback-box hidden">
+            <p class="s11-feedback-title s11-feedback-incorrect-title">זו טעות</p>
+            <p>126 ÷ 360 = 0.35 = 35%.</p>
+            <p>105 ÷ 300 = 0.35 = 35%.</p>
+            <p>כאשר גדלים שלם וחלק באותו שיעור,</p>
+            <p>האחוז שהחלק תופס מהשלם לא משתנה.</p>
+          </div>
+
+        </div><!-- /left-panel -->
+
+        <!-- ══════════════════════════════════════════════════════════════════
+             FUTURE WIDGET PLACEHOLDER — do not remove this block.
+
+             A future interactive widget will be mounted here, similar to how
+             the Time Management Widget (TMW) is hosted on Screen 16.
+             Widget HTML and logic will be provided in a separate process.
+
+             When the widget is ready:
+               1. Remove `display:none` from #s17-widget-host
+               2. Replace `left-panel-f10` on the left panel above with a
+                  narrower panel class (width TBD from Figma)
+               3. Wire up any DOM-move logic in main.js (see goTo for screen 16)
+
+             Figma reference: Screen 18 - Question 8 (node 139:2055)
+             Current Figma design shows single-panel layout.
+             Right-panel widget dimensions will be defined when widget is ready.
+        ══════════════════════════════════════════════════════════════════ -->
+        <div id="s17-widget-host" class="s17-widget-placeholder" aria-hidden="true">
+          <!-- widget will be mounted here -->
+        </div>
+
+      </div><!-- /content-card -->
+    </div><!-- /content-area -->
+
+    <!-- דמות נועה — screen-level absolute, bottom center -->
+    <img class="s17-noa-char" src="img/noa-character.png" alt="נועה">
+
+    <!-- ══ שורת "צדקתי?" ══ -->
+    <div class="submit-row">
+      <button id="submit-btn-s17" class="submit-btn hidden"
+              onclick="checkAnswersS17()" aria-label="בדוק תשובה"></button>
+      <div id="try-again-msg-s17" class="try-again-msg hidden">
+        <p class="try-again-err">זו אינה התשובה, נסו שוב.</p>
+        <p>תוכלו ללחוץ על כפתור העזרה</p>
+        <p>כדי לקבל רמז.</p>
+      </div>
+    </div>
+
+    <button class="nav-btn prev-btn" onclick="goTo(16)" aria-label="חזרה"></button>
+    <button id="next-s17" class="nav-btn next-btn hidden" onclick="goTo(18)" aria-label="המשך"></button>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SCREEN 18 — Frame 19: closing / completion
+       נועה מסיימת — סיכום ו-"סיימתי"
+  ════════════════════════════════════════════════ -->
+  <section class="screen" data-screen="18">
+    <img class="screen-bg" src="img/bg-frame18.png" alt="">
+
+    <div class="f6-textbox1">
+      <img src="img/textbox1.png" alt="">
+    </div>
+
+    <div class="f6-header-text">
+      <div>
+        <p>נועה כבר מסתדרת מעולה עם הזמן שלה, גם בימים עמוסים!</p>
+        <p>אבל מה קורה כשהיא צריכה לשמור על אחותה הקטנה?</p>
+        <p>את זה היא כבר תחשב בפעם אחרת…</p>
+      </div>
+    </div>
+
+    <!-- כפתור "סיימתי" — bottom left -->
+    <button class="s18-done-btn" onclick="completeMission()" aria-label="סיימתי"></button>
+
+    <!-- modal סיום — מוסתר עד לחיצה על "סיימתי" -->
+    <div id="s18-completion-overlay" class="s18-completion-overlay hidden"
+         role="dialog" aria-modal="true" aria-label="משימה הושלמה">
+      <div class="s18-completion-modal">
+        <img class="s18-modal-bg" src="img/textbox3.png" alt="">
+        <div class="s18-modal-text">
+          <p class="s18-modal-title">כל הכבוד, המשימה הושלמה!</p>
+          <p>יש לסגור את המשימה בלחיצה על X.</p>
+        </div>
+      </div>
+    </div>
+
+    <button class="nav-btn prev-btn" onclick="goTo(17)" aria-label="חזרה"></button>
+    <button class="nav-btn next-btn" onclick="goTo(18)" aria-label="המשך" style="visibility:hidden"></button>
   </section>
 
   <!-- ═══ Graph Zoom Modal — בתוך #app כדי לשמור על קנה מידה ═══

@@ -653,8 +653,9 @@ html, body {
   -webkit-text-fill-color: inherit; /* Safari */
 }
 
-/* ─── Submit Button "צדקתי" ─────────────────────────────── */
-/* הכפתור יושב בתוך .submit-row (absolute על המסך) */
+/* ─── Submit Button "צדקתי?" ─────────────────────────────── */
+/* הכפתור יושב בתוך .submit-row (absolute על המסך)          */
+/* הטקסט "צדקתי?" מוצג כ-::after — לא נדרש שינוי ב-HTML  */
 .submit-btn {
   width: 206px;
   height: 136px;
@@ -663,6 +664,22 @@ html, body {
   cursor: pointer;
   flex-shrink: 0;
   transition: none;
+  /* מרכוז טקסט */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* טקסט שעל הכפתור — מוצג מעל תמונת הרקע */
+.submit-btn::after {
+  content: 'צדקתי?';
+  font-family: 'Assistant', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: #030303;
+  direction: rtl;
+  pointer-events: none;
+  line-height: 1;
 }
 
 .submit-btn:hover  { background-image: url('../img/btn-submit-hover.png'); }
@@ -1386,6 +1403,8 @@ html, body {
   font-weight: 700;
   color: #030303;
   text-align: center;
+  line-height: 52px;            /* מרכז אנכי — מונע ירידה לתחתית כברירת-מחדל של input */
+  padding: 0;
   flex-shrink: 0;
 }
 
@@ -1501,7 +1520,7 @@ html, body {
   background: #fffefe;
   border-radius: 45px;
   box-shadow: 0 0 8px 4px rgba(0,0,0,0.3);
-  overflow: hidden;
+  overflow: visible;  /* Clip content disabled in Figma (Frame 31 / node 132:1196) */
   flex-shrink: 0;
   direction: ltr;   /* כל המיקומים בתוך הגרף הם pixel-exact מפיגמה */
 }
@@ -1729,4 +1748,346 @@ html, body {
 #graph-card-s12.is-zoomed {
   transform: scale(1.7);
   transform-origin: top left;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCREENS 13–18 — New CSS
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Screen 13 (Q5C): textbox-content container ────────────
+   Figma: absolute left:161, top:144, w:1608, h:795
+   pt:80 pr:73 pb:271 pl:50 — flex column, items-end (RTL: flex-start = physical right)
+   ──────────────────────────────────────────────────────────── */
+.s13-textbox-content {
+  position: absolute;
+  left: 161px;
+  top: 144px;
+  width: 1608px;
+  height: 795px;
+  padding: 80px 73px 271px 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: flex-start; /* RTL column: flex-start = physical right */
+  direction: rtl;
+  z-index: 6;
+}
+
+.s13-question-wrap {
+  width: 100%;
+  direction: rtl;
+  text-align: right;
+}
+
+/* שורת הסבר + גרף: direction:ltr so graph (second) appears on the right */
+.s13-note-graph-row {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;   /* pushed to the right (ltr: right end) */
+  direction: ltr;
+  width: 100%;
+  flex: 1;
+}
+
+/* טקסט הסבר כחול */
+.s13-note-text {
+  width: 591px;
+  direction: rtl;
+  text-align: right;
+}
+.s13-note-text p {
+  font-family: 'Assistant', sans-serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: #2b369b;
+  line-height: 1.45;
+}
+
+/* פידבק שגוי S13: CSS-only dark box at same position as s11-feedback-panel */
+.s13-feedback-incorrect {
+  position: absolute;
+  left: 980px;
+  top: 144px;
+  width: 789px;
+  height: 795px;
+  background: #171717;
+  border-radius: 45px;
+  overflow: hidden;
+  z-index: 20;
+  animation: feedbackIn 0.35s ease forwards;
+}
+
+/* ─── Screen 14 (narrative) — uses existing .f6-textbox1 + .f6-header-text ─ */
+/* No new CSS needed — reuses existing header patterns */
+
+/* ─── Q8-style inline feedback box (screens 13, 15, 17) ──────────────────
+   Figma ref: "feedback" frame node 259:1447 on "Screen 13 - Question 5B"
+   w:709, h:239, bg:#111, rounded-45, drop-shadow, pr:32
+   Replaces s11-feedback-panel overlay on screens that also show a diagram.
+   Identical pattern to s9-feedback-box (already proven on screen 9).       ── */
+.q8-feedback-box {
+  width: 709px;
+  min-height: 239px;
+  background: #111111;
+  border-radius: 45px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.25);
+  padding: 24px 32px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  flex-shrink: 0;
+  direction: rtl;
+  text-align: right;
+  animation: feedbackIn 0.35s ease forwards;
+}
+
+.q8-feedback-box p {
+  font-family: 'Assistant', sans-serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: #fcfafa;
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* Screen 13 — feedback is absolute inside s13-textbox-content,
+   placed in the note-text zone (left of graph, top: ~220px from textbox top).
+   The graph card starts at ~left:946px — feedback ends at ~left:759px → no overlap. */
+.s13-feedback-pos {
+  position: absolute;
+  left: 50px;    /* matches left padding of s13-textbox-content */
+  top: 220px;    /* note-graph-row area, after question text */
+  width: 709px;
+  z-index: 8;
+}
+
+/* Screen 15 (Q6) — feedback is inline in left-panel-f10 (no extra CSS) */
+
+/* ─── Screen 16 (Q7) — TMW host inside content-card ────────────
+   #tmw-host-s16 = .right-panel (same dimensions: left:923, top:25, w:605, h:754)
+   The #tmw-container will be moved here by goTo(16).
+   ──────────────────────────────────────────────────────────── */
+/* No additional CSS needed — #tmw-host-s16 inherits .right-panel styles */
+
+/* ─── Screen 17 (Q8) — dropdown fill-in ──────────────────────── */
+
+/* תיבת fill-in כוללת */
+.s17-fillin-box {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  direction: rtl;
+}
+
+.s17-fillin-line {
+  font-family: 'Assistant', sans-serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: #030303;
+  line-height: 1.45;
+}
+
+/* שורת dropdown — direction:ltr so text+dropdown+period are left-to-right
+   but since the container is RTL, physical right = "start" of reading.
+   direction:rtl on the row keeps Hebrew text + dropdown in natural RTL flow */
+.s17-dropdown-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  direction: rtl;
+  flex-wrap: wrap;
+}
+
+.s17-fillin-text {
+  font-family: 'Assistant', sans-serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: #030303;
+  white-space: nowrap;
+}
+
+.s17-dropdown-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.s17-dropdown-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 180px;
+  height: 52px;
+  padding: 0 16px;
+  background: #fff;
+  border: 3px solid #2b369b;
+  border-radius: 8px;
+  font-family: 'Assistant', sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: #2b369b;
+  cursor: pointer;
+  direction: rtl;
+  justify-content: space-between;
+  transition: none;
+}
+
+.s17-dropdown-btn.correct {
+  border-color: #1a7f37;
+  color: #1a7f37;
+  background: #f0fdf4;
+}
+.s17-dropdown-btn.incorrect {
+  border-color: #ca433d;
+  color: #ca433d;
+  background: #fdf0f0;
+}
+.s17-dropdown-btn:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.s17-dd-value {
+  flex: 1;
+  text-align: right;
+  direction: rtl;
+}
+
+.s17-dd-chevron {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.s17-dropdown-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 100%;
+  background: #fff;
+  border: 2px solid #2b369b;
+  border-radius: 8px;
+  list-style: none;
+  padding: 4px 0;
+  z-index: 50;
+  direction: rtl;
+}
+
+.s17-dropdown-list li {
+  padding: 10px 16px;
+  font-family: 'Assistant', sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: #030303;
+  cursor: pointer;
+  text-align: right;
+}
+.s17-dropdown-list li:hover {
+  background: #e8ecf7;
+}
+
+/* דמות נועה — screen-level absolute: bottom center (Figma: calc(50%-266.75px) = 693px) */
+.s17-noa-char {
+  position: absolute;
+  bottom: 0;
+  left: 693px;
+  width: 444px;
+  height: 715px;
+  object-fit: contain;
+  object-position: bottom;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ─── Screen 17 — future widget placeholder ─────────────────
+   Hidden until widget HTML/logic is provided.
+   When the widget is ready:
+     - Set display to block (or flex) and size as defined by Figma
+     - Adjust .left-panel-f10 to a narrower width to share space
+   ────────────────────────────────────────────────────────────── */
+.s17-widget-placeholder {
+  display: none; /* PLACEHOLDER — activate when widget is ready */
+}
+
+/* ─── Screen 18 (closing) — completion modal ─────────────────
+   modal פופ-אפ מרכזי — מוצג על screen 18 בלחיצה על "סיימתי"
+   ──────────────────────────────────────────────────────────── */
+
+/* כפתור "סיימתי" — bottom left (like btn-submit) */
+.s18-done-btn {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 206px;
+  height: 136px;
+  background: url('../img/btn-submit-normal.png') center/cover no-repeat;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+}
+.s18-done-btn:hover {
+  background-image: url('../img/btn-submit-hover.png');
+}
+
+/* שכבת overlay כהה */
+.s18-completion-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  animation: feedbackIn 0.35s ease forwards;
+}
+
+/* קופסת המודל */
+.s18-completion-modal {
+  position: relative;
+  width: 789px;
+  height: 500px;
+  overflow: hidden;
+  border-radius: 45px;
+}
+
+.s18-modal-bg {
+  position: absolute;
+  width: 243.35%;  /* 1920 / 789 */
+  height: 216%;    /* 1080 / 500 */
+  left: -124.59%;  /* -983 / 789 */
+  top: -28%;       /* centered */
+  pointer-events: none;
+}
+
+.s18-modal-text {
+  position: absolute;
+  inset: 0;
+  padding: 60px 60px 60px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  direction: rtl;
+  text-align: right;
+  z-index: 1;
+}
+
+.s18-modal-title {
+  font-family: 'Assistant', sans-serif;
+  font-size: 40px;
+  font-weight: 800;
+  color: #1a7f37;
+  line-height: 1.3;
+}
+
+.s18-modal-text p {
+  font-family: 'Assistant', sans-serif;
+  font-size: 30px;
+  font-weight: 600;
+  color: #030303;
+  line-height: 1.4;
 }

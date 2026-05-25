@@ -5,7 +5,7 @@
 'use strict';
 
 /* ─── Globals ───────────────────────────────────────────── */
-const TOTAL_SCREENS = 13;
+const TOTAL_SCREENS = 19;
 let currentScreen = 0;
 
 const CORRECT_ANSWERS = { timer1: 60, timer2: 40, timer3: 105 };
@@ -39,9 +39,20 @@ function goTo(n) {
   currentScreen = n;
   screens[currentScreen].classList.add('active');
 
+  // ── TMW widget DOM-move: screen 1 → tmw-host-s2; screen 16 → tmw-host-s16 ──
+  const tmwContainer = document.getElementById('tmw-container');
+  if (tmwContainer) {
+    const targetHostId = (n === 16) ? 'tmw-host-s16' : 'tmw-host-s2';
+    const targetHost = document.getElementById(targetHostId);
+    if (targetHost && tmwContainer.parentElement !== targetHost) {
+      targetHost.appendChild(tmwContainer);
+    }
+  }
+
   resetScreenState();
-  if (n === 5) enterFrame6();
-  if (n === 8) enterFrame9();
+  if (n === 5)  enterFrame6();
+  if (n === 8)  enterFrame9();
+  if (n === 13) initS13MultiSelect();
 }
 
 /** Reset transient UI state when changing screen */
@@ -185,6 +196,60 @@ function resetScreenState() {
       gp.classList.remove('is-selected', 'is-correct', 'is-incorrect'));
   }
 
+  // ── מסך 13 (Q5C) — אפס רק אם השאלה טרם הושלמה ──────────
+  if (!screen13Done) {
+    attemptCountS13 = 0;
+    document.querySelectorAll('#graph-card-s13 .s13-gp').forEach(gp =>
+      gp.classList.remove('is-selected', 'is-correct', 'is-incorrect'));
+    document.getElementById('submit-btn-s13')?.classList.add('hidden');
+    document.getElementById('try-again-msg-s13')?.classList.add('hidden');
+    document.getElementById('next-s13')?.classList.add('hidden');
+    document.getElementById('feedback-s13-correct')?.classList.add('hidden');
+    document.getElementById('feedback-s13-incorrect')?.classList.add('hidden');
+    // החזר note-text לתצוגה (הוסתר ב-disableSubmitS13)
+    document.querySelector('.s13-note-text')?.classList.remove('hidden');
+  }
+
+  // ── מסך 15 (Q6) — אפס רק אם השאלה טרם הושלמה ──────────
+  if (!screen15Done) {
+    attemptCountS15 = 0;
+    s15Selection = null;
+    RADIO_OPTIONS['s15'].forEach(opt => setRadioVisual('s15', opt, 'normal'));
+    ['s15-radio-a', 's15-radio-b', 's15-radio-c', 's15-radio-d'].forEach(id =>
+      document.getElementById(id)?.classList.remove('disabled'));
+    document.getElementById('submit-btn-s15')?.classList.add('hidden');
+    document.getElementById('try-again-msg-s15')?.classList.add('hidden');
+    document.getElementById('feedback-s15-correct')?.classList.add('hidden');
+    document.getElementById('feedback-s15-incorrect')?.classList.add('hidden');
+    document.getElementById('next-s15')?.classList.add('hidden');
+  }
+
+  // ── מסך 17 (Q8) — אפס רק אם השאלה טרם הושלמה ──────────
+  if (!screen17Done) {
+    attemptCountS17  = 0;
+    s17dd1Selection  = null;
+    s17dd2Selection  = null;
+    // אפס dropdown 1
+    const dd1Value = document.getElementById('dd1-value');
+    const dd1Btn   = document.getElementById('dd1-btn');
+    const dd1List  = document.getElementById('dd1-list');
+    if (dd1Value) dd1Value.textContent = 'בחרו...';
+    if (dd1Btn)   { dd1Btn.classList.remove('correct', 'incorrect'); dd1Btn.disabled = false; }
+    if (dd1List)  dd1List.classList.add('hidden');
+    // אפס dropdown 2
+    const dd2Value = document.getElementById('dd2-value');
+    const dd2Btn   = document.getElementById('dd2-btn');
+    const dd2List  = document.getElementById('dd2-list');
+    if (dd2Value) dd2Value.textContent = 'בחרו...';
+    if (dd2Btn)   { dd2Btn.classList.remove('correct', 'incorrect'); dd2Btn.disabled = false; }
+    if (dd2List)  dd2List.classList.add('hidden');
+    document.getElementById('submit-btn-s17')?.classList.add('hidden');
+    document.getElementById('try-again-msg-s17')?.classList.add('hidden');
+    document.getElementById('feedback-s17-correct')?.classList.add('hidden');
+    document.getElementById('feedback-s17-incorrect')?.classList.add('hidden');
+    document.getElementById('next-s17')?.classList.add('hidden');
+  }
+
   // ודא שה-modal זום סגור וקווי ההטלה מוסתרים בכל מעבר מסך
   closeGraphZoom();
   hideProjection(); // נקה קווי hover שנשארו ממעבר מהיר (ללא mouseleave)
@@ -310,10 +375,30 @@ const CORRECT_ANSWER_S7 = 'no';   // Q3B: לא נכון
 
 /* ─── Radio options map — used by radioClick() ──────────── */
 const RADIO_OPTIONS = {
-  's6': ['yes', 'no', 'dontknow'],
-  's7': ['yes', 'no', 'dontknow'],
-  's9': ['a', 'b', 'c', 'd'],
+  's6':  ['yes', 'no', 'dontknow'],
+  's7':  ['yes', 'no', 'dontknow'],
+  's9':  ['a', 'b', 'c', 'd'],
+  's15': ['a', 'b', 'c', 'd'],
 };
+
+/* ─── Screen 13 (Q5C) — multi-select state ──────────────── */
+let screen13Done    = false;
+let attemptCountS13 = 0;
+let s13MultiSelectInited = false;  // prevents re-binding click handlers
+
+/* ─── Screen 15 (Q6) — radio state ─────────────────────── */
+let screen15Done    = false;
+let attemptCountS15 = 0;
+let s15Selection    = null;
+const CORRECT_ANSWER_S15 = 'c';  // 126 דקות
+
+/* ─── Screen 17 (Q8) — dropdown state ───────────────────── */
+let screen17Done     = false;
+let attemptCountS17  = 0;
+let s17dd1Selection  = null;  // dropdown 1
+let s17dd2Selection  = null;  // dropdown 2
+const CORRECT_DD1    = '35%';
+const CORRECT_DD2    = 'לא משתנה';
 
 /* Resume-state flag / selection / attempts for Q4 (Screen 9) */
 let screen9Done = false;
@@ -750,18 +835,20 @@ function setRadioVisual(screen, optId, state) {
 
 /** User clicks a radio option */
 function radioClick(screen, value) {
-  if (screen === 's6' && screen6Done) return;
-  if (screen === 's7' && screen7Done) return;
-  if (screen === 's9' && screen9Done) return;
+  if (screen === 's6'  && screen6Done)  return;
+  if (screen === 's7'  && screen7Done)  return;
+  if (screen === 's9'  && screen9Done)  return;
+  if (screen === 's15' && screen15Done) return;
 
   // Reset all options for this screen then highlight selected
   const options = RADIO_OPTIONS[screen] || [];
   options.forEach(opt =>
     setRadioVisual(screen, opt, opt === value ? 'selected' : 'normal'));
 
-  if      (screen === 's6') s6Selection = value;
-  else if (screen === 's7') s7Selection = value;
-  else if (screen === 's9') s9Selection = value;
+  if      (screen === 's6')  s6Selection  = value;
+  else if (screen === 's7')  s7Selection  = value;
+  else if (screen === 's9')  s9Selection  = value;
+  else if (screen === 's15') s15Selection = value;
 
   // Show submit button once something is selected
   const btn = document.getElementById(`submit-btn-${screen}`);
@@ -959,11 +1046,12 @@ function checkAnswersS11() {
     document.getElementById('try-again-msg-s11')?.classList.add('hidden');
     disableSubmitS11('correct');
   } else if (attemptCountS11 >= MAX_ATTEMPTS) {
-    // ניסיון שני שגוי — ממלא תשובה נכונה + צובע אדום
-    inp.classList.add('incorrect');
+    // ניסיון שני שגוי — ממלא תשובה נכונה + מציג CORRECT (ירוק), לא INCORRECT
     inp.value = CORRECT_S11;
+    inp.classList.remove('incorrect');
+    inp.classList.add('correct');
     document.getElementById('try-again-msg-s11')?.classList.add('hidden');
-    disableSubmitS11('incorrect');
+    disableSubmitS11('incorrect');  // פאנל הפידבק עדיין "incorrect", רק השדה מציג ירוק
   } else {
     // ניסיון ראשון שגוי — הודעת try-again, כפתור נשאר גלוי
     document.getElementById('try-again-msg-s11')?.classList.remove('hidden');
@@ -1028,11 +1116,12 @@ function checkAnswersS12() {
     document.getElementById('try-again-msg-s12')?.classList.add('hidden');
     disableSubmitS12('correct');
   } else if (attemptCountS12 >= MAX_ATTEMPTS) {
-    // ניסיון שני שגוי — ממלא תשובה נכונה + צובע אדום
-    inp.classList.add('incorrect');
+    // ניסיון שני שגוי — ממלא תשובה נכונה + מציג CORRECT (ירוק), לא INCORRECT
     inp.value = CORRECT_S12;
+    inp.classList.remove('incorrect');
+    inp.classList.add('correct');
     document.getElementById('try-again-msg-s12')?.classList.add('hidden');
-    disableSubmitS12('incorrect');
+    disableSubmitS12('incorrect');  // פאנל הפידבק עדיין "incorrect", רק השדה מציג ירוק
   } else {
     // ניסיון ראשון שגוי — הודעת try-again בלבד
     document.getElementById('try-again-msg-s12')?.classList.remove('hidden');
@@ -1155,3 +1244,238 @@ document.addEventListener('keydown', e => {
 
 /* הפעל נקודות גרף לאחר טעינת ה-DOM */
 initGraphPoints();
+
+/* ═══════════════════════════════════════════════════════════
+   SCREEN 13 (Q5C) — multi-select: select exactly (20,100) and (10,50)
+   ═══════════════════════════════════════════════════════════ */
+
+function initS13MultiSelect() {
+  if (s13MultiSelectInited) return;
+  s13MultiSelectInited = true;
+
+  document.querySelectorAll('#graph-card-s13 .s13-gp').forEach(gp => {
+    gp.addEventListener('click', () => {
+      if (screen13Done) return;
+      gp.classList.toggle('is-selected');
+      const selected = document.querySelectorAll('#graph-card-s13 .s13-gp.is-selected');
+      const btn = document.getElementById('submit-btn-s13');
+      if (btn && !btn.disabled) {
+        btn.classList.toggle('hidden', selected.length === 0);
+      }
+    });
+  });
+}
+
+function checkAnswersS13() {
+  if (screen13Done) return;
+  if (attemptCountS13 >= MAX_ATTEMPTS) return;
+
+  const selected = Array.from(
+    document.querySelectorAll('#graph-card-s13 .s13-gp.is-selected'));
+  if (selected.length === 0) return;
+
+  attemptCountS13++;
+
+  // תשובה נכונה: בדיוק שתי הנקודות עם data-answer="true"
+  const answerDots = Array.from(
+    document.querySelectorAll('#graph-card-s13 .s13-gp[data-answer="true"]'));
+  const selectedSet = new Set(selected);
+  const answerSet   = new Set(answerDots);
+  const isCorrect   =
+    selectedSet.size === answerSet.size &&
+    [...answerSet].every(d => selectedSet.has(d));
+
+  if (isCorrect) {
+    answerDots.forEach(d => d.classList.add('is-correct'));
+    document.getElementById('try-again-msg-s13')?.classList.add('hidden');
+    disableSubmitS13('correct');
+  } else if (attemptCountS13 >= MAX_ATTEMPTS) {
+    // ניסיון 2 שגוי — מסמן נכון/שגוי + ממלא תשובות נכונות
+    document.getElementById('try-again-msg-s13')?.classList.add('hidden');
+    document.querySelectorAll('#graph-card-s13 .s13-gp').forEach(d => {
+      const isAnswer = d.dataset.answer === 'true';
+      const wasSelected = selectedSet.has(d);
+      d.classList.remove('is-selected');
+      if (isAnswer) {
+        d.classList.add('is-correct');
+      } else if (wasSelected) {
+        d.classList.add('is-incorrect');
+      }
+    });
+    disableSubmitS13('incorrect');
+  } else {
+    // ניסיון 1 שגוי — הודעת try-again, נקודות נאפסות לבחירה מחדש
+    document.getElementById('try-again-msg-s13')?.classList.remove('hidden');
+    document.querySelectorAll('#graph-card-s13 .s13-gp').forEach(d =>
+      d.classList.remove('is-selected'));
+  }
+}
+
+function disableSubmitS13(feedbackType) {
+  screen13Done = true;
+  const btn = document.getElementById('submit-btn-s13');
+  if (btn) { btn.disabled = true; btn.classList.add('hidden'); }
+  document.getElementById('next-s13')?.classList.remove('hidden');
+
+  // הסתר את ה-note-text כדי שהפידבק (q8-feedback-box.s13-feedback-pos) יהיה גלוי
+  document.querySelector('.s13-note-text')?.classList.add('hidden');
+
+  if (feedbackType === 'correct') {
+    document.getElementById('feedback-s13-correct')?.classList.remove('hidden');
+  } else {
+    document.getElementById('feedback-s13-incorrect')?.classList.remove('hidden');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCREEN 15 (Q6) — radio: correct = 'c' (126 דקות)
+   ═══════════════════════════════════════════════════════════ */
+
+function checkAnswersS15() {
+  if (screen15Done) return;
+  if (attemptCountS15 >= MAX_ATTEMPTS) return;
+  if (!s15Selection) return;
+
+  attemptCountS15++;
+  const isCorrect = (s15Selection === CORRECT_ANSWER_S15);
+
+  if (isCorrect) {
+    setRadioVisual('s15', s15Selection, 'correct');
+    document.getElementById('try-again-msg-s15')?.classList.add('hidden');
+    _showFeedbackRadio('s15', 'correct');
+    disableSubmitS15();
+  } else if (attemptCountS15 >= MAX_ATTEMPTS) {
+    // ניסיון 2 שגוי — מסמן שגוי + חושף נכון
+    const wrongId = s15Selection;
+    RADIO_OPTIONS['s15'].forEach(opt => {
+      if (opt === CORRECT_ANSWER_S15) setRadioVisual('s15', opt, 'correct');
+      else if (opt === wrongId)       setRadioVisual('s15', opt, 'incorrect');
+    });
+    document.getElementById('try-again-msg-s15')?.classList.add('hidden');
+    _showFeedbackRadio('s15', 'incorrect');
+    disableSubmitS15();
+  } else {
+    // ניסיון 1 שגוי — הודעה inline, בחירה נשארת
+    document.getElementById('try-again-msg-s15')?.classList.remove('hidden');
+  }
+}
+
+function disableSubmitS15() {
+  screen15Done = true;
+  const btn = document.getElementById('submit-btn-s15');
+  if (btn) { btn.disabled = true; btn.classList.add('hidden'); }
+  ['s15-radio-a', 's15-radio-b', 's15-radio-c', 's15-radio-d'].forEach(id =>
+    document.getElementById(id)?.classList.add('disabled'));
+  document.getElementById('next-s15')?.classList.remove('hidden');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCREEN 17 (Q8) — custom dropdowns
+   dropdown1: correct = '35%'
+   dropdown2: correct = 'לא משתנה'
+   ═══════════════════════════════════════════════════════════ */
+
+function toggleDropdownMenu(screenNum, ddNum) {
+  const listEl = document.getElementById(`dd${ddNum}-list`);
+  const btnEl  = document.getElementById(`dd${ddNum}-btn`);
+  if (!listEl) return;
+  const isOpen = !listEl.classList.contains('hidden');
+  // סגור את כל הרשימות תחילה
+  ['dd1-list', 'dd2-list'].forEach(id => {
+    document.getElementById(id)?.classList.add('hidden');
+  });
+  document.querySelectorAll('.s17-dropdown-btn').forEach(b =>
+    b.setAttribute('aria-expanded', 'false'));
+  if (!isOpen) {
+    listEl.classList.remove('hidden');
+    btnEl?.setAttribute('aria-expanded', 'true');
+  }
+}
+
+function selectDropdown(screenNum, ddNum, value) {
+  const valueEl = document.getElementById(`dd${ddNum}-value`);
+  const listEl  = document.getElementById(`dd${ddNum}-list`);
+  const btnEl   = document.getElementById(`dd${ddNum}-btn`);
+  if (valueEl) valueEl.textContent = value;
+  if (listEl)  listEl.classList.add('hidden');
+  if (btnEl)   btnEl.setAttribute('aria-expanded', 'false');
+
+  if (ddNum === 1) s17dd1Selection = value;
+  if (ddNum === 2) s17dd2Selection = value;
+
+  // הצג כפתור submit אם שני ה-dropdowns מלאים
+  const btn = document.getElementById('submit-btn-s17');
+  if (btn && !btn.disabled) {
+    btn.classList.toggle('hidden', !s17dd1Selection || !s17dd2Selection);
+  }
+}
+
+// סגור dropdown בלחיצה מחוץ לו
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.s17-dropdown-wrap')) {
+    ['dd1-list', 'dd2-list'].forEach(id =>
+      document.getElementById(id)?.classList.add('hidden'));
+    document.querySelectorAll('.s17-dropdown-btn').forEach(b =>
+      b.setAttribute('aria-expanded', 'false'));
+  }
+});
+
+function checkAnswersS17() {
+  if (screen17Done) return;
+  if (attemptCountS17 >= MAX_ATTEMPTS) return;
+  if (!s17dd1Selection || !s17dd2Selection) return;
+
+  attemptCountS17++;
+  const isCorrect = (s17dd1Selection === CORRECT_DD1) && (s17dd2Selection === CORRECT_DD2);
+
+  if (isCorrect) {
+    _colorDropdown(1, true);
+    _colorDropdown(2, true);
+    document.getElementById('try-again-msg-s17')?.classList.add('hidden');
+    document.getElementById('feedback-s17-correct')?.classList.remove('hidden');
+    disableSubmitS17();
+  } else if (attemptCountS17 >= MAX_ATTEMPTS) {
+    // ניסיון 2 שגוי — מסמן + ממלא תשובות נכונות
+    document.getElementById('try-again-msg-s17')?.classList.add('hidden');
+    _colorDropdown(1, s17dd1Selection === CORRECT_DD1);
+    _colorDropdown(2, s17dd2Selection === CORRECT_DD2);
+    // מלא תשובות נכונות
+    const dd1Val = document.getElementById('dd1-value');
+    const dd2Val = document.getElementById('dd2-value');
+    if (dd1Val) dd1Val.textContent = CORRECT_DD1;
+    if (dd2Val) dd2Val.textContent = CORRECT_DD2;
+    document.getElementById('feedback-s17-incorrect')?.classList.remove('hidden');
+    disableSubmitS17();
+  } else {
+    // ניסיון 1 שגוי — הודעה inline בלבד
+    document.getElementById('try-again-msg-s17')?.classList.remove('hidden');
+  }
+}
+
+function _colorDropdown(ddNum, isCorrect) {
+  const btn = document.getElementById(`dd${ddNum}-btn`);
+  if (!btn) return;
+  btn.classList.remove('correct', 'incorrect');
+  btn.classList.add(isCorrect ? 'correct' : 'incorrect');
+}
+
+function disableSubmitS17() {
+  screen17Done = true;
+  const btn = document.getElementById('submit-btn-s17');
+  if (btn) { btn.disabled = true; btn.classList.add('hidden'); }
+  // נועל את ה-dropdowns
+  ['dd1-btn', 'dd2-btn'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.disabled = true;
+  });
+  document.getElementById('next-s17')?.classList.remove('hidden');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCREEN 18 — completion modal
+   ═══════════════════════════════════════════════════════════ */
+
+function completeMission() {
+  const overlay = document.getElementById('s18-completion-overlay');
+  if (overlay) overlay.classList.remove('hidden');
+}
