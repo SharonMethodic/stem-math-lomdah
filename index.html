@@ -269,7 +269,7 @@
          סדר DOM: הודעה ראשונה (שמאל), כפתור שני (ימין)
          direction:ltr על הcontainer כדי שflexbox לא יתהפך ברוב RTL -->
     <div class="submit-row">
-      <button id="submit-btn" class="submit-btn hidden" onclick="checkAnswers()" aria-label="בדוק תשובות"></button>
+      <button id="submit-btn" class="submit-btn hidden" onclick="checkAnswers()" aria-label="בדוק תשובות"><span class="submit-label">צדקתי?</span></button>
       <div id="try-again-msg" class="try-again-msg hidden">
         <p class="try-again-err">זו אינה התשובה, נסו שוב.</p>
         <p>תוכלו ללחוץ על כפתור העזרה</p>
@@ -397,8 +397,9 @@
          תמיד גלוי — מציג את מידע ה-40% וויזואליזציית הזמן -->
     <div class="s4-context-panel">
       <div class="s4-context-text">
-        <p>מתוך זמן המסך שיש לה, נועה רוצה להקדיש חלק לצפייה</p>
-        <p>בסדרה האהובה עליה, ואת השאר לגלישה חופשית באינטרנט.</p>
+        <p>חלק מזמן המסך שהקציבה לעצמה, נועה רוצה להקדיש </p>
+        <p>לצפייה בסדרה האהובה עליה, ואת השאר – לגלישה חופשית</p>
+        <p>באינטרנט.</p>
         <p>כל פרק בסדרה אורך כ-40% מזמן המסך שלה.</p>
       </div>
       <div class="s4-tv-box">
@@ -413,7 +414,7 @@
 
     <!-- ══ שורת "צדקתי" + "נסו שוב" ══ -->
     <div class="submit-row">
-      <button id="submit-btn-s4" class="submit-btn hidden" onclick="checkAnswersS4()" aria-label="בדוק תשובות"></button>
+      <button id="submit-btn-s4" class="submit-btn hidden" onclick="checkAnswersS4()" aria-label="בדוק תשובות"><span class="submit-label">צדקתי?</span></button>
       <div id="try-again-msg-s4" class="try-again-msg hidden">
         <p class="try-again-err">זו אינה התשובה, נסו שוב.</p>
         <p>תוכלו ללחוץ על כפתור העזרה</p>
@@ -463,18 +464,12 @@
 
   <!-- Popup שאלה 5א (מסך 11) — טקסט מ-Figma node 132-1761 -->
   <div id="help-popup-s11" class="help-popup hidden" role="tooltip">
-    <p>הסתכלו על ציר ה-x</p>
-    <p>וזכרו שיש להוריד את</p>
-    <p>זמן ההליכה והחזרה</p>
-    <p>מחדר הכושר.</p>
+    <p>הסתכלו על ציר ה-x וזכרו שיש להפחית את זמן ההליכה אל חדר הכושר והחזרה ממנו.</p>
   </div>
 
   <!-- Popup שאלה 5ב (מסך 12) — TODO: עדכן מ-Figma node 132-1939 -->
   <div id="help-popup-s12" class="help-popup hidden" role="tooltip">
-    <p>הסתכלו על ציר ה-y</p>
-    <p>ואתרו את 350.</p>
-    <p>לאחר מכן בדקו</p>
-    <p>מה הערך המתאים בציר ה-x.</p>
+    <p>הסתכלו על ציר ה-y וזכרו שיש להפחית את זמן ההליכה אל חדר הכושר והחזרה ממנו.</p>
   </div>
 
   <!-- Popup שאלה 5ג (מסך 13) -->
@@ -497,8 +492,8 @@
 
   <!-- Popup שאלה 8 (מסך 17) -->
   <div id="help-popup-s17" class="help-popup hidden" role="tooltip">
-    <p>חשבו איזה אחוז היוו 105 דקות מתוך 300,</p>
-    <p>והשוו לאחוז ש-126 דקות מהוות מתוך 360.</p>
+    <p>חשבו כמה אחוזים הם 105 (דקות) מתוך 300,</p>
+    <p>והשוו לשיעור באחוזים של 126 (דקות) מתוך 360.</p>
   </div>
 
   <!-- ═══════════════════════════════════════════════
@@ -633,7 +628,7 @@
     </div>
 
     <div class="submit-row">
-      <button id="submit-btn-s6" class="submit-btn hidden" onclick="checkAnswersS6()" aria-label="בדוק תשובה"></button>
+      <button id="submit-btn-s6" class="submit-btn hidden" onclick="checkAnswersS6()" aria-label="בדוק תשובה"><span class="submit-label">צדקתי?</span></button>
       <div id="try-again-msg-s6" class="try-again-msg hidden">
         <p class="try-again-err">זו אינה התשובה, נסו שוב.</p>
         <p>תוכלו ללחוץ על כפתור העזרה</p>
@@ -694,17 +689,15 @@
 
           <div id="feedback-s7-correct" class="s4-feedback-box hidden">
             <p class="s4-feedback-title">צדקת!</p>
-            <p class="s4-feedback-body">זמן המסך מהווה רק 35% מתוך הזמן הפנוי (300 הדקות).</p>
-            <p class="s4-feedback-body">כשמחשבים 40% מזמן המסך, לא מחשבים מתוך כל ה-300 דקות</p>
-            <p class="s4-feedback-body">אלא רק מתוך ה-35% (שהם 105 דקות).</p>
-            <p class="s4-feedback-body">לכן 40% מזמן המסך הם בעצם 40% מתוך 35% מהזמן הפנוי.</p>
+            <p class="s4-feedback-body">זמן המסך הוא רק 35% מתוך הזמן הפנוי (300 הדקות).</p>
+            <p class="s4-feedback-body">כשמחשבים 40% מזמן המסך, לא מחשבים מתוך כל 300 הדקות אלא רק מתוך ה-35% (שהם 105 דקות).</p>
+            <p class="s4-feedback-body">לכן 40% מזמן המסך הם בעצם 40% מתוך 35% מהזמן הפנוי, ולא 40% מכל הזמן הפנוי.</p>
           </div>
           <div id="feedback-s7-incorrect" class="s4-feedback-box hidden">
             <p class="s4-feedback-title">זו טעות</p>
-            <p class="s4-feedback-body">זמן המסך מהווה רק 35% מתוך הזמן הפנוי (300 הדקות).</p>
-            <p class="s4-feedback-body">כשמחשבים 40% מזמן המסך, לא מחשבים מתוך כל ה-300 דקות</p>
-            <p class="s4-feedback-body">אלא רק מתוך ה-35% (שהם 105 דקות).</p>
-            <p class="s4-feedback-body">לכן 40% מזמן המסך הם בעצם 40% מתוך 35% מהזמן הפנוי.</p>
+            <p class="s4-feedback-body">זמן המסך הוא רק 35% מתוך הזמן הפנוי (300 הדקות).</p>
+            <p class="s4-feedback-body">כשמחשבים 40% מזמן המסך, לא מחשבים מתוך כל 300 הדקות אלא רק מתוך ה-35% (שהם 105 דקות).</p>
+            <p class="s4-feedback-body">לכן 40% מזמן המסך הם בעצם 40% מתוך 35% מהזמן הפנוי, ולא 40% מכל הזמן הפנוי.</p>
           </div>
         </div>
       </div>
@@ -731,7 +724,7 @@
     </div>
 
     <div class="submit-row">
-      <button id="submit-btn-s7" class="submit-btn hidden" onclick="checkAnswersS7()" aria-label="בדוק תשובה"></button>
+      <button id="submit-btn-s7" class="submit-btn hidden" onclick="checkAnswersS7()" aria-label="בדוק תשובה"><span class="submit-label">צדקתי?</span></button>
       <div id="try-again-msg-s7" class="try-again-msg hidden">
         <p class="try-again-err">זו אינה התשובה, נסו שוב.</p>
         <p>תוכלו ללחוץ על כפתור העזרה</p>
@@ -844,7 +837,7 @@
     </div>
 
     <div class="submit-row">
-      <button id="submit-btn-s9" class="submit-btn hidden" onclick="checkAnswersS9()" aria-label="בדוק תשובה"></button>
+      <button id="submit-btn-s9" class="submit-btn hidden" onclick="checkAnswersS9()" aria-label="בדוק תשובה"><span class="submit-label">צדקתי?</span></button>
       <div id="try-again-msg-s9" class="try-again-msg hidden">
         <p class="try-again-err">זו אינה התשובה, נסו שוב.</p>
         <p>תוכלו ללחוץ על כפתור העזרה</p>
@@ -869,7 +862,7 @@
 
     <div class="f6-header-text">
       <div>
-        <p>עוד יום עבר ונועה התחילה להתרגל לשיטה, גם כשהיה צריך להתגמש פה ושם.</p>
+        <p>עוד יום עבר ונועה התחילה להתרגל לשיטה, גם אם היה צריך להתגמש פה ושם.</p>
         <p>עכשיו היא מתכוננת לקראת מבחן גדול וחשוב.</p>
       </div>
     </div>
@@ -1083,7 +1076,7 @@
     <!-- ══ שורת "צדקתי" + הודעת ניסיון ראשון שגוי ══ -->
     <div class="submit-row">
       <button id="submit-btn-s11" class="submit-btn hidden"
-              onclick="checkAnswersS11()" aria-label="בדוק תשובה"></button>
+              onclick="checkAnswersS11()" aria-label="בדוק תשובה"><span class="submit-label">צדקתי?</span></button>
       <div id="try-again-msg-s11" class="try-again-msg hidden">
         <p class="try-again-err">זו אינה התשובה, נסו שוב.</p>
         <p>תוכלו ללחוץ על כפתור העזרה</p>
@@ -1290,7 +1283,7 @@
     <!-- ══ שורת "צדקתי" + הודעת ניסיון ראשון שגוי ══ -->
     <div class="submit-row">
       <button id="submit-btn-s12" class="submit-btn hidden"
-              onclick="checkAnswersS12()" aria-label="בדוק תשובה"></button>
+              onclick="checkAnswersS12()" aria-label="בדוק תשובה"><span class="submit-label">צדקתי?</span></button>
       <div id="try-again-msg-s12" class="try-again-msg hidden">
         <p class="try-again-err">זו אינה התשובה, נסו שוב.</p>
         <p>תוכלו ללחוץ על כפתור העזרה</p>
@@ -1470,7 +1463,7 @@
     <!-- ══ שורת "צדקתי?" + הודעת ניסיון ראשון שגוי ══ -->
     <div class="submit-row">
       <button id="submit-btn-s13" class="submit-btn hidden"
-              onclick="checkAnswersS13()" aria-label="בדוק תשובה"></button>
+              onclick="checkAnswersS13()" aria-label="בדוק תשובה"><span class="submit-label">צדקתי?</span></button>
       <div id="try-again-msg-s13" class="try-again-msg hidden">
         <p class="try-again-err">זו אינה התשובה, נסו שוב.</p>
         <p>תוכלו ללחוץ על כפתור העזרה</p>
@@ -1578,7 +1571,7 @@
     <!-- ══ שורת "צדקתי?" ══ -->
     <div class="submit-row">
       <button id="submit-btn-s15" class="submit-btn hidden"
-              onclick="checkAnswersS15()" aria-label="בדוק תשובה"></button>
+              onclick="checkAnswersS15()" aria-label="בדוק תשובה"><span class="submit-label">צדקתי?</span></button>
       <div id="try-again-msg-s15" class="try-again-msg hidden">
         <p class="try-again-err">זו אינה התשובה, נסו שוב.</p>
         <p>תוכלו ללחוץ על כפתור העזרה</p>
@@ -1619,8 +1612,8 @@
         <!-- פאנל שמאל: שאלה -->
         <div class="left-panel">
           <p class="q-text">7. הגיע סוף השבוע והזמן הפנוי של נועה גדל.</p>
-          <p class="q-text">נועה התלבטה בכמה להגדיל את זמן המסך שלה ועשתה מספר חישובים</p>
-          <p class="q-text">ביישומון חדש שהיא בנתה לעצמה, ומיועד לניהול הזמן שלה בסוף השבוע.</p>
+          <p class="q-text">נועה התלבטה בכמה להגדיל את זמן המסך שלה ועשתה כמה חישובים</p>
+          <p class="q-text">ביישומון חדש שהיא בנתה לעצמה, המיועד לניהול הזמן שלה בסוף השבוע.</p>
           <p class="q-text">&ZeroWidthSpace;</p>
           <p class="q-bold">השתמשו ביישומון מימין ועזרו לנועה לבדוק מה יקרה לזמן המסך שלה,</p>
           <p class="q-bold">אם הזמן הפנוי שלה יגדל ב-80% וב-20%.</p>
@@ -1668,8 +1661,8 @@
         <div class="left-panel left-panel-f10">
 
           <div>
-            <p class="q-text">8. באחד מסופי השבוע, הזמן הפנוי של נועה גדל מ-300 דקות ל-360 דקות.</p>
-            <p class="q-text">נועה מחליטה להגדיל גם את זמן המסך שלה מ-105 דקות ביום רגיל ל-126 דקות.</p>
+            <p class="q-text">8. באחד מסופי השבוע הזמן הפנוי של נועה גדל מ-300 דקות ל-360 דקות.</p>
+            <p class="q-text">נועה מחליטה להגדיל בהתאם גם את זמן המסך שלה מ-105 דקות (ביום רגיל) ל-126 דקות.</p>
           </div>
           <p class="q-bold">השלימו את המסקנה המתמטית של נועה:</p>
 
@@ -1723,18 +1716,18 @@
                q8-feedback-box = dark rounded box, Figma ref node 259:1447 ══ -->
           <div id="feedback-s17-correct" class="q8-feedback-box hidden">
             <p class="s11-feedback-title">צדקת! </p>
-            <p>105 מתוך 300 = 35%.</p>
-            <p>126 מתוך 360 = 35%.</p>
-            <p>כאשר מגדילים את השלם ואת החלק באותו אחוז (20%),</p>
-            <p>האחוז שהחלק תופס מהשלם נשאר זהה!</p>
+            <p>כשמגדילים גם את השלם וגם את החלק באותו אחוז, היחס ביניהם נשמר.</p>
+            <p>בואו נראה זאת בזמן המסך של נועה:</p>
+            <p>ביום רגיל זמן המסך הוא 105 דקות מתוך 300 דקות, ובסוף השבוע זמן המסך גדל ל-126 דקות, והזמן הכולל ל-360 דקות.</p>
+            <p>כלומר, בשני המקרים זמן המסך יהיה 35% מהזמן הפנוי שלה.</p>
           </div>
 
           <div id="feedback-s17-incorrect" class="q8-feedback-box hidden">
             <p class="s11-feedback-title s11-feedback-incorrect-title">זו טעות</p>
-            <p>126 ÷ 360 = 0.35 = 35%.</p>
-            <p>105 ÷ 300 = 0.35 = 35%.</p>
-            <p>כאשר גדלים שלם וחלק באותו שיעור,</p>
-            <p>האחוז שהחלק תופס מהשלם לא משתנה.</p>
+            <p>כשמגדילים גם את השלם וגם את החלק באותו אחוז, היחס ביניהם נשמר.</p>
+            <p>בואו נראה זאת בזמן המסך של נועה:</p>
+            <p>ביום רגיל זמן המסך הוא 105 דקות מתוך 300 דקות, ובסוף השבוע זמן המסך גדל ל-126 דקות, והזמן הכולל ל-360 דקות.</p>
+            <p>כלומר, בשני המקרים זמן המסך יהיה 35% מהזמן הפנוי שלה.</p>
           </div>
 
         </div><!-- /left-panel -->
@@ -1769,7 +1762,7 @@
     <!-- ══ שורת "צדקתי?" ══ -->
     <div class="submit-row">
       <button id="submit-btn-s17" class="submit-btn hidden"
-              onclick="checkAnswersS17()" aria-label="בדוק תשובה"></button>
+              onclick="checkAnswersS17()" aria-label="בדוק תשובה"><span class="submit-label">צדקתי?</span></button>
       <div id="try-again-msg-s17" class="try-again-msg hidden">
         <p class="try-again-err">זו אינה התשובה, נסו שוב.</p>
         <p>תוכלו ללחוץ על כפתור העזרה</p>
@@ -1796,21 +1789,30 @@
       <div>
         <p>נועה כבר מסתדרת מעולה עם הזמן שלה, גם בימים עמוסים!</p>
         <p>אבל מה קורה כשהיא צריכה לשמור על אחותה הקטנה?</p>
-        <p>את זה היא כבר תחשב בפעם אחרת…</p>
+        <p>אהה, את זה היא כבר תחשב בפעם אחרת…</p>
       </div>
     </div>
 
-    <!-- כפתור "סיימתי" — bottom left -->
-    <button class="s18-done-btn" onclick="completeMission()" aria-label="סיימתי"></button>
+    <!-- כפתור "סיימתי" — bottom left
+         משתמש באותו Submit_Btn sprite כמו כפתורי "צדקתי?" — מאושר ב-Figma node I141:1807;61:160.
+         הטקסט "סיימתי" מוצג דרך .submit-label (כמו שאר כפתורי הגשה בלומדה). -->
+    <button class="s18-done-btn" onclick="completeMission()">
+      <span class="submit-label">סיימתי</span>
+    </button>
 
-    <!-- modal סיום — מוסתר עד לחיצה על "סיימתי" -->
+    <!-- After-interaction overlay — מוסתר עד לחיצה על "סיימתי"
+         State 2: "Screen 19 - After interaction 02" (Figma node 141:1821)
+         ─ שכבת כהות: rgba(0,0,0,0.45)
+         ─ כרטיס לבן ב-(529px, 294px) גודל 862×454px -->
     <div id="s18-completion-overlay" class="s18-completion-overlay hidden"
          role="dialog" aria-modal="true" aria-label="משימה הושלמה">
       <div class="s18-completion-modal">
         <img class="s18-modal-bg" src="img/textbox3.png" alt="">
         <div class="s18-modal-text">
           <p class="s18-modal-title">כל הכבוד, המשימה הושלמה!</p>
-          <p>יש לסגור את המשימה בלחיצה על X.</p>
+          <p class="s18-modal-grade">הציון שלך הוא [UserGrade].</p>
+          <p class="s18-modal-spacer">&ZeroWidthSpace;</p>
+          <p class="s18-modal-close">יש לסגור את המשימה בלחיצה על X.</p>
         </div>
       </div>
     </div>

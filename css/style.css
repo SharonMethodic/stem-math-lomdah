@@ -607,6 +607,7 @@ html, body {
   font-size: 28px;
   color: #030303;
   text-align: center;
+  line-height: normal;          /* ensures browser centers single-line value vertically */
   outline: none;
   flex-shrink: 0;
   direction: ltr;
@@ -655,35 +656,55 @@ html, body {
 
 /* ─── Submit Button "צדקתי?" ─────────────────────────────── */
 /* הכפתור יושב בתוך .submit-row (absolute על המסך)          */
-/* הטקסט "צדקתי?" מוצג כ-::after — לא נדרש שינוי ב-HTML  */
+/* רקע: sprite מ-Figma (1920×1080, שקיפות אמיתית בפינות)   */
+/* הטקסט נמצא בתוך הכפתור כ-<span class="submit-label">    */
+/*                                                            */
+/* ⚠ לא להשתמש ב-get_screenshot לייצוא כפתורים — הוא       */
+/*   צובע את הרקע של Figma (אטום) במקום שקיפות אמיתית.     */
+/*   יש להשתמש ב-get_design_context ולהוריד את imgSubmitBtn1 */
 .submit-btn {
+  position: relative;
   width: 206px;
   height: 136px;
-  background: url('../img/btn-submit-normal.png') center/contain no-repeat;
+  /* Sprite approach: button at canvas (265,717) in a 1920x1080 Figma export.
+     Corners are alpha=0 (transparent) — verified via pixel inspection.
+     get_screenshot gives alpha=255 (opaque dark bg) at corners — do NOT use. */
+  background-image: url('../img/btn-submit-sprite-normal.png');
+  background-size: 1920px 1080px;
+  background-position: -265px -717px;
+  background-repeat: no-repeat;
+  background-color: transparent;
   border: none;
+  appearance: none;
+  -webkit-appearance: none;
   cursor: pointer;
   flex-shrink: 0;
   transition: none;
-  /* מרכוז טקסט */
+  padding: 0;
+  /* מרכוז הטקסט הפנימי */
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* טקסט שעל הכפתור — מוצג מעל תמונת הרקע */
-.submit-btn::after {
-  content: 'צדקתי?';
+/* תווית הכפתור — Figma: Assistant Bold 36px #fcfafa */
+.submit-label {
   font-family: 'Assistant', sans-serif;
-  font-size: 26px;
+  font-size: 36px;
   font-weight: 700;
-  color: #030303;
+  color: #fcfafa;
   direction: rtl;
   pointer-events: none;
   line-height: 1;
+  user-select: none;
+  position: relative; /* ensures label renders above background */
+  z-index: 1;
 }
 
-.submit-btn:hover  { background-image: url('../img/btn-submit-hover.png'); }
-.submit-btn:active { background-image: url('../img/btn-submit-normal.png'); opacity: 0.85; }
+.submit-btn:hover  {
+  background-image: url('../img/btn-submit-sprite-hover.png');
+}
+.submit-btn:active { opacity: 0.85; }
 .submit-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
@@ -932,6 +953,7 @@ html, body {
   flex-shrink: 0;
   animation: feedbackIn 0.35s ease forwards;
   direction: rtl;
+  text-align: right;
 }
 
 .s4-feedback-title {
@@ -1351,6 +1373,11 @@ html, body {
   text-align: right;
 }
 
+.s9-feedback-box p {
+  text-align: right;
+  direction: rtl;
+}
+
 /* ─── Frame 11 (Screen 10): narrative — uses Frame 6 header CSS ──
    .f6-textbox1 and .f6-header-text are already defined above.
    No additional rules needed.
@@ -1403,7 +1430,7 @@ html, body {
   font-weight: 700;
   color: #030303;
   text-align: center;
-  line-height: 52px;            /* מרכז אנכי — מונע ירידה לתחתית כברירת-מחדל של input */
+  line-height: normal;          /* מרכז אנכי — line-height:52px גדול מ-content-area ומסיט הטקסט למעלה */
   padding: 0;
   flex-shrink: 0;
 }
@@ -1851,6 +1878,8 @@ html, body {
   color: #fcfafa;
   margin: 0;
   line-height: 1.45;
+  text-align: right;
+  direction: rtl;
 }
 
 /* Screen 13 — feedback is absolute inside s13-textbox-content,
@@ -2017,77 +2046,116 @@ html, body {
    modal פופ-אפ מרכזי — מוצג על screen 18 בלחיצה על "סיימתי"
    ──────────────────────────────────────────────────────────── */
 
-/* כפתור "סיימתי" — bottom left (like btn-submit) */
+/* ─── כפתור "סיימתי" ─────────────────────────────────────────
+   Figma: Submit_Btn component (node I141:1807;61:160) —
+   אותו ספרייט בדיוק כמו כפתורי "צדקתי?" (position 265,717 בcanvas).
+   הטקסט מוצג דרך .submit-label (הגדרה גלובלית). ─────────── */
 .s18-done-btn {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 206px;
   height: 136px;
-  background: url('../img/btn-submit-normal.png') center/cover no-repeat;
+  background-image: url('../img/btn-submit-sprite-normal.png');
+  background-size: 1920px 1080px;
+  background-position: -265px -717px;
+  background-repeat: no-repeat;
+  background-color: transparent;
   border: none;
+  appearance: none;
+  -webkit-appearance: none;
   cursor: pointer;
   z-index: 10;
-}
-.s18-done-btn:hover {
-  background-image: url('../img/btn-submit-hover.png');
-}
-
-/* שכבת overlay כהה */
-.s18-completion-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
+  transition: none;
+}
+.s18-done-btn:hover {
+  background-image: url('../img/btn-submit-sprite-hover.png');
+}
+
+/* ─── After-interaction overlay ──────────────────────────────
+   Figma node 141:1831 — שכבת כהות 45% (לא 60%)
+   אין flex-centering — הכרטיס ממוקם אבסולוטית ב-(529,294) ─── */
+.s18-completion-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
   z-index: 100;
   animation: feedbackIn 0.35s ease forwards;
 }
 
-/* קופסת המודל */
+/* ─── כרטיס הסיום ────────────────────────────────────────────
+   Figma node 141:1836 — position (529px, 294px), size 862×454
+   border-radius חלק מספרייט textbox3 — אין צורך ב-CSS ─────── */
 .s18-completion-modal {
-  position: relative;
-  width: 789px;
-  height: 500px;
+  position: absolute;
+  left: 529px;
+  top: 294px;
+  width: 862px;
+  height: 454px;
   overflow: hidden;
-  border-radius: 45px;
 }
 
+/* ─── ספרייט textbox3 — 1920×1080 canvas sprite ─────────────
+   Figma: width=222.71% (1920÷862), height=238.06% (1080÷453.674)
+   left=-61.40% (-529.31÷862), top=-64.92% (-294.52÷453.674) ─ */
 .s18-modal-bg {
   position: absolute;
-  width: 243.35%;  /* 1920 / 789 */
-  height: 216%;    /* 1080 / 500 */
-  left: -124.59%;  /* -983 / 789 */
-  top: -28%;       /* centered */
+  width: 222.71%;
+  height: 238.06%;
+  left: -61.40%;
+  top: -64.92%;
   pointer-events: none;
 }
 
+/* ─── טקסט בתוך הכרטיס ──────────────────────────────────────
+   Figma node 141:1837 — מרכז אופקי, מתחיל 118px מהחלק העליון */
 .s18-modal-text {
   position: absolute;
-  inset: 0;
-  padding: 60px 60px 60px 60px;
+  left: 0;
+  right: 0;
+  top: 118px;
+  padding: 0 60px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 20px;
+  align-items: center;
+  text-align: center;
   direction: rtl;
-  text-align: right;
   z-index: 1;
 }
 
+/* "כל הכבוד, המשימה הושלמה!" — 36px bold */
 .s18-modal-title {
   font-family: 'Assistant', sans-serif;
-  font-size: 40px;
-  font-weight: 800;
-  color: #1a7f37;
-  line-height: 1.3;
+  font-size: 36px;
+  font-weight: 700;
+  color: #030303;
+  line-height: normal;
 }
 
-.s18-modal-text p {
+/* "הציון שלך הוא [UserGrade]." — 45px bold */
+.s18-modal-grade {
   font-family: 'Assistant', sans-serif;
-  font-size: 30px;
-  font-weight: 600;
+  font-size: 45px;
+  font-weight: 700;
   color: #030303;
-  line-height: 1.4;
+  line-height: normal;
+}
+
+/* שורת ריווח בין ה-grade לסגירה */
+.s18-modal-spacer {
+  font-size: 45px;
+  line-height: normal;
+}
+
+/* "יש לסגור את המשימה בלחיצה על X." — 36px medium */
+.s18-modal-close {
+  font-family: 'Assistant', sans-serif;
+  font-size: 36px;
+  font-weight: 500;
+  color: #030303;
+  line-height: normal;
 }
