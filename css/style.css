@@ -1937,11 +1937,12 @@ html, body {
 
 /* Screen 15 (Q6) — feedback is inline in left-panel-f10 (no extra CSS) */
 
-/* ─── Screen 16 (Q7) — TMW host inside content-card ────────────
-   #tmw-host-s16 = .right-panel (same dimensions: left:923, top:25, w:605, h:754)
-   The #tmw-container will be moved here by goTo(16).
+/* ─── Screen 16 (Q7) — Weekend Widget host inside content-card ──
+   #ww-host-s16 = .right-panel (same dimensions: left:923, top:25, w:605, h:754).
+   The Weekend Widget is independent from the Time Management Widget
+   (separate DOM/CSS/JS) and lives statically here — no DOM-move.
    ──────────────────────────────────────────────────────────── */
-/* No additional CSS needed — #tmw-host-s16 inherits .right-panel styles */
+/* No additional CSS needed — #ww-host-s16 inherits .right-panel styles */
 
 /* ─── Screen 17 (Q8) — dropdown fill-in ──────────────────────── */
 

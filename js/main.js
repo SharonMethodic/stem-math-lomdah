@@ -39,16 +39,6 @@ function goTo(n) {
   currentScreen = n;
   screens[currentScreen].classList.add('active');
 
-  // ── TMW widget DOM-move: screen 1 → tmw-host-s2; screen 16 → tmw-host-s16 ──
-  const tmwContainer = document.getElementById('tmw-container');
-  if (tmwContainer) {
-    const targetHostId = (n === 16) ? 'tmw-host-s16' : 'tmw-host-s2';
-    const targetHost = document.getElementById(targetHostId);
-    if (targetHost && tmwContainer.parentElement !== targetHost) {
-      targetHost.appendChild(tmwContainer);
-    }
-  }
-
   resetScreenState();
   if (n === 5)  enterFrame6();
   if (n === 8)  enterFrame9();

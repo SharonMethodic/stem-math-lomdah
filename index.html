@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Open+Sans:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/time-management-widget.css">
+  <link rel="stylesheet" href="css/weekend-widget.css">
 </head>
 <body>
 
@@ -138,9 +139,8 @@
           בדקו איך זה משפיע על התכנון שלה.</p>
         </div>
 
-        <!-- פאנל ימין: TimeManagementWidget Container — יישומון מקומי (ללא iframe) -->
-        <!-- id="tmw-host-s2": DOM-move target — goTo() moves #tmw-container here when on screen 1,
-             and to #tmw-host-s16 when on screen 16. -->
+        <!-- פאנל ימין: TimeManagementWidget Container — יישומון מקומי (ללא iframe).
+             היישומון חי כאן בלבד (שאלה 1א). שאלה 7 משתמשת ב-Weekend Widget נפרד. -->
         <div class="right-panel" id="tmw-host-s2">
           <!-- Outer container is dir="ltr" so any vertical scrollbar lands on the visual right.
                Inner .tmw-inner restores dir="rtl" for the actual content. -->
@@ -1599,9 +1599,53 @@
           <p class="q-bold">השתמשו ביישומון מימין ועזרו לנועה לבדוק מה יקרה לזמן המסך שלה אם הזמן הפנוי שלה יגדל ב-80% וב-20%.</p>
         </div>
 
-        <!-- פאנל ימין: TMW widget host — tmw-container מועבר לכאן ב-goTo(16) -->
-        <div id="tmw-host-s16" class="right-panel">
-          <!-- #tmw-container יגיע לכאן דרך DOM-move ב-goTo() -->
+        <!-- פאנל ימין: Weekend Widget — יישומון עצמאי לשאלה 7 (מקומי, ללא iframe).
+             אינו חולק DOM/מצב/IDs עם ה-Time Management Widget של שאלה 1א. -->
+        <div class="right-panel" id="ww-host-s16">
+          <!-- Outer container is dir="ltr" so any vertical scrollbar lands on the
+               visual right. Inner .ww-inner restores dir="rtl" for the content. -->
+          <div id="ww-container" class="ww-container">
+            <button id="ww-zoom-btn" class="ww-zoom-btn" type="button"
+                    aria-label="הגדל יישומון" title="הגדל יישומון"></button>
+
+            <div class="ww-inner" dir="rtl">
+              <h1>אתגר סוף השבוע</h1>
+              <div class="ww-subtitle">חוקיות ההגדלה וההקטנה</div>
+
+              <div class="ww-scoreboard">
+                <div class="ww-score-item">ניסיונות: <span id="ww-attempts-val">0</span> מתוך 5</div>
+                <div class="ww-score-item">הצלחות: <span id="ww-successes-val">0</span></div>
+              </div>
+
+              <div class="ww-info-box">
+                <b>תזכורת:</b> ביום רגיל יש לנועה <b>300 דקות פנויות</b>, ומתוכן היא מקדישה <b>105 דקות למסכים</b> (שהם 35%). בסוף השבוע, גם הזמן הפנוי וגם זמן המסך שלה גדלים!
+              </div>
+
+              <div class="ww-slider-container">
+                <label for="ww-perc-slider">בחרו בכמה אחוזים תרצו להגדיל את הזמן הפנוי של נועה:</label>
+                <input type="range" id="ww-perc-slider" class="ww-range"
+                       min="20" max="100" step="20" value="40">
+                <div class="ww-percent-display">הגדלה של: <span id="ww-perc-display-val">40</span>%</div>
+              </div>
+
+              <div class="ww-input-group">
+                <label for="ww-new-total-input">1. הזמן הפנוי החדש (מחושב אוטומטית):</label>
+                <input type="number" id="ww-new-total-input" disabled>
+
+                <label for="ww-new-screen-input" style="margin-top: 15px;">2. זמן המסך החדש (מחושב אוטומטית):</label>
+                <input type="number" id="ww-new-screen-input" disabled>
+
+                <label for="ww-final-perc-input" style="margin-top: 15px; color:#16a085;">3. האחוז החדש מהשלם:</label>
+                <div class="ww-input-hint">חשבו: איזה אחוז מהווה זמן המסך החדש מתוך הזמן הפנוי החדש?</div>
+                <input type="number" id="ww-final-perc-input" class="ww-highlight-input" placeholder="הקלידו אחוז סופי (%)">
+              </div>
+
+              <button class="ww-btn-check" id="ww-check-btn" type="button">בדקו את תשובותיכם</button>
+              <button class="ww-btn-restart" id="ww-restart-btn" type="button">התחל משחק מחדש</button>
+
+              <div id="ww-feedback" class="ww-feedback"></div>
+            </div>
+          </div>
         </div>
 
       </div><!-- /content-card -->
@@ -1814,6 +1858,7 @@
 </div><!-- /app -->
 
 <script src="js/time-management-widget.js"></script>
+<script src="js/weekend-widget.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

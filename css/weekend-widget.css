@@ -1,0 +1,304 @@
+/* ============================================================
+   Weekend Widget (Question 7) — internal/local implementation
+   Source reference (unchanged): widgets/weekend-widget-original.html
+   All selectors prefixed `ww-` to avoid colliding with lesson styles
+   and with the Time Management Widget (`tmw-`).
+   ============================================================ */
+
+/* Outer scroll container — direction:ltr so any vertical scrollbar
+   lands on the visual right edge of the widget, even though the lesson
+   is RTL. The inner .ww-inner restores direction:rtl for content. */
+.ww-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  direction: ltr;
+  overflow: auto;
+  z-index: 1;
+}
+
+/* When zoomed, the widget keeps the same DOM (so all state is preserved)
+   but layout boxes actually grow — using CSS `zoom` instead of
+   `transform: scale()` so that scrollHeight, clientHeight, font sizes,
+   paddings, and absolute-positioned child coordinates all scale together.
+   This is what lets "scroll to the bottom" reveal the true visual bottom
+   in zoomed mode (transform: scale alone leaves scrollHeight at the
+   unzoomed value and clips the bottom).
+   Factor 1.2 matches the Time Management Widget and keeps the visual right
+   edge clear of the prev-nav button given .right-panel sits at x=923. */
+.ww-container.ww-zoomed {
+  zoom: 1.2;
+  z-index: 5;
+}
+
+/* Single toggle button — same Figma "Zoom In / Zoom Out" style as the
+   Time Management Widget (node 227:1832): 50×55 dark rounded frame with the
+   white magnifier icon. Positioned as a container-level overlay at the
+   top-right corner (visual right in the dir="ltr" outer wrapper), so it
+   reads as a separate UI control — not an input inside the widget form. */
+.ww-zoom-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;                                  /* visual right edge of container (LTR) */
+  width: 50px;
+  height: 55px;
+  padding: 0;
+  background-color: rgba(0, 0, 0, 0.75);        /* dark semi-transparent frame */
+  background-image: url('../img/btn-zoom-in.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.15s ease;
+}
+
+.ww-zoom-btn:hover {
+  transform: scale(1.08);
+}
+
+.ww-container.ww-zoomed .ww-zoom-btn {
+  background-image: url('../img/btn-zoom-out.png');
+}
+
+.ww-inner {
+  direction: rtl;
+  padding: 22px 24px;
+  box-sizing: border-box;
+  font-family: 'Assistant', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.ww-container h1 {
+  text-align: center;
+  color: #2c3e50;
+  font-size: 24px;
+  margin: 0 0 4px 0;
+}
+
+.ww-subtitle {
+  text-align: center;
+  color: #7f8c8d;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.ww-scoreboard {
+  display: flex;
+  justify-content: space-between;
+  background-color: #8e44ad;
+  color: #ffffff;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.ww-score-item span {
+  color: #f1c40f;
+  margin-right: 5px;
+}
+
+.ww-info-box {
+  background-color: #fef9e7;
+  border-right: 4px solid #f1c40f;
+  padding: 12px;
+  font-size: 14px;
+  color: #333333;
+  margin-bottom: 16px;
+  border-radius: 4px;
+  line-height: 1.5;
+}
+
+.ww-slider-container {
+  background-color: #f3e5f5;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  text-align: center;
+  border: 1px solid #e1bee7;
+}
+
+.ww-slider-container label {
+  font-weight: bold;
+  color: #8e44ad;
+  font-size: 16px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.ww-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  background: transparent;
+  margin-bottom: 12px;
+}
+
+.ww-range:focus { outline: none; }
+
+.ww-range::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8px;
+  cursor: pointer;
+  background: #d1c4e9;
+  border-radius: 4px;
+}
+
+.ww-range::-webkit-slider-thumb {
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background: #8e44ad;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.ww-range::-moz-range-track {
+  width: 100%;
+  height: 8px;
+  cursor: pointer;
+  background: #d1c4e9;
+  border-radius: 4px;
+}
+
+.ww-range::-moz-range-thumb {
+  height: 24px;
+  width: 24px;
+  border: none;
+  border-radius: 50%;
+  background: #8e44ad;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.ww-percent-display {
+  font-size: 22px;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.ww-input-group {
+  margin-bottom: 12px;
+  background: #f9f9f9;
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid #eeeeee;
+}
+
+.ww-input-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #34495e;
+  font-size: 14px;
+}
+
+.ww-input-group input {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #bdc3c7;
+  border-radius: 6px;
+  font-size: 16px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  font-family: inherit;
+}
+
+.ww-input-group input:focus {
+  border-color: #8e44ad;
+  outline: none;
+}
+
+.ww-input-group input:disabled {
+  background-color: #ecf0f1;
+  color: #7f8c8d;
+  font-weight: bold;
+  text-align: center;
+}
+
+.ww-input-hint {
+  font-size: 12px;
+  color: #16a085;
+  margin-bottom: 5px;
+}
+
+.ww-highlight-input {
+  background-color: #e8f8f5 !important;
+  border-color: #1abc9c !important;
+  font-weight: bold;
+  text-align: center;
+  font-size: 18px !important;
+}
+
+.ww-btn-check,
+.ww-btn-restart {
+  width: 100%;
+  padding: 14px;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.3s;
+}
+
+.ww-btn-check {
+  background-color: #27ae60;
+  margin-top: 10px;
+}
+.ww-btn-check:hover { background-color: #219653; }
+.ww-btn-check:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+
+.ww-btn-restart {
+  background-color: #e67e22;
+  margin-top: 15px;
+  display: none;
+}
+.ww-btn-restart:hover { background-color: #d35400; }
+
+.ww-feedback {
+  margin-top: 16px;
+  padding: 15px;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: bold;
+  display: none;
+  font-size: 16px;
+}
+
+.ww-feedback.ww-error {
+  background-color: #fadbd8;
+  color: #c0392b;
+  border: 1px solid #e74c3c;
+}
+
+.ww-feedback.ww-success {
+  background-color: #d5f5e3;
+  color: #27ae60;
+  border: 1px solid #2ecc71;
+}
+
+.ww-feedback.ww-finished {
+  background-color: #fdf2e9;
+  color: #d35400;
+  border: 2px solid #e67e22;
+  font-size: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(230, 126, 34, 0.2);
+}
