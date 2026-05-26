@@ -770,9 +770,8 @@ html, body {
 }
 
 /* ─── Feedback Panels (Screen 3 — screen-level absolute) ────
-   Figma: left:980, top:144, width:789, height:795
-   פאנל המשוב — בצד שמאל (Figma node 51-253: left:151, top:144, 809×818)
-   רקע: תמונה מפיגמה ממלאת את הקונטיינר (inset:0, size-full, object-bottom)
+   פאנל המשוב — שאלה 1 (Figma 51:320 / 296:1439)
+   שניהם: left:151, top:144, 809×818
    ──────────────────────────────────────────────────────── */
 .feedback-panel {
   position: absolute;
@@ -780,8 +779,8 @@ html, body {
   top: 144px;
   width: 809px;
   height: 818px;
-  background: #171717;          /* rgb(23,23,23) — מתוך פיקסלים בפיגמה */
-  border-radius: 45px;          /* פינות מעוגלות כמו בפיגמה */
+  background: #171717;
+  border-radius: 45px;
   overflow: hidden;
   z-index: 20;
   animation: feedbackIn 0.35s ease forwards;
@@ -792,9 +791,15 @@ html, body {
   to   { opacity: 1; transform: scale(1); }
 }
 
-/* תמונת הרקע — מוחבאת; הרקע מוגדר על הפאנל עצמו ב-CSS */
+/* תמונת הרקע — שקופה (Figma image fill ללא color fill), מוחבאת */
 .feedback-bg-img {
   display: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: bottom;
 }
 
 /* טקסט הפידבק — Figma: pt:80 pr:80 pb:271 pl:50, items-end, direction:rtl */
@@ -1125,24 +1130,36 @@ html, body {
 
 .radio-icon-wrap {
   position: relative;
-  width: 15px;
-  height: 15px;
+  width: 20px;
+  height: 20px;  /* Normal state — Figma: 20×20 */
   flex-shrink: 0;
-  overflow: hidden;   /* ברירת מחדל — חותך */
+  overflow: hidden;
 }
 
-/* Correct: ממדים פיקסליים מדויקים מ-Figma (container 15×15):
-   top -8.33px (=55.54%×15), width 21.66px (=15+44.39%×15), height 23.33px (=15+55.54%×15) */
+/* Selected: 20×21px */
+.radio-icon-wrap.is-selected {
+  height: 21px;
+}
+
+/* Incorrect: 20×21px */
+.radio-icon-wrap.is-incorrect {
+  height: 21px;
+}
+
+/* Correct: 20×15px — checkmark overflows container (Figma inset: -48.88% -30.8% -16.67% 0)
+   container 20×15: top -7.33px, right -6.16px, bottom -2.5px, left 0
+   → image: w=26.16px, h=24.83px */
 .radio-icon-wrap.is-correct {
+  height: 15px;
   overflow: visible;
 }
 .radio-icon-wrap.is-correct .radio-icon-img {
-  top:    -8.33px;
+  top:    -7.33px;
   left:   0;
   right:  unset;
   bottom: unset;
-  width:  21.66px;
-  height: 23.33px;
+  width:  26.16px;
+  height: 24.83px;
   object-fit: contain;
 }
 
@@ -1452,6 +1469,19 @@ html, body {
    Figma: left:980, top:144, w:789, h:795
    רקע: תמונת 1920×1080 מלאה, נחתכת ע"י overflow:hidden לגבולות הפאנל
    ──────────────────────────────────────────────────────────── */
+/* ─── Screens 11/12 (Q5A, Q5B): new small-box feedback position ──
+   Replaces s11-feedback-panel (full right-panel overlay) with q8-feedback-box style.
+   Canvas: left-panel starts at canvas(136,134); feedback at +56,+500 within it.
+   Figma ref: 287:1359 inside 132:1401 (left:56, top:500, w:740, h:254)   ────────────────────────────────────────────────────────────── */
+.s11s12-feedback-pos {
+  position: absolute;
+  left: 220px;
+  top: 510px;
+  width: 740px;
+  z-index: 20;
+}
+
+/* ── OLD overlay feedback (kept for reference, no longer used on screens 11/12) ── */
 .s11-feedback-panel {
   position: absolute;
   left: 980px;
@@ -1521,7 +1551,7 @@ html, body {
   align-items: flex-start; /* RTL column flex: flex-start = physical RIGHT — מיישר טקסט + גרף לימין */
   gap: 15px;
   direction: rtl;
-  overflow: hidden;
+  overflow: visible; /* visible — allows graph card to expand in-place without clip */
   z-index: 6;
 }
 
@@ -1717,7 +1747,7 @@ html, body {
   top: 605px;
   width: 15px;
   height: 15px;
-  z-index: 6;
+  z-index: 5;
 }
 
 /* ─── Graph annotation note (screen-level, outside panels) ─ */
@@ -1730,7 +1760,7 @@ html, body {
   width: 591px;
   direction: rtl;
   text-align: right;
-  z-index: 6;
+  z-index: 5;
 }
 .s11-graph-note p {
   font-family: 'Assistant', sans-serif;
@@ -1769,12 +1799,15 @@ html, body {
   /* ❌ ללא border-radius — הכרטיסייה עצמה מעגלת את הפינות */
 }
 
-/* הכרטיסייה עצמה כשהיא מוגדלת (×1.7 מהפינה השמאלית-עליונה)
-   חל על שתי כרטיסיות הגרף: Q5A (#graph-card) ו-Q5B (#graph-card-s12) */
+/* הכרטיסייה עצמה כשהיא מוגדלת — in-place zoom (כמו TMW widget).
+   zoom: 1.7 מגדיל את הגרף מבלי להזיז אותו ל-DOM אחר, ללא overlay,
+   ללא חשיכת רקע, ללא כיסוי השאלה.
+   חל על שלוש כרטיסיות הגרף: Q5A / Q5B / Q5C */
 #graph-card.is-zoomed,
-#graph-card-s12.is-zoomed {
-  transform: scale(1.7);
-  transform-origin: top left;
+#graph-card-s12.is-zoomed,
+#graph-card-s13.is-zoomed {
+  zoom: 1.25;
+  z-index: 50;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1816,6 +1849,23 @@ html, body {
   direction: ltr;
   width: 100%;
   flex: 1;
+}
+
+/* wrapper כולל dot bullet + note text (Figma frame 41: w:621, h:111) */
+.s13-note-wrapper {
+  position: relative;
+  width: 621px;
+  flex-shrink: 0;
+}
+
+/* Ellipse 3 — Figma: left:606, top:12 בתוך frame 621px → right:0, top:12 */
+.s13-dot-bullet {
+  position: absolute;
+  right: 0;
+  top: 12px;
+  width: 15px;
+  height: 15px;
+  z-index: 5;
 }
 
 /* טקסט הסבר כחול */
@@ -1880,18 +1930,10 @@ html, body {
   line-height: 1.45;
   text-align: right;
   direction: rtl;
+  width: 100%;  /* fill container width so text-align:right takes effect visually */
 }
 
-/* Screen 13 — feedback is absolute inside s13-textbox-content,
-   placed in the note-text zone (left of graph, top: ~220px from textbox top).
-   The graph card starts at ~left:946px — feedback ends at ~left:759px → no overlap. */
-.s13-feedback-pos {
-  position: absolute;
-  left: 50px;    /* matches left padding of s13-textbox-content */
-  top: 220px;    /* note-graph-row area, after question text */
-  width: 709px;
-  z-index: 8;
-}
+/* Screen 13 feedback now uses .s11s12-feedback-pos (same as screens 11/12) */
 
 /* Screen 15 (Q6) — feedback is inline in left-panel-f10 (no extra CSS) */
 
@@ -1902,6 +1944,13 @@ html, body {
 /* No additional CSS needed — #tmw-host-s16 inherits .right-panel styles */
 
 /* ─── Screen 17 (Q8) — dropdown fill-in ──────────────────────── */
+
+/* Override bottom padding for screen 17 — Noa char is screen-level (not inside panel),
+   so the 271px reserved for the character in .left-panel-f10 is not needed here.
+   Without this, content-card's overflow:hidden clips the feedback box. */
+.s17-left-panel {
+  padding-bottom: 40px;
+}
 
 /* תיבת fill-in כוללת */
 .s17-fillin-box {
@@ -2019,17 +2068,28 @@ html, body {
   background: #e8ecf7;
 }
 
-/* דמות נועה — screen-level absolute: bottom center (Figma: calc(50%-266.75px) = 693px) */
-.s17-noa-char {
+/* דמות נועה — screen-level absolute: bottom center (Figma node 141:1740)
+   z-index: 10 > content-area (5) כדי שהדמות תופיע מעל הכרטיסייה
+   container מחתך את התמונה הגדולה לפי ערכי הפיגמה:
+     img: w=390.94%, h=136.71%, left=-76.97%, top=-36.71% */
+.s17-noa-wrap {
   position: absolute;
   bottom: 0;
-  left: 693px;
+  left: 250px;   /* moved left to clear question text; Figma origin was 471px */
   width: 444px;
   height: 715px;
-  object-fit: contain;
-  object-position: bottom;
+  overflow: hidden;
   pointer-events: none;
-  z-index: 2;
+  z-index: 10;
+}
+.s17-noa-img {
+  position: absolute;
+  width: 390.94%;
+  height: 136.71%;
+  left: -76.97%;
+  top: -36.71%;
+  pointer-events: none;
+  user-select: none;
 }
 
 /* ─── Screen 17 — future widget placeholder ─────────────────

@@ -175,6 +175,9 @@ function resetScreenState() {
     document.getElementById('next-s11')?.classList.add('hidden');
     document.getElementById('feedback-s11-correct')?.classList.add('hidden');
     document.getElementById('feedback-s11-incorrect')?.classList.add('hidden');
+    // החזר dot + טקסט הסבר לתצוגה
+    document.querySelector('[data-screen="11"] .s11-dot-bullet')?.classList.remove('hidden');
+    document.querySelector('[data-screen="11"] .s11-graph-note')?.classList.remove('hidden');
     // אפס מצב נקודות גרף Q5A בלבד
     document.querySelectorAll('#graph-card .gp').forEach(gp =>
       gp.classList.remove('is-selected', 'is-correct', 'is-incorrect'));
@@ -191,6 +194,9 @@ function resetScreenState() {
     document.getElementById('next-s12')?.classList.add('hidden');
     document.getElementById('feedback-s12-correct')?.classList.add('hidden');
     document.getElementById('feedback-s12-incorrect')?.classList.add('hidden');
+    // החזר dot + טקסט הסבר לתצוגה
+    document.querySelector('[data-screen="12"] .s11-dot-bullet')?.classList.remove('hidden');
+    document.querySelector('[data-screen="12"] .s11-graph-note')?.classList.remove('hidden');
     // אפס מצב נקודות גרף Q5B בלבד
     document.querySelectorAll('#graph-card-s12 .gp').forEach(gp =>
       gp.classList.remove('is-selected', 'is-correct', 'is-incorrect'));
@@ -206,8 +212,8 @@ function resetScreenState() {
     document.getElementById('next-s13')?.classList.add('hidden');
     document.getElementById('feedback-s13-correct')?.classList.add('hidden');
     document.getElementById('feedback-s13-incorrect')?.classList.add('hidden');
-    // החזר note-text לתצוגה (הוסתר ב-disableSubmitS13)
-    document.querySelector('.s13-note-text')?.classList.remove('hidden');
+    // החזר wrapper (dot + note-text) לתצוגה (הוסתר ב-disableSubmitS13)
+    document.querySelector('.s13-note-wrapper')?.classList.remove('hidden');
   }
 
   // ── מסך 15 (Q6) — אפס רק אם השאלה טרם הושלמה ──────────
@@ -233,14 +239,14 @@ function resetScreenState() {
     const dd1Value = document.getElementById('dd1-value');
     const dd1Btn   = document.getElementById('dd1-btn');
     const dd1List  = document.getElementById('dd1-list');
-    if (dd1Value) dd1Value.textContent = 'בחרו...';
+    if (dd1Value) dd1Value.textContent = 'בחרו תשובה';
     if (dd1Btn)   { dd1Btn.classList.remove('correct', 'incorrect'); dd1Btn.disabled = false; }
     if (dd1List)  dd1List.classList.add('hidden');
     // אפס dropdown 2
     const dd2Value = document.getElementById('dd2-value');
     const dd2Btn   = document.getElementById('dd2-btn');
     const dd2List  = document.getElementById('dd2-list');
-    if (dd2Value) dd2Value.textContent = 'בחרו...';
+    if (dd2Value) dd2Value.textContent = 'בחרו תשובה';
     if (dd2Btn)   { dd2Btn.classList.remove('correct', 'incorrect'); dd2Btn.disabled = false; }
     if (dd2List)  dd2List.classList.add('hidden');
     document.getElementById('submit-btn-s17')?.classList.add('hidden');
@@ -380,6 +386,20 @@ const RADIO_OPTIONS = {
   's9':  ['a', 'b', 'c', 'd'],
   's15': ['a', 'b', 'c', 'd'],
 };
+
+/* ─── Score flags — set to true when the user answers correctly (any attempt)
+   Q7 (screen 16) is not scored per the scoring rules.
+   ──────────────────────────────────────────────────────────────── */
+let scoreCorrect_q1b = false;  // Screen  3 — Q1 section B
+let scoreCorrect_q2  = false;  // Screen  4 — Q2
+let scoreCorrect_q3a = false;  // Screen  6 — Q3A
+let scoreCorrect_q3b = false;  // Screen  7 — Q3B
+let scoreCorrect_q4  = false;  // Screen  9 — Q4
+let scoreCorrect_q5a = false;  // Screen 11 — Q5A
+let scoreCorrect_q5b = false;  // Screen 12 — Q5B
+let scoreCorrect_q5c = false;  // Screen 13 — Q5C
+let scoreCorrect_q6  = false;  // Screen 15 — Q6
+let scoreCorrect_q8  = false;  // Screen 17 — Q8
 
 /* ─── Screen 13 (Q5C) — multi-select state ──────────────── */
 let screen13Done    = false;
@@ -562,6 +582,7 @@ function checkAnswers() {
     const msgOk = document.getElementById('try-again-msg');
     if (msgOk) msgOk.classList.add('hidden');
     showFeedback('correct');
+    scoreCorrect_q1b = true;
     disableSubmit();
     return;
   }
@@ -709,6 +730,7 @@ function checkAnswersS4() {
     colorInput('timer-s4', true);
     document.getElementById('try-again-msg-s4')?.classList.add('hidden');
     showFeedbackS4('correct');
+    scoreCorrect_q2 = true;
     disableSubmitS4();
     return;
   }
@@ -825,8 +847,12 @@ function setRadioVisual(screen, optId, state) {
 
   icon.src = `img/radio-${state}.svg`;
 
-  /* correct state: checkmark overflows container (by design) — toggle class */
-  if (wrap) wrap.classList.toggle('is-correct', state === 'correct');
+  /* toggle size classes per state (Figma: normal=20×20, selected/incorrect=20×21, correct=20×15) */
+  if (wrap) {
+    wrap.classList.toggle('is-correct',   state === 'correct');
+    wrap.classList.toggle('is-selected',  state === 'selected');
+    wrap.classList.toggle('is-incorrect', state === 'incorrect');
+  }
 
   label.className = 'radio-label';
   if (state === 'correct')   label.classList.add('radio-correct-text');
@@ -867,6 +893,7 @@ function checkAnswersS6() {
     setRadioVisual('s6', s6Selection, 'correct');
     document.getElementById('try-again-msg-s6')?.classList.add('hidden');
     _showFeedbackRadio('s6', 'correct');
+    scoreCorrect_q3a = true;
     disableSubmitS6();
   } else if (attemptCountS6 >= MAX_ATTEMPTS) {
     // Second wrong attempt — mark selected wrong, reveal correct, leave 3rd neutral
@@ -899,6 +926,7 @@ function checkAnswersS7() {
     setRadioVisual('s7', s7Selection, 'correct');
     document.getElementById('try-again-msg-s7')?.classList.add('hidden');
     _showFeedbackRadio('s7', 'correct');
+    scoreCorrect_q3b = true;
     disableSubmitS7();
   } else if (attemptCountS7 >= MAX_ATTEMPTS) {
     // Second wrong attempt — mark selected wrong, reveal correct, leave 3rd neutral
@@ -954,6 +982,7 @@ function checkAnswersS9() {
     setRadioVisual('s9', s9Selection, 'correct');
     document.getElementById('try-again-msg-s9')?.classList.add('hidden');
     _showFeedbackRadio('s9', 'correct');
+    scoreCorrect_q4 = true;
     disableSubmitS9();
   } else if (attemptCountS9 >= MAX_ATTEMPTS) {
     // 2nd wrong attempt — mark selected wrong, reveal correct, leave others normal
@@ -1044,6 +1073,7 @@ function checkAnswersS11() {
   if (isCorrect) {
     inp.classList.add('correct');
     document.getElementById('try-again-msg-s11')?.classList.add('hidden');
+    scoreCorrect_q5a = true;
     disableSubmitS11('correct');
   } else if (attemptCountS11 >= MAX_ATTEMPTS) {
     // ניסיון שני שגוי — ממלא תשובה נכונה + מציג CORRECT (ירוק), לא INCORRECT
@@ -1072,6 +1102,10 @@ function disableSubmitS11(feedbackType) {
   if (answerDot) {
     answerDot.classList.add(feedbackType === 'correct' ? 'is-correct' : 'is-incorrect');
   }
+
+  // הסתר dot (Ellipse 3) + טקסט הסבר כשמופיע פידבק
+  document.querySelector('[data-screen="11"] .s11-dot-bullet')?.classList.add('hidden');
+  document.querySelector('[data-screen="11"] .s11-graph-note')?.classList.add('hidden');
 
   // מציג פאנל פידבק מתאים
   const panelCorrect   = document.getElementById('feedback-s11-correct');
@@ -1114,6 +1148,7 @@ function checkAnswersS12() {
   if (isCorrect) {
     inp.classList.add('correct');
     document.getElementById('try-again-msg-s12')?.classList.add('hidden');
+    scoreCorrect_q5b = true;
     disableSubmitS12('correct');
   } else if (attemptCountS12 >= MAX_ATTEMPTS) {
     // ניסיון שני שגוי — ממלא תשובה נכונה + מציג CORRECT (ירוק), לא INCORRECT
@@ -1141,6 +1176,10 @@ function disableSubmitS12(feedbackType) {
   if (answerDot) {
     answerDot.classList.add(feedbackType === 'correct' ? 'is-correct' : 'is-incorrect');
   }
+
+  // הסתר dot (Ellipse 3) + טקסט הסבר כשמופיע פידבק
+  document.querySelector('[data-screen="12"] .s11-dot-bullet')?.classList.add('hidden');
+  document.querySelector('[data-screen="12"] .s11-graph-note')?.classList.add('hidden');
 
   // מציג פאנל פידבק מתאים
   document.getElementById(`feedback-s12-${feedbackType}`)?.classList.remove('hidden');
@@ -1196,22 +1235,19 @@ function hideProjection(projH, projV) {
   }
 }
 
-/* ─── Graph Zoom: DOM-move approach ────────────────────────
-   הכרטיסייה הפעילה (graph-card או graph-card-s12) עוברת פיזית
-   לתוך #graph-zoom-host ומקבלת scale(1.7).
-   zoomedCardId שומר איזו כרטיסייה נמצאת כרגע ב-modal,
-   כדי שנוכל להחזיר אותה ל-host המתאים בסגירה.
+/* ─── Graph Zoom: in-place approach (כמו TMW widget) ────────
+   הכרטיסייה נשארת במיקומה ב-DOM — רק class is-zoomed מתווסף/מוסר.
+   CSS zoom:1.7 מגדיל את הגרף בלי overlay, בלי חשיכת רקע,
+   ובלי כיסוי השאלה שמשמאל.
+   חל על שלוש כרטיסיות: graph-card / graph-card-s12 / graph-card-s13
    ──────────────────────────────────────────────────────── */
 let zoomedCardId = null;
 
 function openGraphZoom(cardId) {
   const card = document.getElementById(cardId);
-  const host = document.getElementById('graph-zoom-host');
-  if (!card || !host) return;
+  if (!card) return;
   zoomedCardId = cardId;
-  host.appendChild(card);
   card.classList.add('is-zoomed');
-  document.getElementById('graph-zoom-modal').classList.remove('hidden');
   const zoomImg = card.querySelector('.graph-zoom-btn img');
   if (zoomImg) zoomImg.src = 'img/btn-zoom-out.png';
 }
@@ -1219,22 +1255,20 @@ function openGraphZoom(cardId) {
 function closeGraphZoom() {
   if (!zoomedCardId) return;
   const card = document.getElementById(zoomedCardId);
-  /* כל כרטיסייה חוזרת ל-host שלה: graph-card → graph-card-host, graph-card-s12 → graph-card-s12-host */
-  const origHost = document.getElementById(zoomedCardId + '-host');
-  if (!card || !origHost) return;
+  if (!card) return;
   card.classList.remove('is-zoomed');
-  origHost.appendChild(card);
-  document.getElementById('graph-zoom-modal').classList.add('hidden');
-  hideProjection(); // ללא ארגומנטים = מסתיר הכל
+  hideProjection();
   const zoomImg = card.querySelector('.graph-zoom-btn img');
   if (zoomImg) zoomImg.src = 'img/btn-zoom-in.png';
   zoomedCardId = null;
 }
 
 function toggleGraphZoom(cardId = 'graph-card') {
-  document.getElementById('graph-zoom-modal').classList.contains('hidden')
-    ? openGraphZoom(cardId)
-    : closeGraphZoom();
+  const card = document.getElementById(cardId);
+  if (!card) return;
+  card.classList.contains('is-zoomed')
+    ? closeGraphZoom()
+    : openGraphZoom(cardId);
 }
 
 /* סגור graph zoom עם Escape */
@@ -1288,6 +1322,7 @@ function checkAnswersS13() {
   if (isCorrect) {
     answerDots.forEach(d => d.classList.add('is-correct'));
     document.getElementById('try-again-msg-s13')?.classList.add('hidden');
+    scoreCorrect_q5c = true;
     disableSubmitS13('correct');
   } else if (attemptCountS13 >= MAX_ATTEMPTS) {
     // ניסיון 2 שגוי — מסמן נכון/שגוי + ממלא תשובות נכונות
@@ -1317,8 +1352,8 @@ function disableSubmitS13(feedbackType) {
   if (btn) { btn.disabled = true; btn.classList.add('hidden'); }
   document.getElementById('next-s13')?.classList.remove('hidden');
 
-  // הסתר את ה-note-text כדי שהפידבק (q8-feedback-box.s13-feedback-pos) יהיה גלוי
-  document.querySelector('.s13-note-text')?.classList.add('hidden');
+  // הסתר wrapper שכולל dot (Ellipse 3) + טקסט הסבר כשמופיע פידבק
+  document.querySelector('.s13-note-wrapper')?.classList.add('hidden');
 
   if (feedbackType === 'correct') {
     document.getElementById('feedback-s13-correct')?.classList.remove('hidden');
@@ -1343,6 +1378,7 @@ function checkAnswersS15() {
     setRadioVisual('s15', s15Selection, 'correct');
     document.getElementById('try-again-msg-s15')?.classList.add('hidden');
     _showFeedbackRadio('s15', 'correct');
+    scoreCorrect_q6 = true;
     disableSubmitS15();
   } else if (attemptCountS15 >= MAX_ATTEMPTS) {
     // ניסיון 2 שגוי — מסמן שגוי + חושף נכון
@@ -1433,6 +1469,7 @@ function checkAnswersS17() {
     _colorDropdown(2, true);
     document.getElementById('try-again-msg-s17')?.classList.add('hidden');
     document.getElementById('feedback-s17-correct')?.classList.remove('hidden');
+    scoreCorrect_q8 = true;
     disableSubmitS17();
   } else if (attemptCountS17 >= MAX_ATTEMPTS) {
     // ניסיון 2 שגוי — מסמן + ממלא תשובות נכונות
@@ -1472,10 +1509,50 @@ function disableSubmitS17() {
 }
 
 /* ═══════════════════════════════════════════════════════════
+   SCORING — חישוב ציון סופי
+   7 שאלות × 100/7 נקודות כל אחת.
+   שאלות עם כמה סעיפים: הניקוד מתחלק שווה בשווה.
+     Q1  (1 סעיף):  100/7
+     Q2  (1 סעיף):  100/7
+     Q3  (2 סעיפים): 100/7/2 כ"א
+     Q4  (1 סעיף):  100/7
+     Q5  (3 סעיפים): 100/7/3 כ"א
+     Q6  (1 סעיף):  100/7
+     Q8  (1 סעיף):  100/7
+   ═══════════════════════════════════════════════════════════ */
+
+function calculateScore() {
+  const PER_Q  = 100 / 7;        // 14.285714...
+  const PER_Q3 = PER_Q / 2;      //  7.142857...
+  const PER_Q5 = PER_Q / 3;      //  4.761905...
+
+  let score = 0;
+  if (scoreCorrect_q1b) score += PER_Q;
+  if (scoreCorrect_q2)  score += PER_Q;
+  if (scoreCorrect_q3a) score += PER_Q3;
+  if (scoreCorrect_q3b) score += PER_Q3;
+  if (scoreCorrect_q4)  score += PER_Q;
+  if (scoreCorrect_q5a) score += PER_Q5;
+  if (scoreCorrect_q5b) score += PER_Q5;
+  if (scoreCorrect_q5c) score += PER_Q5;
+  if (scoreCorrect_q6)  score += PER_Q;
+  if (scoreCorrect_q8)  score += PER_Q;
+
+  return Math.round(score);  // מספר שלם ללא נקודה עשרונית
+}
+
+function displayGrade() {
+  const grade = calculateScore();
+  const el = document.getElementById('user-grade-display');
+  if (el) el.textContent = grade;
+}
+
+/* ═══════════════════════════════════════════════════════════
    SCREEN 18 — completion modal
    ═══════════════════════════════════════════════════════════ */
 
 function completeMission() {
+  displayGrade();
   const overlay = document.getElementById('s18-completion-overlay');
   if (overlay) overlay.classList.remove('hidden');
 }
